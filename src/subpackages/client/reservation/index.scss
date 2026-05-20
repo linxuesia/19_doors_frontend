@@ -1,0 +1,20 @@
+.res-page { min-height: 100vh; background: #f0f5fa; }
+.res-form { padding: 24px; }
+.res-title { display: block; font-size: 40px; font-weight: 700; color: #122b4d; margin-bottom: 12px; }
+.res-desc { display: block; font-size: 24px; color: #6b7280; margin-bottom: 32px; }
+
+.res-field { margin-bottom: 24px; }
+.res-label { display: block; font-size: 24px; color: #6b7280; margin-bottom: 8px; }
+.res-input { width: 100%; padding: 24px 24px; background: #ffffff; border: 1px solid #ebedf0; border-radius: 20px; font-size: 28px; color: #1f2937; box-sizing: border-box; }
+.res-textarea { width: 100%; padding: 24px; background: #ffffff; border: 1px solid #ebedf0; border-radius: 20px; font-size: 28px; color: #1f2937; min-height: 120px; box-sizing: border-box; }
+
+.res-row { display: flex; gap: 16px; }
+.res-half { flex: 1; }
+
+.res-submit { width: 100%; padding: 28px; margin-top: 16px; }
+.opacity-50 { opacity: 0.5; }
+
+.res-success { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; padding: 48px; text-align: center; }
+.res-success-icon { font-size: 96px; margin-bottom: 24px; }
+.res-success-title { display: block; font-size: 40px; font-weight: 700; color: #122b4d; margin-bottom: 16px; }
+.res-success-desc { display: block; font-size: 26px; color: #6b7280; margin-bottom: 40px; line-height: 1.6; }

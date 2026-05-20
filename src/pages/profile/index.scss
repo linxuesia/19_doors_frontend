@@ -1,0 +1,29 @@
+.profile-page { min-height: 100vh; background: #f0f5fa; }
+
+.profile-header { position: relative; padding: 60px 32px 40px; overflow: hidden; }
+.profile-header-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #122b4d, #1b3e6c); border-radius: 0 0 48px 48px; }
+
+.profile-user { position: relative; z-index: 1; display: flex; align-items: center; gap: 24px; }
+.profile-login-btn { position: relative; z-index: 1; display: flex; align-items: center; gap: 24px; }
+
+.profile-avatar { width: 96px; height: 96px; border-radius: 9999px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; border: 3px solid rgba(255,255,255,0.4); }
+.profile-avatar-text { font-size: 48px; }
+
+.profile-user-info { position: relative; z-index: 1; flex: 1; }
+.profile-name { display: block; font-size: 36px; font-weight: 700; color: #ffffff; }
+.profile-role { display: block; font-size: 24px; color: rgba(255,255,255,0.8); margin-top: 8px; }
+.profile-phone-sep { color: rgba(255,255,255,0.4); }
+
+.profile-menu { margin: 24px; }
+.menu-item { display: flex; align-items: center; gap: 20px; padding: 28px 24px; background: #ffffff; border-radius: 20px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+.menu-item:active { background: #f9fafb; }
+
+.menu-icon { font-size: 40px; flex-shrink: 0; }
+.menu-content { flex: 1; }
+.menu-label { display: block; font-size: 28px; font-weight: 600; color: #1f2937; }
+.menu-desc { display: block; font-size: 22px; color: #9ca3af; margin-top: 4px; }
+.menu-arrow { font-size: 28px; color: #d1d5db; flex-shrink: 0; }
+
+.logout-btn { margin: 24px; padding: 28px; background: #ffffff; border-radius: 20px; text-align: center; }
+.logout-btn:active { background: #fef2f2; }
+.logout-text { font-size: 28px; color: #ef4444; }

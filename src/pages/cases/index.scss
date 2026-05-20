@@ -1,0 +1,20 @@
+.cases-page { min-height: 100vh; background: #f0f5fa; }
+.page-padding { padding: 24px; }
+.page-title { display: block; font-size: 40px; font-weight: 700; color: #122b4d; margin-bottom: 24px; }
+
+.case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.case-grid-card { background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.case-grid-card:active { opacity: 0.8; }
+
+.case-grid-img { width: 100%; height: 200px; background: #e1ecf4; display: flex; align-items: center; justify-content: center; }
+.case-grid-icon { font-size: 64px; }
+
+.case-grid-info { padding: 20px; }
+.case-grid-title { display: block; font-size: 26px; font-weight: 600; color: #1f2937; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.case-grid-desc { display: block; font-size: 22px; color: #6b7280; margin-top: 4px; }
+.case-grid-addr { display: block; font-size: 20px; color: #9ca3af; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.case-grid-meta { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 20px; color: #9ca3af; }
+.case-grid-store { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+
+.empty-state { grid-column: span 2; display: flex; justify-content: center; padding: 80px 0; }
+.empty-text { font-size: 28px; color: #9ca3af; }

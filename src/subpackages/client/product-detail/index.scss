@@ -1,0 +1,26 @@
+.pd-page { min-height: 100vh; background: #f0f5fa; }
+.loading { display: flex; justify-content: center; align-items: center; height: 400px; }
+.loading-text { font-size: 28px; color: #9ca3af; }
+
+.pd-hero { width: 100%; height: 400px; }
+.pd-hero-placeholder { width: 100%; height: 100%; background: #e1ecf4; display: flex; align-items: center; justify-content: center; }
+.pd-hero-icon { font-size: 96px; }
+
+.pd-body { padding: 32px 24px; }
+.pd-name { display: block; font-size: 40px; font-weight: 700; color: #122b4d; }
+.pd-cat { margin-top: 12px; }
+
+.pd-section { margin-top: 40px; }
+.pd-section-title { display: block; font-size: 32px; font-weight: 700; color: #122b4d; margin-bottom: 16px; }
+
+.pd-features { display: flex; flex-wrap: wrap; gap: 12px; }
+.pd-feature-item { background: #e1ecf4; color: #122b4d; font-size: 26px; padding: 12px 24px; border-radius: 20px; }
+
+.pd-report { background: #ffffff; border-radius: 24px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.pd-report-row { display: flex; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #f3f4f6; }
+.pd-report-row:last-child { border-bottom: none; }
+.pd-report-label { font-size: 26px; color: #6b7280; }
+.pd-report-value { font-size: 26px; font-weight: 600; color: #122b4d; }
+
+.pd-actions { margin-top: 48px; display: flex; gap: 16px; }
+.pd-btn { flex: 1; padding: 24px; text-align: center; }

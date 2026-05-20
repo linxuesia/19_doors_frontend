@@ -1,0 +1,308 @@
+.home-page {
+  min-height: 100vh;
+  background: #f0f5fa;
+}
+
+.hero-banner {
+  position: relative;
+  overflow: hidden;
+  padding: 80px 32px 64px;
+  text-align: center;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #122b4d 0%, #1b3e6c 50%, #2b5a8e 100%);
+  border-radius: 0 0 48px 48px;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-title {
+  display: block;
+  font-size: 48px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 16px;
+}
+
+.hero-subtitle {
+  display: block;
+  font-size: 28px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 8px;
+}
+
+.hero-tagline {
+  display: block;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 40px;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+.btn-outline-white {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 600;
+  padding: 24px 48px;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+
+  &:active {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+// 快捷入口
+.quick-entries {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: -24px 24px 0;
+  position: relative;
+  z-index: 2;
+}
+
+.entry-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 8px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.entry-icon {
+  font-size: 40px;
+}
+
+.entry-label {
+  font-size: 22px;
+  color: #4b5563;
+}
+
+// 分区
+.section {
+  padding: 0 24px;
+  margin-top: 40px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #122b4d;
+}
+
+.section-more {
+  font-size: 24px;
+  color: #122b4d;
+}
+
+// 产品横滑
+.product-scroll {
+  white-space: nowrap;
+}
+
+.product-card {
+  display: inline-block;
+  width: 280px;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  margin-right: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.product-img {
+  width: 280px;
+  height: 180px;
+  background: #e1ecf4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-img-text {
+  font-size: 64px;
+}
+
+.product-info {
+  padding: 20px;
+}
+
+.product-name {
+  display: block;
+  font-size: 28px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.product-cat {
+  display: block;
+  font-size: 22px;
+  color: #122b4d;
+  margin-top: 4px;
+}
+
+.product-tags {
+  margin-top: 12px;
+}
+
+// 案例卡片
+.case-card {
+  display: flex;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.case-img {
+  width: 200px;
+  height: 180px;
+  background: #e1ecf4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.case-img-text {
+  font-size: 56px;
+}
+
+.case-info {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.case-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1f2937;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.case-desc {
+  font-size: 22px;
+  color: #6b7280;
+  margin-top: 8px;
+}
+
+.case-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 20px;
+  color: #9ca3af;
+}
+
+// 门店小卡片
+.store-mini-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.store-mini-name {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.store-mini-addr {
+  display: block;
+  font-size: 24px;
+  color: #6b7280;
+  margin-top: 8px;
+}
+
+.store-mini-hours {
+  display: block;
+  font-size: 22px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.ml-2 {
+  margin-left: 16px;
+}
+
+// 品牌简介
+.brand-intro {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.brand-text {
+  display: block;
+  font-size: 26px;
+  color: #4b5563;
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+
+.brand-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.brand-tag {
+  padding: 8px 20px;
+  font-size: 22px;
+}

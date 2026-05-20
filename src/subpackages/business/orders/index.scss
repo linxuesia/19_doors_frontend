@@ -1,0 +1,22 @@
+.bo-page { min-height: 100vh; background: #f0f5fa; }
+
+.bo-filter-scroll { display: flex; gap: 12px; padding: 24px; white-space: nowrap; overflow-x: auto; }
+.bo-filter-item { display: inline-flex; padding: 12px 24px; border-radius: 9999px; background: #ffffff; border: 1px solid #ebedf0; }
+.bo-filter-active { background: #122b4d; border-color: #122b4d; }
+.bo-filter-text { font-size: 24px; color: #6b7280; }
+.bo-filter-text-active { color: #ffffff; }
+
+.bo-list { padding: 0 24px; }
+.bo-card { background: #ffffff; border-radius: 24px; padding: 24px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+.bo-card:active { opacity: 0.8; }
+.bo-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.bo-card-no { font-size: 28px; font-weight: 600; color: #1f2937; }
+.bo-card-status { font-size: 22px; padding: 4px 16px; border-radius: 9999px; }
+.bo-card-product { display: block; font-size: 26px; color: #4b5563; }
+.bo-card-addr { display: block; font-size: 24px; color: #6b7280; margin-top: 4px; }
+.bo-card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
+.bo-card-people { display: flex; gap: 12px; font-size: 24px; color: #9ca3af; }
+.bo-card-amount { font-size: 28px; font-weight: 700; color: #122b4d; }
+
+.bo-empty { display: flex; justify-content: center; padding: 80px 0; }
+.bo-empty-text { font-size: 28px; color: #9ca3af; }
