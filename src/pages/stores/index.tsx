@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import Icon from '../../components/Icon';
+import CustomTabBar from '../../custom-tab-bar';
 import api from '../../utils/api';
 import './index.scss';
 
@@ -48,7 +50,7 @@ export default function Stores() {
             }
           >
             <View className='store-full-img'>
-              <Text className='store-full-icon'>🏪</Text>
+              <Icon name='building' size={80} color='#b0c4d8' />
             </View>
             <View className='store-full-info'>
               <View className='store-full-header'>
@@ -57,9 +59,20 @@ export default function Stores() {
                   {item.type === 'DIRECT' ? '直营店' : '加盟店'}
                 </Text>
               </View>
-              <Text className='store-full-addr'>📍 {item.address}</Text>
-              <Text className='store-full-hours'>🕐 {item.businessHours}</Text>
-              {item.phone && <Text className='store-full-phone'>📞 {item.phone}</Text>}
+              <View className='store-full-row'>
+                <Icon name='map-pin' size={28} color='#6b7280' />
+                <Text className='store-full-addr'> {item.address}</Text>
+              </View>
+              <View className='store-full-row'>
+                <Icon name='time' size={28} color='#9ca3af' />
+                <Text className='store-full-hours'> {item.businessHours}</Text>
+              </View>
+              {item.phone && (
+                <View className='store-full-row'>
+                  <Icon name='phone' size={28} color='#9ca3af' />
+                  <Text className='store-full-phone'> {item.phone}</Text>
+                </View>
+              )}
               <Text className='store-full-desc'>{item.description}</Text>
             </View>
           </View>
@@ -71,6 +84,7 @@ export default function Stores() {
         )}
       </View>
       <View className='safe-bottom' />
+      <CustomTabBar />
     </ScrollView>
   );
 }

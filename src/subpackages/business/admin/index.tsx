@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
+import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
 import './index.scss';
 
@@ -71,7 +72,10 @@ export default function Admin() {
                 </Text>
               </View>
               <Text className='admin-card-info'>负责人：{item.owner?.name || '-'}</Text>
-              <Text className='admin-card-info'>📍 {item.address}</Text>
+              <View className='admin-card-row'>
+                <Icon name='map-pin' size={28} color='#6b7280' />
+                <Text className='admin-card-info'> {item.address}</Text>
+              </View>
               <Text className='admin-card-info'>状态：{item.status === 'OPEN' ? '营业中' : item.status}</Text>
             </View>
           ))}

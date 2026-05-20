@@ -7,7 +7,6 @@
 .profile-login-btn { position: relative; z-index: 1; display: flex; align-items: center; gap: 24px; }
 
 .profile-avatar { width: 96px; height: 96px; border-radius: 9999px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; border: 3px solid rgba(255,255,255,0.4); }
-.profile-avatar-text { font-size: 48px; }
 
 .profile-user-info { position: relative; z-index: 1; flex: 1; }
 .profile-name { display: block; font-size: 36px; font-weight: 700; color: #ffffff; }
@@ -18,11 +17,9 @@
 .menu-item { display: flex; align-items: center; gap: 20px; padding: 28px 24px; background: #ffffff; border-radius: 20px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
 .menu-item:active { background: #f9fafb; }
 
-.menu-icon { font-size: 40px; flex-shrink: 0; }
 .menu-content { flex: 1; }
 .menu-label { display: block; font-size: 28px; font-weight: 600; color: #1f2937; }
 .menu-desc { display: block; font-size: 22px; color: #9ca3af; margin-top: 4px; }
-.menu-arrow { font-size: 28px; color: #d1d5db; flex-shrink: 0; }
 
 .logout-btn { margin: 24px; padding: 28px; background: #ffffff; border-radius: 20px; text-align: center; }
 .logout-btn:active { background: #fef2f2; }

@@ -11,7 +11,8 @@
 .ol-card-no { font-size: 28px; font-weight: 600; color: #1f2937; }
 .ol-card-status { font-size: 22px; padding: 4px 16px; border-radius: 9999px; }
 .ol-card-product { display: block; font-size: 26px; color: #4b5563; }
-.ol-card-addr { display: block; font-size: 24px; color: #9ca3af; margin-top: 4px; }
+.ol-card-row { display: flex; align-items: center; margin-top: 4px; }
+.ol-card-addr { font-size: 24px; color: #9ca3af; }
 .ol-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
 .ol-card-amount { font-size: 28px; font-weight: 700; color: #122b4d; }
 .ol-card-warranty { font-size: 22px; color: #9ca3af; }

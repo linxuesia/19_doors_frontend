@@ -1,24 +1,11 @@
 import { useState, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { useAuth } from '../../../hooks/useAuth';
+import { useAuth } from '../../../contexts/AuthContext';
+import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
+import { orderFilters, orderStatusMap } from '../../../constants/status';
 import './index.scss';
-
-const filters = [
-  { value: '', label: '全部' },
-  { value: 'PENDING', label: '待分配' },
-  { value: 'INSTALLING', label: '施工中' },
-  { value: 'REVIEWING', label: '待确认' },
-  { value: 'COMPLETED', label: '已完工' },
-];
-
-const statusMap: Record<string, { label: string; bg: string }> = {
-  PENDING: { label: '待分配', bg: '#fff7ed' },
-  INSTALLING: { label: '施工中', bg: '#eff6ff' },
-  REVIEWING: { label: '待确认', bg: '#f3e8ff' },
-  COMPLETED: { label: '已完工', bg: '#f0fdf4' },
-};
 
 export default function Orders() {
   const { user } = useAuth();
@@ -41,7 +28,7 @@ export default function Orders() {
     <View className='bo-page'>
       {/* 筛选 */}
       <View className='bo-filter-scroll'>
-        {filters.map((f) => (
+        {orderFilters.map((f) => (
           <View
             key={f.value}
             className={`bo-filter-item ${filter === f.value ? 'bo-filter-active' : ''}`}
@@ -66,12 +53,15 @@ export default function Orders() {
           >
             <View className='bo-card-top'>
               <Text className='bo-card-no'>{item.orderNo}</Text>
-              <Text className='bo-card-status' style={{ backgroundColor: statusMap[item.status]?.bg || '#f3f4f6' }}>
-                {statusMap[item.status]?.label || item.status}
+              <Text className='bo-card-status' style={{ backgroundColor: orderStatusMap[item.status]?.bg || '#f3f4f6' }}>
+                {orderStatusMap[item.status]?.label || item.status}
               </Text>
             </View>
             <Text className='bo-card-product'>{item.productName || '未指定产品'}</Text>
-            <Text className='bo-card-addr'>📍 {item.installAddress || item.communityName || '-'}</Text>
+            <View className='bo-card-row'>
+              <Icon name='map-pin' size={28} color='#6b7280' />
+              <Text className='bo-card-addr'> {item.installAddress || item.communityName || '-'}</Text>
+            </View>
             <View className='bo-card-bottom'>
               <View className='bo-card-people'>
                 <Text className='bo-card-client'>客户：{item.client?.name || '-'}</Text>

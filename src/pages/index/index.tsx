@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import Icon from '../../components/Icon';
+import CustomTabBar from '../../custom-tab-bar';
 import api from '../../utils/api';
 import './index.scss';
 
@@ -46,17 +48,17 @@ export default function Home() {
       {/* 快捷入口 */}
       <View className='quick-entries'>
         {[
-          { icon: '🪟', label: '产品中心', url: '/pages/products/index', tab: true },
-          { icon: '📸', label: '全国案例', url: '/pages/cases/index', tab: true },
-          { icon: '📍', label: '体验中心', url: '/pages/stores/index', tab: true },
-          { icon: '📋', label: '预约量尺', url: '/subpackages/client/reservation/index' },
+          { icon: 'window' as const, label: '产品中心', url: '/pages/products/index', tab: true },
+          { icon: 'image' as const, label: '全国案例', url: '/pages/cases/index', tab: true },
+          { icon: 'map-pin' as const, label: '体验中心', url: '/pages/stores/index', tab: true },
+          { icon: 'clipboard' as const, label: '预约量尺', url: '/subpackages/client/reservation/index' },
         ].map((item) => (
           <View
             key={item.label}
             className='entry-item'
             onClick={() => item.tab ? Taro.switchTab({ url: item.url }) : navigate(item.url)}
           >
-            <Text className='entry-icon'>{item.icon}</Text>
+            <Icon name={item.icon} size={40} color='#122b4d' />
             <Text className='entry-label'>{item.label}</Text>
           </View>
         ))}
@@ -67,7 +69,7 @@ export default function Home() {
         <View className='section-header'>
           <Text className='section-title'>新品推荐</Text>
           <Text className='section-more' onClick={() => Taro.switchTab({ url: '/pages/products/index' })}>
-            查看全部 &gt;
+            查看全部 <Text className='section-more-arrow'>&gt;</Text>
           </Text>
         </View>
         <ScrollView className='product-scroll' scrollX showScrollbar={false}>
@@ -81,7 +83,7 @@ export default function Home() {
                 onClick={() => navigate(`/subpackages/client/product-detail/index?id=${item.id}`)}
               >
                 <View className='product-img'>
-                  <Text className='product-img-text'>🪟</Text>
+                  <Icon name='window' size={64} color='#b0c4d8' />
                 </View>
                 <View className='product-info'>
                   <Text className='product-name'>{item.name}</Text>
@@ -103,7 +105,7 @@ export default function Home() {
         <View className='section-header'>
           <Text className='section-title'>全国案例</Text>
           <Text className='section-more' onClick={() => Taro.switchTab({ url: '/pages/cases/index' })}>
-            查看全部 &gt;
+            查看全部 <Text className='section-more-arrow'>&gt;</Text>
           </Text>
         </View>
         {cases.map((item: any) => (
@@ -113,7 +115,7 @@ export default function Home() {
             onClick={() => navigate(`/subpackages/client/case-detail/index?id=${item.id}`)}
           >
             <View className='case-img'>
-              <Text className='case-img-text'>📸</Text>
+              <Icon name='image' size={56} color='#b0c4d8' />
             </View>
             <View className='case-info'>
               <Text className='case-title'>{item.title}</Text>
@@ -121,8 +123,16 @@ export default function Home() {
                 {item.communityName} · {item.houseArea}平 · {item.houseType}
               </Text>
               <View className='case-meta'>
-                <Text className='case-views'>👁 {item.views}</Text>
-                {item.store && <Text className='case-store'>🏪 {item.store.name}</Text>}
+                <View className='case-meta-item'>
+                  <Icon name='eye' size={28} color='#9ca3af' />
+                  <Text> {item.views}</Text>
+                </View>
+                {item.store && (
+                  <View className='case-meta-item'>
+                    <Icon name='building' size={28} color='#9ca3af' />
+                    <Text> {item.store.name}</Text>
+                  </View>
+                )}
               </View>
             </View>
           </View>
@@ -134,7 +144,7 @@ export default function Home() {
         <View className='section-header'>
           <Text className='section-title'>体验中心</Text>
           <Text className='section-more' onClick={() => Taro.switchTab({ url: '/pages/stores/index' })}>
-            查看全部 &gt;
+            查看全部 <Text className='section-more-arrow'>&gt;</Text>
           </Text>
         </View>
         {stores.map((item: any) => (
@@ -150,8 +160,14 @@ export default function Home() {
                   {item.type === 'DIRECT' ? '直营' : '加盟'}
                 </Text>
               </View>
-              <Text className='store-mini-addr'>📍 {item.address}</Text>
-              <Text className='store-mini-hours'>🕐 {item.businessHours}</Text>
+              <View className='store-mini-row'>
+                <Icon name='map-pin' size={28} color='#6b7280' />
+                <Text className='store-mini-addr'> {item.address}</Text>
+              </View>
+              <View className='store-mini-row'>
+                <Icon name='time' size={28} color='#9ca3af' />
+                <Text className='store-mini-hours'> {item.businessHours}</Text>
+              </View>
             </View>
           </View>
         ))}
@@ -179,6 +195,7 @@ export default function Home() {
       </View>
 
       <View className='safe-bottom' />
+      <CustomTabBar />
     </ScrollView>
   );
 }

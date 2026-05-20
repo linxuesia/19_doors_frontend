@@ -1,18 +1,13 @@
 import { useState, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
-import { useAuth } from '../../../hooks/useAuth';
+import { useAuth } from '../../../contexts/AuthContext';
+import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
+import { orderStatusMap } from '../../../constants/status';
 import './index.scss';
 
 const stageSteps = ['材料入场', '拆旧', '安装窗框', '玻璃安装', '打胶密封', '完工清理'];
-
-const statusMap: Record<string, { label: string; color: string }> = {
-  PENDING: { label: '待分配', color: '#fff7ed' },
-  INSTALLING: { label: '施工中', color: '#eff6ff' },
-  REVIEWING: { label: '待确认', color: '#f3e8ff' },
-  COMPLETED: { label: '已完工', color: '#f0fdf4' },
-};
 
 export default function OrderDetail() {
   const router = useRouter();
@@ -21,7 +16,6 @@ export default function OrderDetail() {
   const [order, setOrder] = useState<any>(null);
   const [orders, setOrders] = useState<any[]>([]);
 
-  // 如果是 list 模式，显示订单列表
   const isListMode = router.params.list === '1' || !id;
 
   useEffect(() => {
@@ -50,12 +44,15 @@ export default function OrderDetail() {
             >
               <View className='ol-card-header'>
                 <Text className='ol-card-no'>{item.orderNo}</Text>
-                <Text className='ol-card-status' style={{ backgroundColor: statusMap[item.status]?.color || '#f3f4f6' }}>
-                  {statusMap[item.status]?.label || item.status}
+                <Text className='ol-card-status' style={{ backgroundColor: orderStatusMap[item.status]?.bg || '#f3f4f6' }}>
+                  {orderStatusMap[item.status]?.label || item.status}
                 </Text>
               </View>
               <Text className='ol-card-product'>{item.productName || '未指定产品'}</Text>
-              <Text className='ol-card-addr'>📍 {item.installAddress || item.communityName || '-'}</Text>
+              <View className='ol-card-row'>
+                <Icon name='map-pin' size={28} color='#6b7280' />
+                <Text className='ol-card-addr'> {item.installAddress || item.communityName || '-'}</Text>
+              </View>
               <View className='ol-card-footer'>
                 <Text className='ol-card-amount'>¥{item.totalAmount?.toLocaleString() || 0}</Text>
                 <Text className='ol-card-warranty'>质保{item.warrantyYears}年</Text>
@@ -87,8 +84,8 @@ export default function OrderDetail() {
         <View className='od-header-content'>
           <View className='od-header-top'>
             <Text className='od-order-no'>{order.orderNo}</Text>
-            <Text className='od-status' style={{ backgroundColor: statusMap[order.status]?.color || '#f3f4f6' }}>
-              {statusMap[order.status]?.label || order.status}
+            <Text className='od-status' style={{ backgroundColor: orderStatusMap[order.status]?.bg || '#f3f4f6' }}>
+              {orderStatusMap[order.status]?.label || order.status}
             </Text>
           </View>
           <Text className='od-product'>{order.productName || '未指定产品'}</Text>
@@ -122,7 +119,11 @@ export default function OrderDetail() {
             return (
               <View key={stage} className='od-stage-row'>
                 <View className={`od-stage-dot ${log ? 'od-stage-done' : ''}`}>
-                  <Text className='od-stage-dot-text'>{log ? '✓' : i + 1}</Text>
+                  {log ? (
+                    <Icon name='check' size={26} color='#ffffff' />
+                  ) : (
+                    <Text className='od-stage-dot-text'>{i + 1}</Text>
+                  )}
                 </View>
                 <View className='od-stage-info'>
                   <Text className={`od-stage-name ${log ? '' : 'od-stage-pending'}`}>{stage}</Text>

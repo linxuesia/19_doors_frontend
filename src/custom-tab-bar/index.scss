@@ -1,0 +1,38 @@
+.custom-tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100px;
+  background: #ffffff;
+  border-top: 1px solid #ebedf0;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 999;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1;
+  padding: 8px 0;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.tab-text {
+  font-size: 20px;
+  color: #999999;
+}
+
+.tab-text-active {
+  color: #122b4d;
+  font-weight: 500;
+}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
+import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
 import './index.scss';
 
@@ -28,7 +29,7 @@ export default function ProductDetail() {
     <View className='pd-page'>
       <View className='pd-hero'>
         <View className='pd-hero-placeholder'>
-          <Text className='pd-hero-icon'>🪟</Text>
+          <Icon name='window' size={96} color='#b0c4d8' />
         </View>
       </View>
       <View className='pd-body'>
@@ -39,7 +40,10 @@ export default function ProductDetail() {
           <Text className='pd-section-title'>核心卖点</Text>
           <View className='pd-features'>
             {features.map((f: string, i: number) => (
-              <Text key={i} className='pd-feature-item'>✨ {f}</Text>
+              <View key={i} className='pd-feature-item'>
+                <Icon name='star' size={28} color='#122b4d' />
+                <Text> {f}</Text>
+              </View>
             ))}
           </View>
         </View>

@@ -1,19 +1,13 @@
 import { useState, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { useAuth, roleLabels } from '../../../hooks/useAuth';
+import { useAuth, roleLabels } from '../../../contexts/AuthContext';
+import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
+import { orderStatusMap, measurementStatusMap } from '../../../constants/status';
 import './index.scss';
 
-const statusMap: Record<string, { label: string; bg: string }> = {
-  PENDING: { label: '待分配', bg: '#fff7ed' },
-  INSTALLING: { label: '施工中', bg: '#eff6ff' },
-  REVIEWING: { label: '待确认', bg: '#f3e8ff' },
-  COMPLETED: { label: '已完工', bg: '#f0fdf4' },
-  ASSIGNED: { label: '已分配', bg: '#eff6ff' },
-  MEASURED: { label: '已量尺', bg: '#f0fdf4' },
-  CANCELED: { label: '已取消', bg: '#f3f4f6' },
-};
+const statusMap = { ...orderStatusMap, ...measurementStatusMap };
 
 export default function Workbench() {
   const { user } = useAuth();
@@ -55,7 +49,7 @@ export default function Workbench() {
         <View className='wb-header-content'>
           <View className='wb-user-row'>
             <View className='wb-avatar'>
-              <Text>👤</Text>
+              <Icon name='user' size={48} color='#ffffff' />
             </View>
             <View className='wb-user-info'>
               <Text className='wb-user-name'>{user.name}</Text>
@@ -113,7 +107,10 @@ export default function Workbench() {
                 </Text>
               </View>
               <Text className='wb-card-product'>{item.productName || '未指定产品'}</Text>
-              <Text className='wb-card-addr'>📍 {item.installAddress || item.communityName || '-'}</Text>
+              <View className='wb-card-row'>
+                <Icon name='map-pin' size={28} color='#6b7280' />
+                <Text className='wb-card-addr'> {item.installAddress || item.communityName || '-'}</Text>
+              </View>
               <View className='wb-card-bottom'>
                 <Text className='wb-card-client'>客户：{item.client?.name || '-'}</Text>
                 <Text className='wb-card-amount'>¥{item.totalAmount?.toLocaleString() || 0}</Text>
@@ -135,9 +132,20 @@ export default function Workbench() {
                   {statusMap[item.status]?.label || item.status}
                 </Text>
               </View>
-              <Text className='wb-card-addr'>📞 {item.phone}</Text>
-              <Text className='wb-card-addr'>📍 {item.address}</Text>
-              {item.expectedDate && <Text className='wb-card-date'>📅 期望：{item.expectedDate}</Text>}
+              <View className='wb-card-row'>
+                <Icon name='phone' size={28} color='#6b7280' />
+                <Text className='wb-card-addr'> {item.phone}</Text>
+              </View>
+              <View className='wb-card-row'>
+                <Icon name='map-pin' size={28} color='#6b7280' />
+                <Text className='wb-card-addr'> {item.address}</Text>
+              </View>
+              {item.expectedDate && (
+                <View className='wb-card-row'>
+                  <Icon name='calendar' size={28} color='#6b7280' />
+                  <Text className='wb-card-date'> 期望：{item.expectedDate}</Text>
+                </View>
+              )}
             </View>
           ))}
           {measurements.length === 0 && <View className='wb-empty'><Text className='wb-empty-text'>暂无预约</Text></View>}
@@ -149,11 +157,11 @@ export default function Workbench() {
         <Text className='wb-actions-title'>快捷操作</Text>
         <View className='wb-action-grid'>
           <View className='wb-action-btn' onClick={() => Taro.navigateTo({ url: '/subpackages/business/orders/index' })}>
-            <Text className='wb-action-icon'>📋</Text>
+            <Icon name='clipboard' size={40} color='#122b4d' />
             <Text className='wb-action-label'>录入线下订单</Text>
           </View>
           <View className='wb-action-btn' onClick={() => Taro.navigateTo({ url: '/subpackages/client/reservation/index' })}>
-            <Text className='wb-action-icon'>📅</Text>
+            <Icon name='calendar' size={40} color='#122b4d' />
             <Text className='wb-action-label'>新增量尺预约</Text>
           </View>
         </View>

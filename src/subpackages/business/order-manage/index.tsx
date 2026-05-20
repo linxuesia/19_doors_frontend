@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
-import { useAuth } from '../../../hooks/useAuth';
+import { useAuth } from '../../../contexts/AuthContext';
 import api from '../../../utils/api';
+import { orderStatusMap } from '../../../constants/status';
 import './index.scss';
 
 export default function OrderManage() {
@@ -118,15 +119,11 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
 
 // 订单详情
 function OrderDetailView({ order }: { order: any }) {
-  const statusMap: Record<string, string> = {
-    PENDING: '待分配', INSTALLING: '施工中', REVIEWING: '待确认', COMPLETED: '已完工',
-  };
-
   return (
     <View className='om-detail-page'>
       <View className='om-detail-header'>
         <Text className='om-detail-no'>{order.orderNo}</Text>
-        <Text className='tag tag-brand'>{statusMap[order.status] || order.status}</Text>
+        <Text className='tag tag-brand'>{orderStatusMap[order.status]?.label || order.status}</Text>
       </View>
 
       <View className='om-detail-card'>

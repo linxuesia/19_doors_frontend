@@ -95,10 +95,6 @@
   }
 }
 
-.entry-icon {
-  font-size: 40px;
-}
-
 .entry-label {
   font-size: 22px;
   color: #4b5563;
@@ -124,6 +120,11 @@
 }
 
 .section-more {
+  font-size: 24px;
+  color: #122b4d;
+}
+
+.section-more-arrow {
   font-size: 24px;
   color: #122b4d;
 }
@@ -154,10 +155,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.product-img-text {
-  font-size: 64px;
 }
 
 .product-info {
@@ -206,10 +203,6 @@
   flex-shrink: 0;
 }
 
-.case-img-text {
-  font-size: 56px;
-}
-
 .case-info {
   flex: 1;
   padding: 24px;
@@ -242,6 +235,11 @@
   color: #9ca3af;
 }
 
+.case-meta-item {
+  display: flex;
+  align-items: center;
+}
+
 // 门店小卡片
 .store-mini-card {
   background: #ffffff;
@@ -261,18 +259,20 @@
   color: #1f2937;
 }
 
-.store-mini-addr {
-  display: block;
-  font-size: 24px;
-  color: #6b7280;
+.store-mini-row {
+  display: flex;
+  align-items: center;
   margin-top: 8px;
 }
 
+.store-mini-addr {
+  font-size: 24px;
+  color: #6b7280;
+}
+
 .store-mini-hours {
-  display: block;
   font-size: 22px;
   color: #9ca3af;
-  margin-top: 4px;
 }
 
 .ml-2 {

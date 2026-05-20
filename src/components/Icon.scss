@@ -1,0 +1,10 @@
+// Remix Icon 辅助样式
+// 字体文件由 remixicon.css CDN 加载
+// 小程序端需将 remixicon.woff2 放入 static 目录并配置 @font-face
+
+.icon-ri {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}

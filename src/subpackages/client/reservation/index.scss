@@ -1,20 +1,150 @@
-.res-page { min-height: 100vh; background: #f0f5fa; }
-.res-form { padding: 24px; }
-.res-title { display: block; font-size: 40px; font-weight: 700; color: #122b4d; margin-bottom: 12px; }
-.res-desc { display: block; font-size: 24px; color: #6b7280; margin-bottom: 32px; }
+// 预约量尺页面
+.res-page {
+  min-height: 100vh;
+  background: #f0f5fa;
+}
 
-.res-field { margin-bottom: 24px; }
-.res-label { display: block; font-size: 24px; color: #6b7280; margin-bottom: 8px; }
-.res-input { width: 100%; padding: 24px 24px; background: #ffffff; border: 1px solid #ebedf0; border-radius: 20px; font-size: 28px; color: #1f2937; box-sizing: border-box; }
-.res-textarea { width: 100%; padding: 24px; background: #ffffff; border: 1px solid #ebedf0; border-radius: 20px; font-size: 28px; color: #1f2937; min-height: 120px; box-sizing: border-box; }
+// ====== 品牌头图 ======
+.res-hero {
+  position: relative;
+  padding: 60px 32px 48px;
+  overflow: hidden;
+}
 
-.res-row { display: flex; gap: 16px; }
-.res-half { flex: 1; }
+.res-hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #122b4d 0%, #1b3e6c 50%, #2b5a8e 100%);
+  border-radius: 0 0 48px 48px;
+}
 
-.res-submit { width: 100%; padding: 28px; margin-top: 16px; }
-.opacity-50 { opacity: 0.5; }
+.res-hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
 
-.res-success { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; padding: 48px; text-align: center; }
-.res-success-icon { font-size: 96px; margin-bottom: 24px; }
-.res-success-title { display: block; font-size: 40px; font-weight: 700; color: #122b4d; margin-bottom: 16px; }
-.res-success-desc { display: block; font-size: 26px; color: #6b7280; margin-bottom: 40px; line-height: 1.6; }
+.res-hero-title {
+  display: block;
+  font-size: 48px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 16px;
+  letter-spacing: 4px;
+}
+
+.res-hero-subtitle {
+  display: block;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+// ====== 表单卡片 ======
+.res-form-card {
+  margin: -24px 24px 0;
+  position: relative;
+  z-index: 2;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 40px 32px 32px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.res-form-title {
+  display: block;
+  font-size: 36px;
+  font-weight: 700;
+  color: #122b4d;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.res-field {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  background: #f5f7fa;
+  border-radius: 16px;
+  padding: 4px 24px;
+}
+
+.res-field-icon {
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.res-input {
+  flex: 1;
+  height: 88px;
+  font-size: 28px;
+  color: #1f2937;
+  background: transparent;
+}
+
+.res-submit {
+  width: 100%;
+  padding: 28px;
+  margin-top: 8px;
+}
+
+.res-submit-loading {
+  opacity: 0.6;
+}
+
+// ====== 服务特性 ======
+.res-features {
+  display: flex;
+  justify-content: space-around;
+  padding: 48px 24px 32px;
+}
+
+.res-feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 16px;
+  width: 140px;
+}
+
+.res-feature-label {
+  font-size: 22px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+// ====== 成功页 ======
+.res-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 48px;
+  text-align: center;
+}
+
+.res-success-icon {
+  margin-bottom: 24px;
+}
+
+.res-success-title {
+  display: block;
+  font-size: 40px;
+  font-weight: 700;
+  color: #122b4d;
+  margin-bottom: 16px;
+}
+
+.res-success-desc {
+  display: block;
+  font-size: 26px;
+  color: #6b7280;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}

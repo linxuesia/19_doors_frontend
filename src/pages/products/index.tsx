@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import Icon from '../../components/Icon';
+import CustomTabBar from '../../custom-tab-bar';
 import api from '../../utils/api';
 import './index.scss';
 
@@ -53,7 +55,7 @@ export default function Products() {
                 }
               >
                 <View className='product-grid-img'>
-                  <Text className='product-grid-icon'>🪟</Text>
+                  <Icon name='window' size={72} color='#b0c4d8' />
                 </View>
                 <View className='product-grid-info'>
                   <Text className='product-grid-name'>{item.name}</Text>
@@ -75,6 +77,7 @@ export default function Products() {
         </View>
       </View>
       <View className='safe-bottom' />
+      <CustomTabBar />
     </ScrollView>
   );
 }

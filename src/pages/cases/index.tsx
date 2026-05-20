@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import Icon from '../../components/Icon';
+import CustomTabBar from '../../custom-tab-bar';
 import api from '../../utils/api';
 import './index.scss';
 
@@ -27,14 +29,20 @@ export default function Cases() {
               }
             >
               <View className='case-grid-img'>
-                <Text className='case-grid-icon'>📸</Text>
+                <Icon name='image' size={64} color='#b0c4d8' />
               </View>
               <View className='case-grid-info'>
                 <Text className='case-grid-title'>{item.title}</Text>
                 <Text className='case-grid-desc'>{item.houseArea}平 · {item.houseType}</Text>
-                <Text className='case-grid-addr'>📍 {item.communityName}</Text>
+                <View className='case-grid-row'>
+                  <Icon name='map-pin' size={28} color='#9ca3af' />
+                  <Text className='case-grid-addr'> {item.communityName}</Text>
+                </View>
                 <View className='case-grid-meta'>
-                  <Text className='case-grid-views'>👁 {item.views}</Text>
+                  <View className='case-grid-meta-item'>
+                    <Icon name='eye' size={28} color='#9ca3af' />
+                    <Text className='case-grid-views'> {item.views}</Text>
+                  </View>
                   {item.store && <Text className='case-grid-store'>{item.store.name}</Text>}
                 </View>
               </View>
@@ -48,6 +56,7 @@ export default function Cases() {
         </View>
       </View>
       <View className='safe-bottom' />
+      <CustomTabBar />
     </ScrollView>
   );
 }

@@ -1,5 +1,6 @@
 import { PropsWithChildren } from 'react';
 import { useLaunch } from '@tarojs/taro';
+import { AuthProvider } from './contexts/AuthContext';
 import './app.scss';
 
 function App({ children }: PropsWithChildren) {
@@ -7,7 +8,11 @@ function App({ children }: PropsWithChildren) {
     console.log('App launched.');
   });
 
-  return children;
+  return (
+    <AuthProvider>
+      {children}
+    </AuthProvider>
+  );
 }
 
 export default App;

@@ -30,8 +30,9 @@
 .wb-card-client-name { font-size: 28px; font-weight: 600; color: #1f2937; }
 .wb-card-status { font-size: 22px; padding: 4px 16px; border-radius: 9999px; }
 .wb-card-product { display: block; font-size: 26px; color: #4b5563; }
-.wb-card-addr { display: block; font-size: 24px; color: #6b7280; margin-top: 4px; }
-.wb-card-date { display: block; font-size: 24px; color: #122b4d; margin-top: 8px; }
+.wb-card-row { display: flex; align-items: center; margin-top: 4px; }
+.wb-card-addr { font-size: 24px; color: #6b7280; }
+.wb-card-date { font-size: 24px; color: #122b4d; margin-top: 8px; }
 .wb-card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
 .wb-card-client { font-size: 24px; color: #9ca3af; }
 .wb-card-amount { font-size: 28px; font-weight: 700; color: #122b4d; }
@@ -44,5 +45,5 @@
 .wb-action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .wb-action-btn { background: #ffffff; border-radius: 20px; padding: 28px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
 .wb-action-btn:active { background: #f9fafb; }
-.wb-action-icon { display: block; font-size: 48px; margin-bottom: 12px; }
+.wb-action-icon { margin-bottom: 12px; }
 .wb-action-label { font-size: 26px; font-weight: 500; color: #1f2937; }
