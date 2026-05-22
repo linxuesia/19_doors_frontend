@@ -22,6 +22,7 @@ export const roleLabels: Record<string, string> = {
 interface AuthContextType {
   user: User | null;
   token: string | null;
+  phoneLogin: (params: { phoneCode?: string; wxCode?: string; phone?: string }) => Promise<void>;
   wechatLogin: (role: string) => Promise<void>;
   adminLogin: (username: string, password: string) => Promise<void>;
   logout: () => void;
@@ -46,6 +47,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     Taro.setStorageSync('user', u);
   }, []);
 
+  const phoneLogin = useCallback(async (params: { phoneCode?: string; wxCode?: string; phone?: string }) => {
+    const res: any = await api.post('/auth/phone-login', params);
+    saveAuth(res.accessToken, res.user);
+  }, [saveAuth]);
+
   const wechatLogin = useCallback(async (role: string) => {
     const loginRes = await Taro.login();
     if (!loginRes.code) throw new Error('微信登录失败');
@@ -67,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, token, wechatLogin, adminLogin, logout }}>
+    <AuthContext.Provider value={{ user, token, phoneLogin, wechatLogin, adminLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );

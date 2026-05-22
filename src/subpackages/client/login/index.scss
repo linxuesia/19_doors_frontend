@@ -6,22 +6,19 @@
 .login-subtitle { display: block; text-align: center; font-size: 26rpx; color: #6b7280; margin-top: 8rpx; margin-bottom: 40rpx; }
 
 .login-form { display: flex; flex-direction: column; gap: 20rpx; }
+.login-btn-text { margin-left: 12rpx; }
 
 .login-input { width: 100%; padding: 28rpx 24rpx; background: #ffffff; border: 1px solid #ebedf0; border-radius: 20px; font-size: 28rpx; color: #1f2937; box-sizing: border-box; }
-.login-picker { width: 100%; padding: 28rpx 24rpx; background: #ffffff; border: 1px solid #ebedf0; border-radius: 20px; font-size: 28rpx; color: #1f2937; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
 
 .login-error { font-size: 24rpx; color: #ef4444; text-align: center; }
 
-.login-submit { width: 100%; padding: 28rpx; }
+.login-submit { width: 100%; padding: 28rpx; display: flex; align-items: center; justify-content: center; }
+.login-wechat-btn { background: #07c160; border-color: #07c160; }
 .opacity-50 { opacity: 0.5; }
 
 .login-switch { text-align: center; margin-top: 24rpx; }
 .login-switch-text { font-size: 26rpx; color: #122b4d; }
 
-.login-test { margin-top: 40rpx; background: #ffffff; border-radius: 24rpx; padding: 24rpx; width: 100%; max-width: 600rpx; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.login-test-title { display: block; font-size: 22rpx; color: #9ca3af; text-align: center; margin-bottom: 16rpx; }
-.login-test-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12rpx; }
-.login-test-item { display: flex; justify-content: space-between; padding: 16rpx 20rpx; background: #f0f5fa; border-radius: 16px; }
-.login-test-item:active { background: #e1ecf4; }
-.login-test-label { font-size: 24rpx; font-weight: 500; color: #1f2937; }
-.login-test-phone { font-size: 22rpx; color: #9ca3af; }
+.login-divider { display: flex; align-items: center; gap: 16rpx; margin: 12rpx 0; }
+.login-divider-line { flex: 1; height: 1rpx; background: #ebedf0; }
+.login-divider-text { font-size: 22rpx; color: #9ca3af; white-space: nowrap; }

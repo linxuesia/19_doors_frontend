@@ -17,6 +17,8 @@ export default defineAppConfig({
         'product-detail/index',   // 产品详情
         'store-detail/index',     // 门店详情
         'site-detail/index',      // 工地详情
+        'store-apply/index',      // 门店入驻申请
+        'staff-apply/index',      // 员工认证申请
       ],
     },
     {

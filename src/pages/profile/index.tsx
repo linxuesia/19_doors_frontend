@@ -10,7 +10,7 @@ export default function Profile() {
   const { user, logout } = useAuth();
   const isClient = user?.role === 'CLIENT';
 
-  const menuItems: { icon: IconName; label: string; desc: string; url: string; contact?: boolean }[] = [
+  const menuItems: { icon: IconName; label: string; desc: string; url: string; contact?: boolean; role?: string }[] = [
     ...(user && !isClient ? [{
       icon: 'chart' as IconName,
       label: '工作台',
@@ -26,6 +26,10 @@ export default function Profile() {
       url: isClient ? '/subpackages/client/order-detail/index?list=1' : '/subpackages/business/orders/index',
     },
     { icon: 'calendar' as IconName, label: '预约记录', desc: '查看量尺预约历史', url: '' },
+    ...(user && isClient ? [
+      { icon: 'building' as IconName, label: '门店入驻', desc: '申请成为门店老板，拥有专属门店', url: '/subpackages/client/store-apply/index' },
+      { icon: 'user' as IconName, label: '员工认证', desc: '申请成为门店店长或安装工', url: '/subpackages/client/staff-apply/index' },
+    ] : []),
     { icon: 'shield-check' as IconName, label: '质保凭证', desc: '查看19分贝质保凭证', url: '' },
     { icon: 'settings' as IconName, label: '设置', desc: '个人资料与账号安全', url: '' },
     { icon: 'chat' as IconName, label: '联系客服', desc: '在线客服与问题反馈', url: '', contact: true },
