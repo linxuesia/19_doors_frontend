@@ -1,25 +1,60 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView } from '@tarojs/components';
+import { View, Text, Image, ScrollView, Map, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import Icon from '../../components/Icon';
-import CustomTabBar from '../../custom-tab-bar';
+
 import api from '../../utils/api';
 import './index.scss';
+
+// 上海周边模拟工地坐标
+const defaultMarkers = [
+  { id: 1, longitude: 121.4737, latitude: 31.2304, title: '芯汇花园5-1902', status: '下单备料' },
+  { id: 2, longitude: 121.4200, latitude: 31.2150, title: '泊岸时光印19幢', status: '已完工' },
+  { id: 3, longitude: 121.5100, latitude: 31.2500, title: '金平路555弄', status: '施工中' },
+  { id: 4, longitude: 121.3800, latitude: 31.2000, title: '苏州展厅', status: '已完工' },
+];
 
 export default function Home() {
   const [products, setProducts] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
-  const [stores, setStores] = useState<any[]>([]);
+  const [sites, setSites] = useState<any[]>([]);
+  const [selectedMarker, setSelectedMarker] = useState<any>(defaultMarkers[0]);
+
+  const markers = (sites.length > 0 ? sites : defaultMarkers).map((site: any, i: number) => ({
+    id: site.id || i + 1,
+    longitude: site.longitude || defaultMarkers[i]?.longitude || 121.4737,
+    latitude: site.latitude || defaultMarkers[i]?.latitude || 31.2304,
+    title: site.title || site.name || '',
+    iconPath: '',
+    width: 32,
+    height: 32,
+    callout: {
+      content: site.title || site.name || '',
+      color: '#122b4d',
+      fontSize: 13,
+      borderRadius: 8,
+      padding: 8,
+      display: 'ALWAYS',
+    },
+  }));
+
+  const handleMarkerTap = (e: any) => {
+    const id = e.detail?.markerId || e.markerId;
+    const site = (sites.length > 0 ? sites : defaultMarkers).find(
+      (s: any, i: number) => (s.id || i + 1) === id
+    );
+    if (site) setSelectedMarker(site);
+  };
 
   useEffect(() => {
     Promise.all([
       api.get('/products').catch(() => []),
       api.get('/cases?published=true').catch(() => []),
-      api.get('/stores').catch(() => []),
+      api.get('/sites').catch(() => []),
     ]).then(([p, c, s]) => {
       setProducts((p as any)?.slice?.(0, 4) || []);
-      setCases((c as any)?.slice?.(0, 3) || []);
-      setStores((s as any)?.slice?.(0, 3) || []);
+      setCases((c as any)?.slice?.(0, 6) || []);
+      setSites((s as any)?.slice?.(0, 6) || []);
     });
   }, []);
 
@@ -27,175 +62,197 @@ export default function Home() {
 
   return (
     <ScrollView className='home-page' scrollY>
-      {/* 品牌横幅 */}
+      {/* Banner */}
       <View className='hero-banner'>
-        <View className='hero-bg' />
-        <View className='hero-content'>
-          <Text className='hero-title'>19分贝门窗</Text>
-          <Text className='hero-subtitle'>高端系统门窗整体解决方案</Text>
-          <Text className='hero-tagline'>一扇好门窗，品味大不同</Text>
-          <View className='hero-buttons'>
-            <View className='btn-primary' onClick={() => navigate('/subpackages/client/reservation/index')}>
-              <Text>预约量尺</Text>
-            </View>
-            <View className='btn-outline-white' onClick={() => Taro.switchTab({ url: '/pages/products/index' })}>
-              <Text>选产品</Text>
-            </View>
-          </View>
-        </View>
+        <View className='hero-banner-bg' />
+        <Image
+          className='hero-image'
+          src='https://cdn.juesedao.cn/mdy/120bdd3bf36f49e49ef335d346e91ec4'
+          mode='widthFix'
+        />
+        <Button className='customer-service' openType='contact'>
+          <Text className='cs-text'>客服</Text>
+        </Button>
       </View>
 
-      {/* 快捷入口 */}
-      <View className='quick-entries'>
-        {[
-          { icon: 'window' as const, label: '产品中心', url: '/pages/products/index', tab: true },
-          { icon: 'image' as const, label: '全国案例', url: '/pages/cases/index', tab: true },
-          { icon: 'map-pin' as const, label: '体验中心', url: '/pages/stores/index', tab: true },
-          { icon: 'clipboard' as const, label: '预约量尺', url: '/subpackages/client/reservation/index' },
-        ].map((item) => (
-          <View
-            key={item.label}
-            className='entry-item'
-            onClick={() => item.tab ? Taro.switchTab({ url: item.url }) : navigate(item.url)}
-          >
-            <Icon name={item.icon} size={40} color='#122b4d' />
-            <Text className='entry-label'>{item.label}</Text>
+      {/* 负责人信息卡片 */}
+      <View className='manager-card'>
+        <Image
+          className='manager-avatar'
+          src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80'
+        />
+        <View className='manager-info'>
+          <Text className='manager-name'>李振扬</Text>
+          <Text className='manager-store'>上海19分贝门窗直营店</Text>
+        </View>
+        <View className='manager-actions'>
+          <View className='action-icon' onClick={() => Taro.makePhoneCall({ phoneNumber: '13800138000' })}>
+            <Icon name='phone' size={36} color='#122b4d' />
           </View>
-        ))}
+          <View className='action-icon' onClick={() => {}}>
+            <Icon name='map-pin' size={36} color='#122b4d' />
+          </View>
+          <View className='action-icon' onClick={() => {}}>
+            <Icon name='qr-code' size={36} color='#122b4d' />
+          </View>
+        </View>
       </View>
 
       {/* 新品推荐 */}
-      <View className='section'>
-        <View className='section-header'>
-          <Text className='section-title'>新品推荐</Text>
-          <Text className='section-more' onClick={() => Taro.switchTab({ url: '/pages/products/index' })}>
-            查看全部 <Text className='section-more-arrow'>&gt;</Text>
-          </Text>
+      <View className='index-section'>
+        <View className='index-section-badge'>
+          <Text className='badge-text'>新品推荐</Text>
+          <Text className='badge-en'>NEW ARRIVAL</Text>
         </View>
         <ScrollView className='product-scroll' scrollX showScrollbar={false}>
-          {products.map((item: any) => {
-            let features: string[] = [];
-            try { features = JSON.parse(item.features || '[]'); } catch {}
-            return (
-              <View
-                key={item.id}
-                className='product-card'
-                onClick={() => navigate(`/subpackages/client/product-detail/index?id=${item.id}`)}
-              >
-                <View className='product-img'>
-                  <Icon name='window' size={64} color='#b0c4d8' />
-                </View>
-                <View className='product-info'>
-                  <Text className='product-name'>{item.name}</Text>
-                  <Text className='product-cat'>{item.category}</Text>
-                  <View className='product-tags'>
-                    {features.slice(0, 2).map((f, i) => (
-                      <Text key={i} className='tag tag-brand'>{f}</Text>
-                    ))}
-                  </View>
-                </View>
+          {[
+            { id: 'p1', name: '1', image: 'https://images.unsplash.com/photo-1600607688969-a5bfcd64bd40?auto=format&fit=crop&w=800&q=80' },
+            { id: 'p2', name: 'S100', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80' },
+            { id: 'p3', name: 'S97', image: 'https://images.unsplash.com/photo-1600566753080-00e5bc57bb55?auto=format&fit=crop&w=800&q=80' },
+            { id: 'p4', name: '全景落地窗', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80' },
+          ].map((item) => (
+            <View
+              key={item.id}
+              className='product-card'
+              onClick={() => navigate(`/subpackages/client/product-detail/index?id=${item.id}`)}
+            >
+              <Image className='product-img' src={item.image} mode='aspectFill' />
+              <View className='product-footer'>
+                <View className='product-dot' />
+                <Text className='product-name'>{item.name}</Text>
               </View>
-            );
-          })}
+            </View>
+          ))}
         </ScrollView>
+        <View className='pagination-dots'>
+          <View className='dot dot-active' />
+          <View className='dot' />
+        </View>
       </View>
 
-      {/* 全国案例 */}
-      <View className='section'>
-        <View className='section-header'>
-          <Text className='section-title'>全国案例</Text>
-          <Text className='section-more' onClick={() => Taro.switchTab({ url: '/pages/cases/index' })}>
-            查看全部 <Text className='section-more-arrow'>&gt;</Text>
-          </Text>
+      {/* 全国工地地图 */}
+      <View className='index-section'>
+        <View className='index-section-badge'>
+          <Text className='badge-text'>全国工地地图</Text>
+          <Text className='badge-en'>NATIONAL SITE MAP</Text>
         </View>
-        {cases.map((item: any) => (
+        <View className='map-container'>
+          <Map
+            className='index-map'
+            longitude={121.4737}
+            latitude={31.2304}
+            scale={12}
+            markers={markers}
+            showLocation
+            onMarkerTap={handleMarkerTap}
+          />
+          {selectedMarker && (
+            <View className='site-marker'>
+              <View className='marker-dot' />
+              <View className='marker-info'>
+                <Text className='marker-label'>附近的工地</Text>
+                <Text className='marker-title'>{selectedMarker.title || selectedMarker.name}</Text>
+                <Text className='marker-status'>{selectedMarker.status || '施工中'}</Text>
+              </View>
+            </View>
+          )}
+          <View className='view-all-btn' onClick={() => Taro.switchTab({ url: '/pages/cases/index' })}>
+            <Text className='view-all-text'>查看全部</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* 工地列表 */}
+      <View className='index-section'>
+        <View className='site-grid'>
+          {[
+            { id: 's1', title: '芯汇花园5-1902', location: '苏州市', image: '' },
+            { id: 's2', title: '泊岸时光印19幢', location: '苏州市', image: '' },
+            { id: 's3', title: '苏州展厅', location: '苏州市', image: 'https://images.unsplash.com/photo-1600607688969-a5bfcd64bd40?auto=format&fit=crop&w=800&q=80' },
+            { id: 's4', title: '金平路555弄', location: '上海市', image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80' },
+          ].map((item) => (
+            <View
+              key={item.id}
+              className='site-grid-item'
+              onClick={() => navigate(`/subpackages/client/site-detail/index?id=${item.id}`)}
+            >
+              {item.image ? (
+                <Image className='site-grid-img' src={item.image} mode='aspectFill' />
+              ) : (
+                <View className='site-grid-placeholder'>
+                  <Text className='brand-logo'>SOJOY <Text className='brand-highlight'>19分贝</Text></Text>
+                  <Text className='brand-slogan'>系统窗臻 选19分贝</Text>
+                </View>
+              )}
+              <View className='site-grid-info'>
+                <Text className='site-grid-location'>{item.location} | {item.title}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+        <View className='view-more-btn' onClick={() => Taro.switchTab({ url: '/pages/cases/index?tab=site' })}>
+          <Text className='view-more-text'>查看更多</Text>
+        </View>
+      </View>
+
+      {/* 门店资质 */}
+      <View className='index-section'>
+        <View className='index-section-badge'>
+          <Text className='badge-text'>门店资质</Text>
+          <Text className='badge-en'>STORE QUALIFICATION</Text>
+        </View>
+        <ScrollView className='qualification-scroll' scrollX showScrollbar={false}>
+          {[
+            { id: 'q1', title: '行业发展标杆', store: '上海19分贝门窗直营店', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=400&q=80' },
+            { id: 'q2', title: '大商资质', store: '上海19分贝门窗直营店', image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80' },
+          ].map((item) => (
+            <View key={item.id} className='qualification-card'>
+              <Image className='qualification-img' src={item.image} mode='aspectFill' />
+              <Text className='qualification-title'>{item.title}</Text>
+              <Text className='qualification-store'>{item.store}</Text>
+            </View>
+          ))}
+        </ScrollView>
+        <View className='pagination-dots'>
+          <View className='dot dot-active' />
+          <View className='dot' />
+          <View className='dot' />
+        </View>
+      </View>
+
+      {/* 实景案例 */}
+      <View className='index-section'>
+        <View className='index-section-badge'>
+          <Text className='badge-text'>实景案例</Text>
+          <Text className='badge-en'>REAL CASES</Text>
+        </View>
+        {[
+          { id: 'c1', title: '上海市松江区涞亭南路S78', city: '上海', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80' },
+          { id: 'c2', title: '上海市松江区涞亭南路S88', city: '上海', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80' },
+          { id: 'c3', title: '上海市松江区涞亭南路S89', city: '上海', image: 'https://images.unsplash.com/photo-1600607688969-a5bfcd64bd40?auto=format&fit=crop&w=800&q=80' },
+        ].map((item) => (
           <View
             key={item.id}
             className='case-card'
             onClick={() => navigate(`/subpackages/client/case-detail/index?id=${item.id}`)}
           >
-            <View className='case-img'>
-              <Icon name='image' size={56} color='#b0c4d8' />
+            <View className='case-city-tag'>
+              <Text className='city-tag-text'>{item.city}</Text>
             </View>
-            <View className='case-info'>
+            <Image className='case-img' src={item.image} mode='aspectFill' />
+            <View className='case-footer'>
               <Text className='case-title'>{item.title}</Text>
-              <Text className='case-desc'>
-                {item.communityName} · {item.houseArea}平 · {item.houseType}
-              </Text>
-              <View className='case-meta'>
-                <View className='case-meta-item'>
-                  <Icon name='eye' size={28} color='#9ca3af' />
-                  <Text> {item.views}</Text>
-                </View>
-                {item.store && (
-                  <View className='case-meta-item'>
-                    <Icon name='building' size={28} color='#9ca3af' />
-                    <Text> {item.store.name}</Text>
-                  </View>
-                )}
-              </View>
             </View>
           </View>
         ))}
-      </View>
-
-      {/* 体验中心 */}
-      <View className='section'>
-        <View className='section-header'>
-          <Text className='section-title'>体验中心</Text>
-          <Text className='section-more' onClick={() => Taro.switchTab({ url: '/pages/stores/index' })}>
-            查看全部 <Text className='section-more-arrow'>&gt;</Text>
-          </Text>
-        </View>
-        {stores.map((item: any) => (
-          <View
-            key={item.id}
-            className='store-mini-card'
-            onClick={() => navigate(`/subpackages/client/store-detail/index?id=${item.id}`)}
-          >
-            <View className='store-mini-info'>
-              <View className='flex items-center'>
-                <Text className='store-mini-name'>{item.name}</Text>
-                <Text className={`tag ${item.type === 'DIRECT' ? 'tag-brand' : 'tag-amber'} ml-2`}>
-                  {item.type === 'DIRECT' ? '直营' : '加盟'}
-                </Text>
-              </View>
-              <View className='store-mini-row'>
-                <Icon name='map-pin' size={28} color='#6b7280' />
-                <Text className='store-mini-addr'> {item.address}</Text>
-              </View>
-              <View className='store-mini-row'>
-                <Icon name='time' size={28} color='#9ca3af' />
-                <Text className='store-mini-hours'> {item.businessHours}</Text>
-              </View>
-            </View>
-          </View>
-        ))}
-      </View>
-
-      {/* 品牌简介 */}
-      <View className='section'>
-        <Text className='section-title mb-3'>品牌简介</Text>
-        <View className='brand-intro'>
-          <Text className='brand-text'>
-            19分贝门窗，公司总部位于北京，拥有独立的研发中心与先进的生产基地。
-          </Text>
-          <Text className='brand-text'>
-            生产基地坐落于山东中欧节能门窗产业园，深耕门窗行业多年，集产品研发、制造、营销于一体，致力于为全球用户提供高端系统门窗整体解决方案。
-          </Text>
-          <Text className='brand-text'>
-            我们以"一扇好门窗，品味大不同"为核心理念，不仅提供卓越的产品，更提供完善的全生命周期服务体系。
-          </Text>
-          <View className='brand-tags'>
-            {['国家检测中心认证', '最高等级特级认证', '终身质保', '品质工程'].map((t) => (
-              <Text key={t} className='tag tag-brand brand-tag'>{t}</Text>
-            ))}
-          </View>
-        </View>
       </View>
 
       <View className='safe-bottom' />
-      <CustomTabBar />
+
+      {/* 客服悬浮按钮 */}
+      <Button className='float-cs-btn' openType='contact'>
+        <Text className='float-cs-text'>客服</Text>
+      </Button>
     </ScrollView>
   );
 }

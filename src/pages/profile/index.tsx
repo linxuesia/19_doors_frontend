@@ -1,8 +1,7 @@
-import { View, Text, ScrollView } from '@tarojs/components';
+import { View, Text, ScrollView, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuth, roleLabels } from '../../contexts/AuthContext';
 import Icon from '../../components/Icon';
-import CustomTabBar from '../../custom-tab-bar';
 import './index.scss';
 
 import type { IconName } from '../../components/Icon';
@@ -11,7 +10,7 @@ export default function Profile() {
   const { user, logout } = useAuth();
   const isClient = user?.role === 'CLIENT';
 
-  const menuItems: { icon: IconName; label: string; desc: string; url: string }[] = [
+  const menuItems: { icon: IconName; label: string; desc: string; url: string; contact?: boolean }[] = [
     ...(user && !isClient ? [{
       icon: 'chart' as IconName,
       label: '工作台',
@@ -29,7 +28,7 @@ export default function Profile() {
     { icon: 'calendar' as IconName, label: '预约记录', desc: '查看量尺预约历史', url: '' },
     { icon: 'shield-check' as IconName, label: '质保凭证', desc: '查看19分贝质保凭证', url: '' },
     { icon: 'settings' as IconName, label: '设置', desc: '个人资料与账号安全', url: '' },
-    { icon: 'chat' as IconName, label: '联系客服', desc: '在线客服与问题反馈', url: '' },
+    { icon: 'chat' as IconName, label: '联系客服', desc: '在线客服与问题反馈', url: '', contact: true },
   ];
 
   const handleMenuClick = (item: typeof menuItems[0]) => {
@@ -77,14 +76,25 @@ export default function Profile() {
       {/* 菜单 */}
       <View className='profile-menu'>
         {menuItems.map((item) => (
-          <View key={item.label} className='menu-item' onClick={() => handleMenuClick(item)}>
-            <Icon name={item.icon} size={40} color='#122b4d' />
-            <View className='menu-content'>
-              <Text className='menu-label'>{item.label}</Text>
-              <Text className='menu-desc'>{item.desc}</Text>
+          item.contact ? (
+            <Button key={item.label} className='menu-item menu-item-btn' openType='contact'>
+              <Icon name={item.icon} size={40} color='#122b4d' />
+              <View className='menu-content'>
+                <Text className='menu-label'>{item.label}</Text>
+                <Text className='menu-desc'>{item.desc}</Text>
+              </View>
+              <Icon name='arrow-right' size={32} color='#d1d5db' />
+            </Button>
+          ) : (
+            <View key={item.label} className='menu-item' onClick={() => handleMenuClick(item)}>
+              <Icon name={item.icon} size={40} color='#122b4d' />
+              <View className='menu-content'>
+                <Text className='menu-label'>{item.label}</Text>
+                <Text className='menu-desc'>{item.desc}</Text>
+              </View>
+              <Icon name='arrow-right' size={32} color='#d1d5db' />
             </View>
-            <Icon name='arrow-right' size={32} color='#d1d5db' />
-          </View>
+          )
         ))}
       </View>
 
@@ -96,7 +106,6 @@ export default function Profile() {
       )}
 
       <View className='safe-bottom' />
-      <CustomTabBar />
     </ScrollView>
   );
 }

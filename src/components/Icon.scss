@@ -3,8 +3,9 @@
 // 小程序端需将 remixicon.woff2 放入 static 目录并配置 @font-face
 
 .icon-ri {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  font-family: 'remixicon';
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  display: inline;
   line-height: 1;
 }

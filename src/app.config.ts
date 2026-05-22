@@ -2,8 +2,8 @@ export default defineAppConfig({
   pages: [
     'pages/index/index',         // 首页
     'pages/products/index',      // 产品中心
-    'pages/cases/index',         // 案例库
-    'pages/stores/index',        // 门店列表
+    'pages/cases/index',         // 案例·服务
+    'pages/about/index',         // 公司简介
     'pages/profile/index',       // 个人中心
   ],
   subPackages: [
@@ -16,6 +16,7 @@ export default defineAppConfig({
         'case-detail/index',      // 案例详情
         'product-detail/index',   // 产品详情
         'store-detail/index',     // 门店详情
+        'site-detail/index',      // 工地详情
       ],
     },
     {
@@ -28,10 +29,16 @@ export default defineAppConfig({
       ],
     },
   ],
+  permission: {
+    'scope.userLocation': {
+      desc: '用于展示您附近的工地及门店位置',
+    },
+  },
+  requiredPrivateInfos: ['getLocation'],
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#122b4d',
-    navigationBarTitleText: '19分贝门窗',
+    navigationBarTitleText: 'SOJOY 19分贝',
     navigationBarTextStyle: 'white',
   },
   tabBar: {
@@ -43,8 +50,8 @@ export default defineAppConfig({
     list: [
       { pagePath: 'pages/index/index', text: '首页' },
       { pagePath: 'pages/products/index', text: '产品' },
-      { pagePath: 'pages/cases/index', text: '案例' },
-      { pagePath: 'pages/stores/index', text: '门店' },
+      { pagePath: 'pages/cases/index', text: '案例·服务' },
+      { pagePath: 'pages/about/index', text: '公司简介' },
       { pagePath: 'pages/profile/index', text: '我的' },
     ],
   },

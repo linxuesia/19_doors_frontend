@@ -1,308 +1,505 @@
 .home-page {
   min-height: 100vh;
-  background: #f0f5fa;
+  background: #f5f7fa;
+  position: relative;
 }
 
+/* Banner区域 */
 .hero-banner {
   position: relative;
+  width: 100%;
+  min-height: 240rpx;
   overflow: hidden;
-  padding: 80px 32px 64px;
-  text-align: center;
 }
 
-.hero-bg {
+.hero-banner-bg {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: linear-gradient(135deg, #122b4d 0%, #1b3e6c 50%, #2b5a8e 100%);
-  border-radius: 0 0 48px 48px;
 }
 
-.hero-content {
+.hero-image {
+  width: 100%;
+  display: block;
   position: relative;
   z-index: 1;
 }
 
-.hero-title {
-  display: block;
-  font-size: 48px;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 16px;
-}
-
-.hero-subtitle {
-  display: block;
-  font-size: 28px;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 8px;
-}
-
-.hero-tagline {
-  display: block;
-  font-size: 24px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 40px;
-}
-
-.hero-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-}
-
-.btn-outline-white {
+.customer-service {
+  position: absolute;
+  bottom: 32rpx;
+  right: 24rpx;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2b5a8e 0%, #122b4d 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
+  box-shadow: 0 4px 16px rgba(18, 43, 77, 0.4);
+  padding: 0;
+  line-height: 1;
+  border: none;
+
+  &::after {
+    border: none;
+  }
+}
+
+.cs-text {
+  font-size: 20rpx;
   color: #ffffff;
-  font-size: 28px;
   font-weight: 600;
-  padding: 24px 48px;
-  border-radius: 9999px;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-
-  &:active {
-    background: rgba(255, 255, 255, 0.1);
-  }
 }
 
-// 快捷入口
-.quick-entries {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin: -24px 24px 0;
+/* 负责人信息卡片 */
+.manager-card {
+  margin: -32rpx 24rpx 0;
   position: relative;
-  z-index: 2;
+  z-index: 10;
+  background: linear-gradient(135deg, #2b5a8e 0%, #122b4d 100%);
+  border-radius: 20px;
+  padding: 28rpx 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  box-shadow: 0 8px 24px rgba(18, 43, 77, 0.25);
 }
 
-.entry-item {
+.manager-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.3);
+  flex-shrink: 0;
+}
+
+.manager-info {
+  flex: 1;
+}
+
+.manager-name {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 6rpx;
+}
+
+.manager-store {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.85);
+}
+
+.manager-actions {
   display: flex;
-  flex-direction: column;
+  gap: 16rpx;
+}
+
+.action-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 24px 8px;
-  background: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  justify-content: center;
 
   &:active {
-    opacity: 0.8;
+    background: rgba(255,255,255,0.25);
   }
 }
 
-.entry-label {
-  font-size: 22px;
-  color: #4b5563;
+/* 区域标题胶囊 */
+.index-section {
+  padding: 48rpx 24rpx 0;
 }
 
-// 分区
-.section {
-  padding: 0 24px;
-  margin-top: 40px;
-}
-
-.section-header {
+.index-section-badge {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  justify-content: center;
+  gap: 12rpx;
+  width: fit-content;
+  margin: 0 auto 28rpx;
+  background: linear-gradient(135deg, #2b5a8e 0%, #122b4d 100%);
+  padding: 14rpx 36rpx;
+  border-radius: 9999px;
+  box-shadow: 0 4px 12px rgba(18, 43, 77, 0.15);
 }
 
-.section-title {
-  font-size: 36px;
+.badge-text {
+  font-size: 28rpx;
   font-weight: 700;
-  color: #122b4d;
+  color: #ffffff;
+  letter-spacing: 2rpx;
 }
 
-.section-more {
-  font-size: 24px;
-  color: #122b4d;
+.badge-en {
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.8);
+  font-weight: 500;
+  letter-spacing: 1rpx;
 }
 
-.section-more-arrow {
-  font-size: 24px;
-  color: #122b4d;
-}
-
-// 产品横滑
+/* 产品横向滚动 */
 .product-scroll {
   white-space: nowrap;
+  margin-bottom: 20rpx;
 }
 
 .product-card {
   display: inline-block;
-  width: 280px;
-  background: #ffffff;
-  border-radius: 24px;
+  width: 300rpx;
+  border-radius: 16px;
   overflow: hidden;
-  margin-right: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  margin-right: 20rpx;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  background: #ffffff;
 
   &:active {
-    opacity: 0.8;
+    opacity: 0.9;
   }
 }
 
 .product-img {
-  width: 280px;
-  height: 180px;
-  background: #e1ecf4;
+  width: 300rpx;
+  height: 240rpx;
+  display: block;
+}
+
+.product-footer {
+  padding: 16rpx 20rpx;
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.product-info {
-  padding: 20px;
-}
-
-.product-name {
-  display: block;
-  font-size: 28px;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.product-cat {
-  display: block;
-  font-size: 22px;
-  color: #122b4d;
-  margin-top: 4px;
-}
-
-.product-tags {
-  margin-top: 12px;
-}
-
-// 案例卡片
-.case-card {
-  display: flex;
+  gap: 10rpx;
   background: #ffffff;
-  border-radius: 24px;
-  overflow: hidden;
-  margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-
-  &:active {
-    opacity: 0.8;
-  }
 }
 
-.case-img {
-  width: 200px;
-  height: 180px;
-  background: #e1ecf4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.product-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #122b4d;
   flex-shrink: 0;
 }
 
-.case-info {
-  flex: 1;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.product-name {
+  font-size: 26rpx;
+  color: #1f2937;
+  font-weight: 500;
 }
 
-.case-title {
-  font-size: 28px;
+.pagination-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8rpx;
+  margin-top: 16rpx;
+}
+
+.dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #d1d5db;
+}
+
+.dot-active {
+  background: #122b4d;
+  width: 24rpx;
+  border-radius: 6px;
+}
+
+/* 地图容器 */
+.map-container {
+  position: relative;
+  height: 500rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.index-map {
+  width: 100%;
+  height: 100%;
+}
+
+.site-marker {
+  position: absolute;
+  bottom: 100rpx;
+  left: 24rpx;
+  right: 24rpx;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 16rpx 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  z-index: 5;
+}
+
+.marker-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #00c758;
+  flex-shrink: 0;
+}
+
+.marker-info {
+  flex: 1;
+}
+
+.marker-label {
+  display: block;
+  font-size: 20rpx;
+  color: #9ca3af;
+  margin-bottom: 4rpx;
+}
+
+.marker-title {
+  display: block;
+  font-size: 26rpx;
   font-weight: 600;
   color: #1f2937;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  margin-bottom: 4rpx;
 }
 
-.case-desc {
-  font-size: 22px;
-  color: #6b7280;
-  margin-top: 8px;
+.marker-status {
+  display: block;
+  font-size: 22rpx;
+  color: #00c758;
 }
 
-.case-meta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 12px;
-  font-size: 20px;
-  color: #9ca3af;
-}
-
-.case-meta-item {
-  display: flex;
-  align-items: center;
-}
-
-// 门店小卡片
-.store-mini-card {
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 24px;
-  margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+.view-all-btn {
+  position: absolute;
+  bottom: 24rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #122b4d;
+  padding: 16rpx 48rpx;
+  border-radius: 9999px;
+  box-shadow: 0 4px 12px rgba(18, 43, 77, 0.3);
 
   &:active {
-    opacity: 0.8;
+    opacity: 0.9;
   }
 }
 
-.store-mini-name {
-  font-size: 28px;
+.view-all-text {
+  font-size: 26rpx;
+  color: #ffffff;
   font-weight: 600;
-  color: #1f2937;
 }
 
-.store-mini-row {
+/* 工地网格列表 */
+.site-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.site-grid-item {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+.site-grid-img {
+  width: 100%;
+  height: 200rpx;
+  display: block;
+}
+
+.site-grid-placeholder {
+  width: 100%;
+  height: 200rpx;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 20rpx;
+}
+
+.brand-logo {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #122b4d;
+  letter-spacing: 2rpx;
+}
+
+.brand-highlight {
+  color: #2b5a8e;
+  font-weight: 800;
+}
+
+.brand-slogan {
+  font-size: 20rpx;
+  color: #64748b;
+  letter-spacing: 1rpx;
+}
+
+.site-grid-info {
+  padding: 16rpx;
+  background: #ffffff;
+}
+
+.site-grid-location {
+  font-size: 23rpx;
+  color: #475569;
+  line-height: 1.4;
+}
+
+.view-more-btn {
+  background: #ffffff;
+  border: 2px solid #e5e7eb;
+  border-radius: 9999px;
+  padding: 20rpx;
   display: flex;
   align-items: center;
-  margin-top: 8px;
+  justify-content: center;
+
+  &:active {
+    background: #f9fafb;
+  }
 }
 
-.store-mini-addr {
-  font-size: 24px;
-  color: #6b7280;
+.view-more-text {
+  font-size: 26rpx;
+  color: #64748b;
+  font-weight: 500;
 }
 
-.store-mini-hours {
-  font-size: 22px;
-  color: #9ca3af;
+/* 门店资质 */
+.qualification-scroll {
+  white-space: nowrap;
+  margin-bottom: 20rpx;
 }
 
-.ml-2 {
-  margin-left: 16px;
-}
-
-// 品牌简介
-.brand-intro {
+.qualification-card {
+  display: inline-block;
+  width: 280rpx;
   background: #ffffff;
-  border-radius: 24px;
-  padding: 32px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-right: 20rpx;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+  &:active {
+    opacity: 0.9;
+  }
 }
 
-.brand-text {
+.qualification-img {
+  width: 280rpx;
+  height: 240rpx;
   display: block;
-  font-size: 26px;
-  color: #4b5563;
-  line-height: 1.8;
-  margin-bottom: 12px;
 }
 
-.brand-tags {
+.qualification-title {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1f2937;
+  padding: 16rpx 20rpx 8rpx;
+}
+
+.qualification-store {
+  display: block;
+  font-size: 22rpx;
+  color: #9ca3af;
+  padding: 0 20rpx 20rpx;
+}
+
+/* 实景案例 */
+.case-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  background: #ffffff;
+
+  &:active {
+    opacity: 0.95;
+  }
+}
+
+.case-city-tag {
+  position: absolute;
+  top: 16rpx;
+  left: 16rpx;
+  background: rgba(0,0,0,0.65);
+  padding: 8rpx 20rpx;
+  border-radius: 8px;
+  z-index: 5;
+}
+
+.city-tag-text {
+  font-size: 22rpx;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.case-img {
+  width: 100%;
+  height: 400rpx;
+  display: block;
+}
+
+.case-footer {
+  padding: 20rpx;
+  background: #ffffff;
+}
+
+.case-title {
+  font-size: 27rpx;
+  color: #1f2937;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* 悬浮客服按钮 */
+.float-cs-btn {
+  position: fixed;
+  right: 24rpx;
+  bottom: 130rpx;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2b5a8e 0%, #122b4d 100%);
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 16px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(18, 43, 77, 0.35);
+  z-index: 999;
+  padding: 0;
+  line-height: 1;
+  border: none;
+
+  &::after {
+    border: none;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 }
 
-.brand-tag {
-  padding: 8px 20px;
-  font-size: 22px;
+.float-cs-text {
+  font-size: 20rpx;
+  color: #ffffff;
+  font-weight: 600;
 }

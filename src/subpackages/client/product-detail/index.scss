@@ -1,25 +1,25 @@
 .pd-page { min-height: 100vh; background: #f0f5fa; }
-.loading { display: flex; justify-content: center; align-items: center; height: 400px; }
-.loading-text { font-size: 28px; color: #9ca3af; }
+.loading { display: flex; justify-content: center; align-items: center; height: 400rpx; }
+.loading-text { font-size: 28rpx; color: #9ca3af; }
 
-.pd-hero { width: 100%; height: 400px; }
+.pd-hero { width: 100%; height: 400rpx; }
 .pd-hero-placeholder { width: 100%; height: 100%; background: #e1ecf4; display: flex; align-items: center; justify-content: center; }
 
-.pd-body { padding: 32px 24px; }
-.pd-name { display: block; font-size: 40px; font-weight: 700; color: #122b4d; }
-.pd-cat { margin-top: 12px; }
+.pd-body { padding: 32rpx 24rpx; }
+.pd-name { display: block; font-size: 40rpx; font-weight: 700; color: #122b4d; }
+.pd-cat { margin-top: 12rpx; }
 
-.pd-section { margin-top: 40px; }
-.pd-section-title { display: block; font-size: 32px; font-weight: 700; color: #122b4d; margin-bottom: 16px; }
+.pd-section { margin-top: 40rpx; }
+.pd-section-title { display: block; font-size: 32rpx; font-weight: 700; color: #122b4d; margin-bottom: 16rpx; }
 
-.pd-features { display: flex; flex-wrap: wrap; gap: 12px; }
-.pd-feature-item { display: flex; align-items: center; background: #e1ecf4; color: #122b4d; font-size: 26px; padding: 12px 24px; border-radius: 20px; }
+.pd-features { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.pd-feature-item { display: flex; align-items: center; background: #e1ecf4; color: #122b4d; font-size: 26rpx; padding: 12rpx 24rpx; border-radius: 20px; }
 
-.pd-report { background: #ffffff; border-radius: 24px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.pd-report-row { display: flex; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #f3f4f6; }
+.pd-report { background: #ffffff; border-radius: 24rpx; padding: 24rpx; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.pd-report-row { display: flex; justify-content: space-between; padding: 16rpx 0; border-bottom: 1px solid #f3f4f6; }
 .pd-report-row:last-child { border-bottom: none; }
-.pd-report-label { font-size: 26px; color: #6b7280; }
-.pd-report-value { font-size: 26px; font-weight: 600; color: #122b4d; }
+.pd-report-label { font-size: 26rpx; color: #6b7280; }
+.pd-report-value { font-size: 26rpx; font-weight: 600; color: #122b4d; }
 
-.pd-actions { margin-top: 48px; display: flex; gap: 16px; }
-.pd-btn { flex: 1; padding: 24px; text-align: center; }
+.pd-actions { margin-top: 48rpx; display: flex; gap: 16rpx; }
+.pd-btn { flex: 1; padding: 24rpx; text-align: center; }

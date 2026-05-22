@@ -34,42 +34,47 @@ export type IconName =
   | 'tools'
   | 'palette'
   | 'check'
-  | 'arrow-down';
+  | 'arrow-down'
+  | 'qr-code'
+  | 'file-text';
 
-const iconMap: Record<IconName, string> = {
-  window: 'ri-window-2-line',
-  image: 'ri-image-line',
-  'map-pin': 'ri-map-pin-line',
-  clipboard: 'ri-clipboard-line',
-  eye: 'ri-eye-line',
-  building: 'ri-building-line',
-  time: 'ri-time-line',
-  phone: 'ri-phone-line',
-  user: 'ri-user-line',
-  chart: 'ri-bar-chart-line',
-  calendar: 'ri-calendar-line',
-  'shield-check': 'ri-shield-check-line',
-  settings: 'ri-settings-line',
-  chat: 'ri-question-answer-line',
-  'arrow-right': 'ri-arrow-right-s-line',
-  'arrow-down': 'ri-arrow-down-s-line',
-  'check-circle': 'ri-checkbox-circle-line',
-  home: 'ri-home-line',
-  ruler: 'ri-ruler-line',
-  design: 'ri-pencil-ruler-2-line',
-  quality: 'ri-shield-star-line',
-  add: 'ri-add-line',
-  close: 'ri-close-line',
-  edit: 'ri-edit-line',
-  delete: 'ri-delete-bin-line',
-  search: 'ri-search-line',
-  star: 'ri-star-line',
-  notification: 'ri-notification-line',
-  logout: 'ri-logout-box-line',
-  lock: 'ri-lock-line',
-  tools: 'ri-tools-line',
-  palette: 'ri-palette-line',
-  check: 'ri-check-line',
+// Unicode code points from Remix Icon v4.6.0 (subset)
+const iconUnicode: Record<IconName, string> = {
+  'add': '\uea13',
+  'arrow-down': '\uea4e',
+  'arrow-right': '\uea6e',
+  'chart': '\uea9e',
+  'building': '\ueb0f',
+  'calendar': '\ueb27',
+  'check': '\ueb7b',
+  'check-circle': '\ueb81',
+  'clipboard': '\ueb91',
+  'close': '\ueb99',
+  'delete': '\uec2a',
+  'edit': '\uec86',
+  'eye': '\uecb5',
+  'file-text': '\ued0f',
+  'home': '\uee2b',
+  'image': '\uee4b',
+  'lock': '\ueece',
+  'logout': '\ueed8',
+  'map-pin': '\uef14',
+  'notification': '\uef9a',
+  'palette': '\uefc5',
+  'design': '\uefe2',
+  'phone': '\uefec',
+  'qr-code': '\uf03d',
+  'chat': '\uf043',
+  'ruler': '\uf0a3',
+  'search': '\uf0d1',
+  'settings': '\uf0ee',
+  'shield-check': '\uf100',
+  'quality': '\uf10a',
+  'star': '\uf18b',
+  'time': '\uf20f',
+  'tools': '\uf21b',
+  'user': '\uf264',
+  'window': '\uf2c4',
 };
 
 interface IconProps {
@@ -80,16 +85,18 @@ interface IconProps {
 }
 
 export default function Icon({ name, size = 24, color, className = '' }: IconProps) {
-  const riClass = iconMap[name] || 'ri-question-line';
+  const char = iconUnicode[name] || '';
   const style = {
-    fontSize: `${size}px`,
+    fontSize: `${size}rpx`,
     ...(color ? { color } : {}),
   };
 
   return (
     <Text
-      className={`icon-ri ${riClass} ${className}`}
+      className={`icon-ri ${className}`}
       style={style}
-    />
+    >
+      {char}
+    </Text>
   );
 }

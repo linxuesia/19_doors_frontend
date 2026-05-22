@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import Icon from '../../components/Icon';
-import CustomTabBar from '../../custom-tab-bar';
 import api from '../../utils/api';
 import './index.scss';
 
@@ -56,7 +55,6 @@ export default function Cases() {
         </View>
       </View>
       <View className='safe-bottom' />
-      <CustomTabBar />
     </ScrollView>
   );
 }

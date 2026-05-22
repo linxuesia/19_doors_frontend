@@ -2,7 +2,7 @@
   "miniprogramRoot": "dist/",
   "projectname": "sojoy-taro-app",
   "description": "19分贝门窗小程序",
-  "appid": "touristappid",
+  "appid": "wx2ea09b05ab0f9549",
   "setting": {
     "urlCheck": false,
     "es6": false,

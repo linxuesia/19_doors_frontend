@@ -1,35 +1,35 @@
-.loading { display: flex; justify-content: center; align-items: center; height: 400px; }
-.loading-text { font-size: 28px; color: #9ca3af; }
+.loading { display: flex; justify-content: center; align-items: center; height: 400rpx; }
+.loading-text { font-size: 28rpx; color: #9ca3af; }
 
 // 创建表单
-.om-form-page { min-height: 100vh; background: #f0f5fa; padding: 24px; }
-.om-form-title { display: block; font-size: 36px; font-weight: 700; color: #122b4d; margin-bottom: 24px; }
-.om-form { display: flex; flex-direction: column; gap: 20px; }
-.om-field { display: flex; flex-direction: column; gap: 8px; }
-.om-label { font-size: 24px; color: #6b7280; }
+.om-form-page { min-height: 100vh; background: #f0f5fa; padding: 24rpx; }
+.om-form-title { display: block; font-size: 36rpx; font-weight: 700; color: #122b4d; margin-bottom: 24rpx; }
+.om-form { display: flex; flex-direction: column; gap: 20rpx; }
+.om-field { display: flex; flex-direction: column; gap: 8rpx; }
+.om-label { font-size: 24rpx; color: #6b7280; }
 .om-input-wrap { background: #ffffff; border: 1px solid #ebedf0; border-radius: 16px; overflow: hidden; }
-.om-input { width: 100%; padding: 24px; font-size: 28px; color: #1f2937; border: none; outline: none; box-sizing: border-box; }
-.om-textarea { width: 100%; padding: 24px; font-size: 28px; color: #1f2937; border: none; outline: none; min-height: 120px; box-sizing: border-box; }
-.om-row { display: flex; gap: 16px; }
+.om-input { width: 100%; padding: 24rpx; font-size: 28rpx; color: #1f2937; border: none; outline: none; box-sizing: border-box; }
+.om-textarea { width: 100%; padding: 24rpx; font-size: 28rpx; color: #1f2937; border: none; outline: none; min-height: 120rpx; box-sizing: border-box; }
+.om-row { display: flex; gap: 16rpx; }
 .om-half { flex: 1; }
-.om-submit { width: 100%; padding: 28px; margin-top: 8px; }
+.om-submit { width: 100%; padding: 28rpx; margin-top: 8rpx; }
 .opacity-50 { opacity: 0.5; }
 
 // 订单详情
 .om-detail-page { min-height: 100vh; background: #f0f5fa; }
-.om-detail-header { display: flex; justify-content: space-between; align-items: center; padding: 32px 24px; background: #ffffff; margin-bottom: 12px; }
-.om-detail-no { font-size: 32px; font-weight: 700; color: #122b4d; }
+.om-detail-header { display: flex; justify-content: space-between; align-items: center; padding: 32rpx 24rpx; background: #ffffff; margin-bottom: 12rpx; }
+.om-detail-no { font-size: 32rpx; font-weight: 700; color: #122b4d; }
 
-.om-detail-card, .om-logs-card { background: #ffffff; border-radius: 24px; padding: 24px; margin: 0 24px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-.om-section-title { display: block; font-size: 30px; font-weight: 700; color: #122b4d; margin-bottom: 20px; }
+.om-detail-card, .om-logs-card { background: #ffffff; border-radius: 24rpx; padding: 24rpx; margin: 0 24rpx 16rpx; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+.om-section-title { display: block; font-size: 30rpx; font-weight: 700; color: #122b4d; margin-bottom: 20rpx; }
 
-.om-detail-row { display: flex; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+.om-detail-row { display: flex; padding: 12rpx 0; border-bottom: 1px solid #f3f4f6; }
 .om-detail-row:last-child { border-bottom: none; }
-.om-detail-label { width: 120px; font-size: 26px; color: #9ca3af; flex-shrink: 0; }
-.om-detail-value { flex: 1; font-size: 26px; color: #1f2937; }
+.om-detail-label { width: 120rpx; font-size: 26rpx; color: #9ca3af; flex-shrink: 0; }
+.om-detail-value { flex: 1; font-size: 26rpx; color: #1f2937; }
 
-.om-log-item { padding: 16px 0 16px 24px; border-left: 2px solid #e1ecf4; }
+.om-log-item { padding: 16rpx 0 16rpx 24rpx; border-left: 2px solid #e1ecf4; }
 .om-log-item:last-child { padding-bottom: 0; }
-.om-log-top { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-.om-log-date { font-size: 22px; color: #9ca3af; }
-.om-log-text { font-size: 26px; color: #4b5563; line-height: 1.5; }
+.om-log-top { display: flex; align-items: center; gap: 12rpx; margin-bottom: 8rpx; }
+.om-log-date { font-size: 22rpx; color: #9ca3af; }
+.om-log-text { font-size: 26rpx; color: #4b5563; line-height: 1.5; }

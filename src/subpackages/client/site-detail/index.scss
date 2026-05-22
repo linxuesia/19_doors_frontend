@@ -1,0 +1,143 @@
+.site-detail-page {
+  min-height: 100vh;
+  background: #f0f5fa;
+}
+
+.site-header {
+  background: linear-gradient(135deg, #122b4d 0%, #1b3e6c 100%);
+  padding: 40rpx 32rpx;
+  border-radius: 0 0 32rpx 32rpx;
+}
+
+.site-name {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 16rpx;
+}
+
+.site-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-distance {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.site-section {
+  padding: 32rpx 24rpx 0;
+}
+
+.site-section-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #122b4d;
+  margin-bottom: 20rpx;
+}
+
+.info-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 28rpx;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 16rpx 0;
+  border-bottom: 1px solid #f3f4f6;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.info-label {
+  font-size: 26rpx;
+  color: #6b7280;
+  margin-left: 8rpx;
+}
+
+.info-label-row {
+  display: flex;
+  align-items: center;
+  width: 160rpx;
+  flex-shrink: 0;
+}
+
+.info-value {
+  font-size: 26rpx;
+  color: #1f2937;
+  flex: 1;
+}
+
+.dynamic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.dynamic-item {
+  display: flex;
+  gap: 20rpx;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 24rpx;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.dynamic-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  background: #e1ecf4;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dynamic-content {
+  flex: 1;
+}
+
+.dynamic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.dynamic-author {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.dynamic-time {
+  font-size: 22rpx;
+  color: #9ca3af;
+}
+
+.dynamic-text {
+  font-size: 26rpx;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  border-radius: 9999px;
+  font-size: 20rpx;
+}
+
+.tag-amber {
+  background-color: #fff7ed;
+  color: #f59e0b;
+}

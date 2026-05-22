@@ -69,7 +69,7 @@ export default function ProductDetail() {
           <View className='btn-primary pd-btn' onClick={() => Taro.navigateTo({ url: '/subpackages/client/reservation/index' })}>
             <Text>预约量尺</Text>
           </View>
-          <View className='btn-outline pd-btn' onClick={() => Taro.switchTab({ url: '/pages/stores/index' })}>
+          <View className='btn-outline pd-btn' onClick={() => Taro.switchTab({ url: '/pages/about/index' })}>
             <Text>查找门店</Text>
           </View>
         </View>

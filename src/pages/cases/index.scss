@@ -1,22 +1,22 @@
 .cases-page { min-height: 100vh; background: #f0f5fa; }
-.page-padding { padding: 24px; }
-.page-title { display: block; font-size: 40px; font-weight: 700; color: #122b4d; margin-bottom: 24px; }
+.page-padding { padding: 24rpx; }
+.page-title { display: block; font-size: 40rpx; font-weight: 700; color: #122b4d; margin-bottom: 24rpx; }
 
-.case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.case-grid-card { background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16rpx; }
+.case-grid-card { background: #ffffff; border-radius: 24rpx; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
 .case-grid-card:active { opacity: 0.8; }
 
-.case-grid-img { width: 100%; height: 200px; background: #e1ecf4; display: flex; align-items: center; justify-content: center; }
+.case-grid-img { width: 100%; height: 200rpx; background: #e1ecf4; display: flex; align-items: center; justify-content: center; }
 
-.case-grid-info { padding: 20px; }
-.case-grid-title { display: block; font-size: 26px; font-weight: 600; color: #1f2937; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.case-grid-desc { display: block; font-size: 22px; color: #6b7280; margin-top: 4px; }
-.case-grid-row { display: flex; align-items: center; margin-top: 4px; }
-.case-grid-addr { font-size: 20px; color: #9ca3af; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
-.case-grid-meta { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 20px; color: #9ca3af; }
+.case-grid-info { padding: 20rpx; }
+.case-grid-title { display: block; font-size: 26rpx; font-weight: 600; color: #1f2937; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.case-grid-desc { display: block; font-size: 22rpx; color: #6b7280; margin-top: 4rpx; }
+.case-grid-row { display: flex; align-items: center; margin-top: 4rpx; }
+.case-grid-addr { font-size: 20rpx; color: #9ca3af; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.case-grid-meta { display: flex; align-items: center; gap: 8rpx; margin-top: 8rpx; font-size: 20rpx; color: #9ca3af; }
 .case-grid-meta-item { display: flex; align-items: center; }
-.case-grid-views { font-size: 20px; color: #9ca3af; }
+.case-grid-views { font-size: 20rpx; color: #9ca3af; }
 .case-grid-store { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
 
-.empty-state { grid-column: span 2; display: flex; justify-content: center; padding: 80px 0; }
-.empty-text { font-size: 28px; color: #9ca3af; }
+.empty-state { grid-column: span 2; display: flex; justify-content: center; padding: 80rpx 0; }
+.empty-text { font-size: 28rpx; color: #9ca3af; }

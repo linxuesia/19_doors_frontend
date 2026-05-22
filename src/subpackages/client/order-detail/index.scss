@@ -1,65 +1,65 @@
 .ol-page, .od-page { min-height: 100vh; background: #f0f5fa; }
-.loading { display: flex; justify-content: center; align-items: center; height: 400px; }
-.loading-text { font-size: 28px; color: #9ca3af; }
+.loading { display: flex; justify-content: center; align-items: center; height: 400rpx; }
+.loading-text { font-size: 28rpx; color: #9ca3af; }
 
 // 列表模式
-.ol-list { padding: 24px; }
-.ol-list-title { display: block; font-size: 40px; font-weight: 700; color: #122b4d; margin-bottom: 24px; }
-.ol-card { background: #ffffff; border-radius: 24px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.ol-list { padding: 24rpx; }
+.ol-list-title { display: block; font-size: 40rpx; font-weight: 700; color: #122b4d; margin-bottom: 24rpx; }
+.ol-card { background: #ffffff; border-radius: 24rpx; padding: 24rpx; margin-bottom: 16rpx; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
 .ol-card:active { opacity: 0.8; }
-.ol-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.ol-card-no { font-size: 28px; font-weight: 600; color: #1f2937; }
-.ol-card-status { font-size: 22px; padding: 4px 16px; border-radius: 9999px; }
-.ol-card-product { display: block; font-size: 26px; color: #4b5563; }
-.ol-card-row { display: flex; align-items: center; margin-top: 4px; }
-.ol-card-addr { font-size: 24px; color: #9ca3af; }
-.ol-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
-.ol-card-amount { font-size: 28px; font-weight: 700; color: #122b4d; }
-.ol-card-warranty { font-size: 22px; color: #9ca3af; }
-.ol-empty { display: flex; justify-content: center; padding: 80px 0; }
-.ol-empty-text { font-size: 28px; color: #9ca3af; }
+.ol-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12rpx; }
+.ol-card-no { font-size: 28rpx; font-weight: 600; color: #1f2937; }
+.ol-card-status { font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 9999px; }
+.ol-card-product { display: block; font-size: 26rpx; color: #4b5563; }
+.ol-card-row { display: flex; align-items: center; margin-top: 4rpx; }
+.ol-card-addr { font-size: 24rpx; color: #9ca3af; }
+.ol-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 16rpx; }
+.ol-card-amount { font-size: 28rpx; font-weight: 700; color: #122b4d; }
+.ol-card-warranty { font-size: 22rpx; color: #9ca3af; }
+.ol-empty { display: flex; justify-content: center; padding: 80rpx 0; }
+.ol-empty-text { font-size: 28rpx; color: #9ca3af; }
 
 // 详情模式
-.od-header { position: relative; padding: 40px 24px 32px; overflow: hidden; margin-bottom: 24px; }
-.od-header-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #122b4d, #1b3e6c); border-radius: 0 0 40px 40px; }
+.od-header { position: relative; padding: 40rpx 24rpx 32rpx; overflow: hidden; margin-bottom: 24rpx; }
+.od-header-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #122b4d, #1b3e6c); border-radius: 0 0 40rpx 40rpx; }
 .od-header-content { position: relative; z-index: 1; }
 .od-header-top { display: flex; justify-content: space-between; align-items: center; }
-.od-order-no { font-size: 36px; font-weight: 700; color: #ffffff; }
-.od-status { font-size: 24px; padding: 6px 20px; border-radius: 9999px; }
-.od-product { display: block; font-size: 28px; color: rgba(255,255,255,0.9); margin-top: 12px; }
-.od-amount-row { display: flex; margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.2); }
+.od-order-no { font-size: 36rpx; font-weight: 700; color: #ffffff; }
+.od-status { font-size: 24rpx; padding: 6rpx 20rpx; border-radius: 9999px; }
+.od-product { display: block; font-size: 28rpx; color: rgba(255,255,255,0.9); margin-top: 12rpx; }
+.od-amount-row { display: flex; margin-top: 24rpx; padding-top: 24rpx; border-top: 1px solid rgba(255,255,255,0.2); }
 .od-amount-item { flex: 1; text-align: center; }
-.od-amount-label { display: block; font-size: 22px; color: rgba(255,255,255,0.6); }
-.od-amount-value { display: block; font-size: 32px; font-weight: 700; color: #ffffff; margin-top: 4px; }
-.od-amount-sub { display: block; font-size: 28px; font-weight: 500; color: rgba(255,255,255,0.9); margin-top: 4px; }
+.od-amount-label { display: block; font-size: 22rpx; color: rgba(255,255,255,0.6); }
+.od-amount-value { display: block; font-size: 32rpx; font-weight: 700; color: #ffffff; margin-top: 4rpx; }
+.od-amount-sub { display: block; font-size: 28rpx; font-weight: 500; color: rgba(255,255,255,0.9); margin-top: 4rpx; }
 
-.od-progress-card, .od-info-card, .od-logs-card { background: #ffffff; border-radius: 24px; padding: 24px; margin: 0 24px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.od-section-title { display: block; font-size: 32px; font-weight: 700; color: #122b4d; margin-bottom: 20px; }
+.od-progress-card, .od-info-card, .od-logs-card { background: #ffffff; border-radius: 24rpx; padding: 24rpx; margin: 0 24rpx 16rpx; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.od-section-title { display: block; font-size: 32rpx; font-weight: 700; color: #122b4d; margin-bottom: 20rpx; }
 
-.od-progress-bar { width: 100%; height: 8px; background: #f3f4f6; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+.od-progress-bar { width: 100%; height: 8rpx; background: #f3f4f6; border-radius: 4px; overflow: hidden; margin-bottom: 8rpx; }
 .od-progress-fill { height: 100%; background: #122b4d; border-radius: 4px; transition: width 0.3s; }
-.od-progress-text { display: block; font-size: 24px; color: #9ca3af; text-align: center; margin-bottom: 20px; }
+.od-progress-text { display: block; font-size: 24rpx; color: #9ca3af; text-align: center; margin-bottom: 20rpx; }
 
 .od-stages { display: flex; flex-direction: column; gap: 0; }
-.od-stage-row { display: flex; align-items: flex-start; gap: 16px; padding: 12px 0; }
-.od-stage-dot { width: 40px; height: 40px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.od-stage-row { display: flex; align-items: flex-start; gap: 16rpx; padding: 12rpx 0; }
+.od-stage-dot { width: 40rpx; height: 40rpx; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .od-stage-done { background: #122b4d; }
-.od-stage-dot-text { font-size: 22px; color: #9ca3af; }
+.od-stage-dot-text { font-size: 22rpx; color: #9ca3af; }
 .od-stage-done .od-stage-dot-text { color: #ffffff; }
 .od-stage-info { flex: 1; }
-.od-stage-name { display: block; font-size: 26px; font-weight: 500; color: #1f2937; }
+.od-stage-name { display: block; font-size: 26rpx; font-weight: 500; color: #1f2937; }
 .od-stage-pending { color: #d1d5db; }
-.od-stage-content { display: block; font-size: 22px; color: #6b7280; margin-top: 4px; }
+.od-stage-content { display: block; font-size: 22rpx; color: #6b7280; margin-top: 4rpx; }
 
 .od-info-list { display: flex; flex-direction: column; }
-.od-info-row { display: flex; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+.od-info-row { display: flex; padding: 12rpx 0; border-bottom: 1px solid #f3f4f6; }
 .od-info-row:last-child { border-bottom: none; }
-.od-info-label { width: 140px; font-size: 26px; color: #9ca3af; flex-shrink: 0; }
-.od-info-value { flex: 1; font-size: 26px; color: #1f2937; }
+.od-info-label { width: 140rpx; font-size: 26rpx; color: #9ca3af; flex-shrink: 0; }
+.od-info-value { flex: 1; font-size: 26rpx; color: #1f2937; }
 
-.od-logs-card { margin-bottom: 32px; }
-.od-log-item { padding: 16px 0 16px 24px; border-left: 2px solid #e1ecf4; }
+.od-logs-card { margin-bottom: 32rpx; }
+.od-log-item { padding: 16rpx 0 16rpx 24rpx; border-left: 2px solid #e1ecf4; }
 .od-log-item:last-child { padding-bottom: 0; }
-.od-log-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-.od-log-meta { font-size: 22px; color: #9ca3af; }
-.od-log-content { font-size: 26px; color: #4b5563; line-height: 1.5; }
+.od-log-header { display: flex; align-items: center; gap: 12rpx; margin-bottom: 8rpx; }
+.od-log-meta { font-size: 22rpx; color: #9ca3af; }
+.od-log-content { font-size: 26rpx; color: #4b5563; line-height: 1.5; }

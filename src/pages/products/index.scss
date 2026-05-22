@@ -5,31 +5,31 @@
 }
 
 .page-padding {
-  padding: 24px;
+  padding: 24rpx;
 }
 
 .page-title {
-  font-size: 40px;
+  font-size: 40rpx;
   font-weight: 700;
   color: #122b4d;
-  margin-bottom: 24px;
+  margin-bottom: 24rpx;
   display: block;
 }
 
 // ====== 分类标签 ======
 .cat-scroll {
   white-space: nowrap;
-  margin-bottom: 24px;
+  margin-bottom: 24rpx;
 }
 
 .cat-list {
   display: inline-flex;
-  gap: 12px;
+  gap: 12rpx;
 }
 
 .cat-item {
   display: inline-flex;
-  padding: 12px 28px;
+  padding: 12rpx 28rpx;
   border-radius: 9999px;
   background: #ffffff;
   border: 1px solid #ebedf0;
@@ -41,7 +41,7 @@
 }
 
 .cat-text {
-  font-size: 26px;
+  font-size: 26rpx;
   color: #4b5563;
 }
 
@@ -53,7 +53,7 @@
 .product-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 16rpx;
 }
 
 .product-grid-card {
@@ -69,7 +69,7 @@
 
 .product-grid-img {
   width: 100%;
-  height: 220px;
+  height: 220rpx;
   background: linear-gradient(180deg, #e1ecf4 0%, #f0f5fa 100%);
   display: flex;
   align-items: center;
@@ -77,12 +77,12 @@
 }
 
 .product-grid-info {
-  padding: 20px;
+  padding: 20rpx;
 }
 
 .product-grid-name {
   display: block;
-  font-size: 28px;
+  font-size: 28rpx;
   font-weight: 600;
   color: #1f2937;
   overflow: hidden;
@@ -92,16 +92,16 @@
 
 .product-grid-cat {
   display: block;
-  font-size: 22px;
+  font-size: 22rpx;
   color: #122b4d;
-  margin-top: 4px;
+  margin-top: 4rpx;
 }
 
 .product-grid-tags {
-  margin-top: 12px;
+  margin-top: 12rpx;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 8rpx;
 }
 
 // ====== 空状态 ======
@@ -109,10 +109,10 @@
   grid-column: span 2;
   display: flex;
   justify-content: center;
-  padding: 80px 0;
+  padding: 80rpx 0;
 }
 
 .empty-text {
-  font-size: 28px;
+  font-size: 28rpx;
   color: #9ca3af;
 }
