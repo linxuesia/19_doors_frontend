@@ -8,8 +8,8 @@
 .om-field { display: flex; flex-direction: column; gap: 8rpx; }
 .om-label { font-size: 24rpx; color: #6b7280; }
 .om-input-wrap { background: #ffffff; border: 1px solid #ebedf0; border-radius: 16px; overflow: hidden; }
-.om-input { width: 100%; padding: 24rpx; font-size: 28rpx; color: #1f2937; border: none; outline: none; box-sizing: border-box; }
-.om-textarea { width: 100%; padding: 24rpx; font-size: 28rpx; color: #1f2937; border: none; outline: none; min-height: 120rpx; box-sizing: border-box; }
+.om-input { width: 100%; height: 88rpx; line-height: 88rpx; padding: 0 24rpx; font-size: 28rpx; color: #1f2937; border: none; outline: none; box-sizing: border-box; }
+.om-textarea { width: 100%; min-height: 160rpx; padding: 24rpx; font-size: 28rpx; color: #1f2937; border: none; outline: none; box-sizing: border-box; }
 .om-row { display: flex; gap: 16rpx; }
 .om-half { flex: 1; }
 .om-submit { width: 100%; padding: 28rpx; margin-top: 8rpx; }
@@ -33,3 +33,17 @@
 .om-log-top { display: flex; align-items: center; gap: 12rpx; margin-bottom: 8rpx; }
 .om-log-date { font-size: 22rpx; color: #9ca3af; }
 .om-log-text { font-size: 26rpx; color: #4b5563; line-height: 1.5; }
+
+// 操作区
+.om-actions-card { background: #ffffff; border-radius: 24rpx; padding: 24rpx; margin: 0 24rpx 16rpx; }
+.om-action-btn { width: 100%; padding: 28rpx; text-align: center; }
+.om-assign-panel { display: flex; flex-direction: column; gap: 16rpx; }
+.om-no-installer { font-size: 26rpx; color: #9ca3af; text-align: center; padding: 24rpx 0; }
+.om-installer-list { display: flex; flex-direction: column; gap: 12rpx; }
+.om-installer-item { display: flex; align-items: center; justify-content: space-between; padding: 20rpx 24rpx; border: 1px solid #ebedf0; border-radius: 16px; }
+.om-installer-active { border-color: #122b4d; background: #e1ecf4; }
+.om-installer-name { font-size: 28rpx; font-weight: 500; color: #1f2937; }
+.om-installer-phone { font-size: 24rpx; color: #9ca3af; }
+.om-assign-actions { display: flex; gap: 16rpx; margin-top: 8rpx; }
+.om-assign-actions .btn-ghost { flex: 1; padding: 24rpx; border: 1px solid #ebedf0; border-radius: 16px; text-align: center; }
+.om-assign-confirm { flex: 1; padding: 24rpx; text-align: center; }

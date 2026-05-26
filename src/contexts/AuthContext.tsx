@@ -8,6 +8,7 @@ export interface User {
   name: string;
   role: string;
   storeId?: string;
+  storeName?: string;
   avatarUrl?: string;
 }
 
@@ -19,9 +20,15 @@ export const roleLabels: Record<string, string> = {
   ADMIN: '管理员',
 };
 
+export const BUSINESS_ROLES = ['STORE_OWNER', 'STORE_MANAGER', 'INSTALLER', 'ADMIN'];
+
 interface AuthContextType {
   user: User | null;
   token: string | null;
+  isBusiness: boolean;
+  canManageStaff: boolean;
+  requireBusinessLogin: () => boolean;
+  requireLogin: () => boolean;
   phoneLogin: (params: { phoneCode?: string; wxCode?: string; phone?: string }) => Promise<void>;
   wechatLogin: (role: string) => Promise<void>;
   adminLogin: (username: string, password: string) => Promise<void>;
@@ -55,7 +62,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const wechatLogin = useCallback(async (role: string) => {
     const loginRes = await Taro.login();
     if (!loginRes.code) throw new Error('微信登录失败');
-
     const res: any = await api.post('/auth/wechat-login', { code: loginRes.code, role });
     saveAuth(res.accessToken, res.user);
   }, [saveAuth]);
@@ -72,8 +78,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     Taro.removeStorageSync('user');
   }, []);
 
+  const requireLogin = useCallback(() => {
+    if (!user || !token) {
+      Taro.navigateTo({ url: '/subpackages/client/login/index' });
+      return false;
+    }
+    return true;
+  }, [user, token]);
+
+  const requireBusinessLogin = useCallback(() => {
+    if (!requireLogin()) return false;
+    if (!BUSINESS_ROLES.includes(user!.role)) {
+      Taro.showToast({ title: '无权限访问', icon: 'none' });
+      setTimeout(() => Taro.switchTab({ url: '/pages/index/index' }), 1500);
+      return false;
+    }
+    return true;
+  }, [user, requireLogin]);
+
+  const isBusiness = !!user && BUSINESS_ROLES.includes(user.role);
+  const canManageStaff = user?.role === 'STORE_OWNER' || user?.role === 'ADMIN';
+
   return (
-    <AuthContext.Provider value={{ user, token, phoneLogin, wechatLogin, adminLogin, logout }}>
+    <AuthContext.Provider value={{ user, token, isBusiness, canManageStaff, requireBusinessLogin, requireLogin, phoneLogin, wechatLogin, adminLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );

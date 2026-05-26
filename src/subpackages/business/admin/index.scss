@@ -1,22 +1,374 @@
-.admin-page { min-height: 100vh; background: #f0f5fa; }
-.admin-header { position: relative; padding: 60rpx 24rpx 40rpx; overflow: hidden; margin-bottom: 24rpx; }
-.admin-header-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #122b4d, #1b3e6c); border-radius: 0 0 40rpx 40rpx; }
-.admin-title { position: relative; z-index: 1; display: block; font-size: 40rpx; font-weight: 700; color: #ffffff; }
+.admin-page { min-height: 100vh; background: #f5f7fa; }
 
-.admin-tabs { display: flex; margin: 0 24rpx 16rpx; background: #ffffff; border-radius: 16px; padding: 4rpx; }
-.admin-tab { flex: 1; padding: 20rpx; text-align: center; border-radius: 12px; }
-.admin-tab-active { background: #122b4d; }
-.admin-tab-text { font-size: 26rpx; color: #6b7280; font-weight: 500; }
-.admin-tab-text-active { color: #ffffff; }
+// ====== 头部 ======
+.admin-header {
+  position: relative;
+  padding: 48rpx 24rpx 36rpx;
+  overflow: hidden;
+}
 
-.admin-list { padding: 0 24rpx; }
-.admin-card { background: #ffffff; border-radius: 24rpx; padding: 24rpx; margin-bottom: 12rpx; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-.admin-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12rpx; }
-.admin-card-name { font-size: 28rpx; font-weight: 600; color: #1f2937; }
-.admin-card-row { display: flex; align-items: center; margin-top: 4rpx; }
-.admin-card-info { display: block; font-size: 24rpx; color: #6b7280; margin-top: 6rpx; }
+.admin-header-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, #122b4d 0%, #1b3e6c 50%, #2b5a8e 100%);
+  border-radius: 0 0 40rpx 40rpx;
+}
 
-.tag-gray { background: #f3f4f6; color: #6b7280; }
+.admin-header-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-.admin-empty { display: flex; justify-content: center; padding: 80rpx 0; }
-.admin-empty-text { font-size: 28rpx; color: #9ca3af; }
+.admin-title {
+  font-size: 38rpx; font-weight: 700;
+  color: #ffffff;
+}
+
+.admin-badge {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 10rpx 20rpx;
+  background: rgba(255,255,255,0.18);
+  border-radius: 9999px;
+}
+
+.admin-badge-text {
+  font-size: 22rpx; font-weight: 600;
+  color: #ffffff;
+}
+
+// ====== 统计卡片 ======
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12rpx;
+  padding: 24rpx;
+}
+
+.admin-stat-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24rpx 12rpx;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.admin-stat-highlight { border-left: 6rpx solid #122b4d; }
+.admin-stat-warn { border-left: 6rpx solid #f59e0b; }
+.admin-stat-info { border-left: 6rpx solid #3b82f6; }
+
+.admin-stat-num {
+  display: block;
+  font-size: 36rpx; font-weight: 700;
+  color: #1f2937;
+}
+
+.admin-stat-label {
+  display: block;
+  font-size: 21rpx;
+  color: #9ca3af;
+  margin-top: 6rpx;
+}
+
+// ====== 功能模块 ======
+.admin-modules-section { padding: 32rpx 24rpx 0; }
+
+.admin-section-title {
+  display: block;
+  font-size: 30rpx; font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 20rpx;
+}
+
+.admin-module-list { display: flex; flex-direction: column; gap: 12rpx; }
+
+.admin-module-card {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 28rpx 24rpx;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+
+  &:active { opacity: 0.9; }
+}
+
+.admin-module-icon-wrap {
+  width: 80rpx; height: 80rpx;
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.admin-module-body { flex: 1; }
+
+.admin-module-title {
+  display: block;
+  font-size: 29rpx; font-weight: 600;
+  color: #1f2937;
+}
+
+.admin-module-desc {
+  display: block;
+  font-size: 23rpx;
+  color: #9ca3af;
+  margin-top: 4rpx;
+}
+
+// ====== 子页面通用 ======
+.admin-subpage { padding: 24rpx; }
+
+.admin-subpage-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.admin-subpage-title {
+  font-size: 34rpx; font-weight: 700;
+  color: #1f2937;
+}
+
+.admin-list { display: flex; flex-direction: column; gap: 16rpx; }
+
+// ====== 门店账号卡片 ======
+.admin-store-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 26rpx;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.admin-store-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.admin-store-name {
+  font-size: 30rpx; font-weight: 600;
+  color: #1f2937;
+}
+
+.admin-store-type {
+  padding: 6rpx 16rpx;
+  border-radius: 8px;
+}
+
+.type-direct { background: #dbeafe; }
+.type-partner { background: #fef3c7; }
+
+.type-text {
+  font-size: 21rpx; font-weight: 500;
+  color: #1e40af;
+}
+.type-partner .type-text { color: #b45309; }
+
+.admin-store-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 10rpx;
+}
+
+.admin-store-info {
+  font-size: 25rpx;
+  color: #6b7280;
+}
+
+.admin-store-status-row {
+  margin-top: 12rpx;
+  padding-top: 16rpx;
+  border-top: 1px solid #f3f4f6;
+}
+
+.admin-store-status {
+  font-size: 24rpx; font-weight: 500;
+  color: #9ca3af;
+}
+
+.status-open { color: #059669; }
+
+// ====== 审核申请卡片 ======
+.admin-app-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 26rpx;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.app-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.app-company-name {
+  font-size: 30rpx; font-weight: 600;
+  color: #1f2937;
+}
+
+.app-pending-tag {
+  padding: 6rpx 16rpx;
+  background: #fef3c7;
+  border-radius: 8px;
+}
+
+.pending-tag-text {
+  font-size: 21rpx; font-weight: 500;
+  color: #d97706;
+}
+
+.app-card-body { margin-bottom: 20rpx; }
+
+.app-info-row {
+  display: flex;
+  align-items: baseline;
+  gap: 16rpx;
+  margin-bottom: 10rpx;
+}
+
+.app-info-label {
+  font-size: 24rpx;
+  color: #9ca3af;
+  width: 120rpx;
+  flex-shrink: 0;
+}
+
+.app-info-value {
+  font-size: 25rpx;
+  color: #374151;
+}
+
+.app-info-addr {
+  word-break: break-all;
+}
+
+.app-actions {
+  display: flex;
+  gap: 16rpx;
+  padding-top: 20rpx;
+  border-top: 1px solid #f3f4f6;
+}
+
+.app-btn {
+  flex: 1;
+  text-align: center;
+  padding: 18rpx 0;
+  border-radius: 14px;
+
+  &:active { opacity: 0.85; }
+}
+
+.app-btn-reject {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+}
+
+.app-btn-reject-text {
+  font-size: 26rpx; font-weight: 500;
+  color: #6b7280;
+}
+
+.app-btn-approve {
+  background: #122b4d;
+}
+
+.app-btn-approve-text {
+  font-size: 26rpx; font-weight: 500;
+  color: #ffffff;
+}
+
+// ====== 案例管理卡片 ======
+.admin-case-card {
+  display: flex;
+  gap: 20rpx;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20rpx;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+
+  &:active { opacity: 0.95; }
+}
+
+.admin-case-img-wrap {
+  width: 160rpx; height: 160rpx;
+  border-radius: 14px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #e1ecf4 0%, #f0f5fa 100%);
+}
+
+.admin-case-img {
+  width: 100%; height: 100%;
+  display: block;
+}
+
+.admin-case-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.admin-case-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+
+.admin-case-title {
+  font-size: 27rpx; font-weight: 600;
+  color: #1f2937;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.admin-case-meta-row {
+  display: flex; align-items: center;
+  gap: 8rpx;
+  margin-top: 6rpx;
+}
+
+.admin-case-meta {
+  font-size: 23rpx;
+  color: #9ca3af;
+}
+
+.admin-case-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10rpx;
+}
+
+.admin-case-publish-status {
+  font-size: 22rpx; font-weight: 500;
+  color: #9ca3af;
+}
+
+.published { color: #059669; }
+
+.admin-case-views {
+  font-size: 22rpx;
+  color: #9ca3af;
+}
+
+// ====== 空状态 ======
+.admin-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 0;
+  gap: 16rpx;
+}
+
+.admin-empty-text {
+  font-size: 27rpx;
+  color: #9ca3af;
+}

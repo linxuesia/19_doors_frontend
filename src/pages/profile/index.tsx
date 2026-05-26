@@ -1,113 +1,71 @@
-import { View, Text, ScrollView, Button } from '@tarojs/components';
+import { View, Text, ScrollView, Button, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { useAuth, roleLabels } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import Icon from '../../components/Icon';
 import './index.scss';
 
-import type { IconName } from '../../components/Icon';
-
 export default function Profile() {
-  const { user, logout } = useAuth();
-  const isClient = user?.role === 'CLIENT';
-
-  const menuItems: { icon: IconName; label: string; desc: string; url: string; contact?: boolean; role?: string }[] = [
-    ...(user && !isClient ? [{
-      icon: 'chart' as IconName,
-      label: '工作台',
-      desc: user?.role === 'STORE_OWNER' ? '门店数据看板与管理' :
-            user?.role === 'STORE_MANAGER' ? '门店日常运营工具' :
-            user?.role === 'INSTALLER' ? '工单承接与施工管理' : '系统全局管理后台',
-      url: '/subpackages/business/workbench/index',
-    }] : []),
-    {
-      icon: 'clipboard' as IconName,
-      label: isClient ? '我的订单' : '订单管理',
-      desc: '查看订单进度与详情',
-      url: isClient ? '/subpackages/client/order-detail/index?list=1' : '/subpackages/business/orders/index',
-    },
-    { icon: 'calendar' as IconName, label: '预约记录', desc: '查看量尺预约历史', url: '' },
-    ...(user && isClient ? [
-      { icon: 'building' as IconName, label: '门店入驻', desc: '申请成为门店老板，拥有专属门店', url: '/subpackages/client/store-apply/index' },
-      { icon: 'user' as IconName, label: '员工认证', desc: '申请成为门店店长或安装工', url: '/subpackages/client/staff-apply/index' },
-    ] : []),
-    { icon: 'shield-check' as IconName, label: '质保凭证', desc: '查看19分贝质保凭证', url: '' },
-    { icon: 'settings' as IconName, label: '设置', desc: '个人资料与账号安全', url: '' },
-    { icon: 'chat' as IconName, label: '联系客服', desc: '在线客服与问题反馈', url: '', contact: true },
-  ];
-
-  const handleMenuClick = (item: typeof menuItems[0]) => {
-    if (!user) {
-      Taro.navigateTo({ url: '/subpackages/client/login/index' });
-      return;
-    }
-    if (item.url) {
-      Taro.navigateTo({ url: item.url });
-    }
-  };
+  const { user } = useAuth();
 
   return (
     <ScrollView className='profile-page' scrollY>
-      {/* 用户头部 */}
-      <View className='profile-header'>
-        <View className='profile-header-bg' />
-        {user ? (
-          <View className='profile-user'>
-            <View className='profile-avatar'>
-              <Icon name='user' size={48} color='#ffffff' />
-            </View>
-            <View className='profile-user-info'>
-              <Text className='profile-name'>{user.name}</Text>
-              <Text className='profile-role'>
-                {roleLabels[user.role] || user.role}
-                <Text className='profile-phone-sep'> | </Text>
-                <Text>{user.phone?.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')}</Text>
-              </Text>
-            </View>
-          </View>
-        ) : (
-          <View className='profile-login-btn' onClick={() => Taro.navigateTo({ url: '/subpackages/client/login/index' })}>
-            <View className='profile-avatar'>
-              <Icon name='user' size={48} color='#ffffff' />
-            </View>
-            <View className='profile-user-info'>
-              <Text className='profile-name'>登录 / 注册</Text>
-              <Text className='profile-role'>点击登录查看您的订单</Text>
-            </View>
-          </View>
-        )}
-      </View>
-
-      {/* 菜单 */}
-      <View className='profile-menu'>
-        {menuItems.map((item) => (
-          item.contact ? (
-            <Button key={item.label} className='menu-item menu-item-btn' openType='contact'>
-              <Icon name={item.icon} size={40} color='#122b4d' />
-              <View className='menu-content'>
-                <Text className='menu-label'>{item.label}</Text>
-                <Text className='menu-desc'>{item.desc}</Text>
-              </View>
-              <Icon name='arrow-right' size={32} color='#d1d5db' />
-            </Button>
+      {/* 用户信息卡片 */}
+      <View className='user-card'>
+        <View className='user-card-main' onClick={() => user ? null : Taro.navigateTo({ url: '/subpackages/client/login/index' })}>
+          {user?.avatar ? (
+            <Image className='user-avatar-img' src={user.avatar} mode='aspectFill' />
           ) : (
-            <View key={item.label} className='menu-item' onClick={() => handleMenuClick(item)}>
-              <Icon name={item.icon} size={40} color='#122b4d' />
-              <View className='menu-content'>
-                <Text className='menu-label'>{item.label}</Text>
-                <Text className='menu-desc'>{item.desc}</Text>
-              </View>
-              <Icon name='arrow-right' size={32} color='#d1d5db' />
+            <View className='user-avatar-placeholder'>
+              <Icon name='user' size={48} color='#9ca3af' />
             </View>
-          )
-        ))}
+          )}
+          <View className='user-info'>
+            <Text className='user-name'>{user?.name || '登录 / 注册'}</Text>
+            <Text className='user-store'>
+              {user ? `所属门店: ${user.storeName || '上海19分贝门窗直营店'}` : '点击登录查看更多信息'}
+            </Text>
+          </View>
+        </View>
       </View>
 
-      {/* 退出 */}
+      {/* 门店入驻（仅登录后可见） */}
       {user && (
-        <View className='logout-btn' onClick={() => { logout(); Taro.switchTab({ url: '/pages/index/index' }); }}>
-          <Text className='logout-text'>退出登录</Text>
+      <View className='store-entry-card'>
+        <View className='store-entry-left'>
+          <Text className='store-entry-title'>门店入驻</Text>
+          <Text className='store-entry-desc'>开启您的专属线上门店</Text>
         </View>
+        <View
+          className='store-entry-btn'
+          onClick={() => Taro.navigateTo({ url: '/subpackages/client/store-apply/index' })}
+        >
+          <Text className='store-entry-btn-text'>立即入驻</Text>
+        </View>
+      </View>
       )}
+
+      {/* 常用服务 */}
+      <View className='service-section'>
+        <Text className='service-title'>常用服务</Text>
+        <View className='service-grid'>
+          <View className='service-item' onClick={() => Taro.switchTab({ url: '/pages/products/index' })}>
+            <Icon name='home' size={44} color='#4b5563' />
+            <Text className='service-label'>我的新家</Text>
+          </View>
+          <View className='service-item' onClick={() => {}}>
+            <Icon name='file-text' size={44} color='#4b5563' />
+            <Text className='service-label'>质保卡</Text>
+          </View>
+          <View className='service-item' onClick={() => Taro.navigateTo({ url: '/subpackages/client/order-detail/index?list=1' })}>
+            <Icon name='time' size={44} color='#4b5563' />
+            <Text className='service-label'>我的订单</Text>
+          </View>
+          <Button className='service-item service-btn' openType='contact'>
+            <Icon name='phone' size={44} color='#4b5563' />
+            <Text className='service-label'>联系客服</Text>
+          </Button>
+        </View>
+      </View>
 
       <View className='safe-bottom' />
     </ScrollView>

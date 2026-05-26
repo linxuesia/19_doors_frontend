@@ -1,0 +1,45 @@
+.br-page { min-height: 100vh; background: #f0f5fa; }
+
+.br-header { padding: 32rpx 24rpx 0; }
+.br-header-title { display: block; font-size: 36rpx; font-weight: 700; color: #122b4d; }
+.br-header-desc { display: block; font-size: 26rpx; color: #6b7280; margin-top: 8rpx; }
+
+// 筛选标签
+.br-tabs { display: flex; gap: 16rpx; padding: 24rpx 24rpx 16rpx; }
+.br-tab { padding: 16rpx 28rpx; background: #ffffff; border-radius: 9999px; }
+.br-tab-active { background: #122b4d; }
+.br-tab-text { font-size: 26rpx; color: #4b5563; }
+.br-tab-text-active { color: #ffffff; }
+
+// 预约列表
+.br-list { padding: 0 24rpx; display: flex; flex-direction: column; gap: 16rpx; }
+
+.br-card { background: #ffffff; border-radius: 24rpx; padding: 24rpx; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+.br-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16rpx; }
+.br-card-name { font-size: 32rpx; font-weight: 600; color: #122b4d; }
+.br-card-status { padding: 6rpx 16rpx; border-radius: 9999px; }
+.br-card-status-text { font-size: 22rpx; font-weight: 500; }
+
+.br-card-info { display: flex; flex-direction: column; gap: 10rpx; margin-bottom: 12rpx; }
+.br-info-row { display: flex; align-items: center; gap: 8rpx; }
+.br-info-text { font-size: 26rpx; color: #4b5563; }
+
+.br-card-remark { font-size: 24rpx; color: #9ca3af; padding: 12rpx 0 0; border-top: 1px solid #f3f4f6; }
+
+// 操作区
+.br-card-actions { display: flex; gap: 16rpx; margin-top: 16rpx; }
+.br-action-btn { flex: 1; padding: 20rpx; text-align: center; font-size: 26rpx; }
+
+// 分配面板
+.br-assign-panel { flex: 1; display: flex; flex-direction: column; gap: 12rpx; }
+.br-assign-item { display: flex; justify-content: space-between; align-items: center; padding: 16rpx 20rpx; border: 1px solid #ebedf0; border-radius: 16px; }
+.br-assign-item:active { background: #e1ecf4; border-color: #122b4d; }
+.br-assign-name { font-size: 26rpx; color: #1f2937; font-weight: 500; }
+.br-assign-role { font-size: 22rpx; color: #9ca3af; }
+.br-assign-empty { font-size: 24rpx; color: #9ca3af; text-align: center; padding: 16rpx; }
+.br-assign-cancel { text-align: center; padding: 16rpx; }
+.br-assign-cancel Text { font-size: 24rpx; color: #9ca3af; }
+
+// 空态
+.br-empty { display: flex; flex-direction: column; align-items: center; padding: 80rpx 0; }
+.br-empty-text { font-size: 28rpx; color: #9ca3af; margin-top: 16rpx; }

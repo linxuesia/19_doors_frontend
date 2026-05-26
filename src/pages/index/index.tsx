@@ -6,30 +6,33 @@ import Icon from '../../components/Icon';
 import api from '../../utils/api';
 import './index.scss';
 
-// 上海周边模拟工地坐标
+// 上海周边模拟工地坐标（API 无数据时的缺省展示）
 const defaultMarkers = [
-  { id: 1, longitude: 121.4737, latitude: 31.2304, title: '芯汇花园5-1902', status: '下单备料' },
-  { id: 2, longitude: 121.4200, latitude: 31.2150, title: '泊岸时光印19幢', status: '已完工' },
-  { id: 3, longitude: 121.5100, latitude: 31.2500, title: '金平路555弄', status: '施工中' },
-  { id: 4, longitude: 121.3800, latitude: 31.2000, title: '苏州展厅', status: '已完工' },
+  { id: 1, longitude: 121.4737, latitude: 31.2304, name: '芯汇花园5-1902', status: '下单备料' },
+  { id: 2, longitude: 121.4200, latitude: 31.2150, name: '泊岸时光印19幢', status: '已完工' },
+  { id: 3, longitude: 121.5100, latitude: 31.2500, name: '金平路555弄', status: '施工中' },
+  { id: 4, longitude: 121.3800, latitude: 31.2000, name: '苏州展厅', status: '已完工' },
 ];
 
 export default function Home() {
   const [products, setProducts] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
   const [sites, setSites] = useState<any[]>([]);
-  const [selectedMarker, setSelectedMarker] = useState<any>(defaultMarkers[0]);
+  const [selectedMarker, setSelectedMarker] = useState<any>(null);
 
-  const markers = (sites.length > 0 ? sites : defaultMarkers).map((site: any, i: number) => ({
-    id: site.id || i + 1,
-    longitude: site.longitude || defaultMarkers[i]?.longitude || 121.4737,
-    latitude: site.latitude || defaultMarkers[i]?.latitude || 31.2304,
-    title: site.title || site.name || '',
+  // 统一数据源：优先 API 数据，无数据时使用缺省点位
+  const siteDataSource = sites.length > 0 ? sites : defaultMarkers;
+
+  const markers = siteDataSource.map((site: any, i: number) => ({
+    id: i + 1,
+    longitude: site.longitude,
+    latitude: site.latitude,
+    title: site.name || site.title || '',
     iconPath: '',
     width: 32,
     height: 32,
     callout: {
-      content: site.title || site.name || '',
+      content: site.name || site.title || '',
       color: '#122b4d',
       fontSize: 13,
       borderRadius: 8,
@@ -40,9 +43,7 @@ export default function Home() {
 
   const handleMarkerTap = (e: any) => {
     const id = e.detail?.markerId || e.markerId;
-    const site = (sites.length > 0 ? sites : defaultMarkers).find(
-      (s: any, i: number) => (s.id || i + 1) === id
-    );
+    const site = siteDataSource[(id as number) - 1];
     if (site) setSelectedMarker(site);
   };
 
@@ -105,24 +106,23 @@ export default function Home() {
           <Text className='badge-en'>NEW ARRIVAL</Text>
         </View>
         <ScrollView className='product-scroll' scrollX showScrollbar={false}>
-          {[
-            { id: 'p1', name: '1', image: 'https://images.unsplash.com/photo-1600607688969-a5bfcd64bd40?auto=format&fit=crop&w=800&q=80' },
-            { id: 'p2', name: 'S100', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80' },
-            { id: 'p3', name: 'S97', image: 'https://images.unsplash.com/photo-1600566753080-00e5bc57bb55?auto=format&fit=crop&w=800&q=80' },
-            { id: 'p4', name: '全景落地窗', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80' },
-          ].map((item) => (
+          {products.length > 0 ? products.map((item) => (
             <View
               key={item.id}
               className='product-card'
               onClick={() => navigate(`/subpackages/client/product-detail/index?id=${item.id}`)}
             >
-              <Image className='product-img' src={item.image} mode='aspectFill' />
+              <Image className='product-img' src={item.coverImage} mode='aspectFill' />
               <View className='product-footer'>
                 <View className='product-dot' />
                 <Text className='product-name'>{item.name}</Text>
               </View>
             </View>
-          ))}
+          )) : (
+            <View className='product-empty'>
+              <Text className='empty-text'>暂无新品</Text>
+            </View>
+          )}
         </ScrollView>
         <View className='pagination-dots'>
           <View className='dot dot-active' />
@@ -151,8 +151,10 @@ export default function Home() {
               <View className='marker-dot' />
               <View className='marker-info'>
                 <Text className='marker-label'>附近的工地</Text>
-                <Text className='marker-title'>{selectedMarker.title || selectedMarker.name}</Text>
-                <Text className='marker-status'>{selectedMarker.status || '施工中'}</Text>
+                <Text className='marker-title'>{selectedMarker.name || selectedMarker.title}</Text>
+                {selectedMarker.status && (
+                  <Text className='marker-status'>{selectedMarker.status}</Text>
+                )}
               </View>
             </View>
           )}
@@ -165,19 +167,14 @@ export default function Home() {
       {/* 工地列表 */}
       <View className='index-section'>
         <View className='site-grid'>
-          {[
-            { id: 's1', title: '芯汇花园5-1902', location: '苏州市', image: '' },
-            { id: 's2', title: '泊岸时光印19幢', location: '苏州市', image: '' },
-            { id: 's3', title: '苏州展厅', location: '苏州市', image: 'https://images.unsplash.com/photo-1600607688969-a5bfcd64bd40?auto=format&fit=crop&w=800&q=80' },
-            { id: 's4', title: '金平路555弄', location: '上海市', image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80' },
-          ].map((item) => (
+          {siteDataSource.length > 0 ? siteDataSource.map((item: any) => (
             <View
               key={item.id}
               className='site-grid-item'
               onClick={() => navigate(`/subpackages/client/site-detail/index?id=${item.id}`)}
             >
-              {item.image ? (
-                <Image className='site-grid-img' src={item.image} mode='aspectFill' />
+              {item.coverImage || item.image ? (
+                <Image className='site-grid-img' src={item.coverImage || item.image} mode='aspectFill' />
               ) : (
                 <View className='site-grid-placeholder'>
                   <Text className='brand-logo'>SOJOY <Text className='brand-highlight'>19分贝</Text></Text>
@@ -185,10 +182,15 @@ export default function Home() {
                 </View>
               )}
               <View className='site-grid-info'>
-                <Text className='site-grid-location'>{item.location} | {item.title}</Text>
+                <Text className='site-grid-location'>{item.name || item.title}</Text>
               </View>
             </View>
-          ))}
+          )) : (
+            <View className='site-empty'>
+              <Icon name='map-pin' size={48} color='#d1d5db' />
+              <Text className='empty-text'>暂无工地信息</Text>
+            </View>
+          )}
         </View>
         <View className='view-more-btn' onClick={() => Taro.switchTab({ url: '/pages/cases/index?tab=site' })}>
           <Text className='view-more-text'>查看更多</Text>

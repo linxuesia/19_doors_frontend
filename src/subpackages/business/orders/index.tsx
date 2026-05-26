@@ -1,83 +1,114 @@
 import { useState, useEffect } from 'react';
-import { View, Text } from '@tarojs/components';
+import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
-import { orderFilters, orderStatusMap } from '../../../constants/status';
 import './index.scss';
 
+const statusTabs = [
+  { value: '', label: '全部' },
+  { value: 'PENDING', label: '待处理' },
+  { value: 'INSTALLING', label: '施工中' },
+  { value: 'COMPLETED', label: '已完工' },
+];
+
+const statusStyle: Record<string, { bg: string; text: string }> = {
+  PENDING: { bg: '#fef3c7', text: '#d97706' },
+  INSTALLING: { bg: '#dbeafe', text: '#2563eb' },
+  COMPLETED: { bg: '#d1fae5', text: '#059669' },
+};
+
 export default function Orders() {
-  const { user } = useAuth();
+  const { user, requireBusinessLogin } = useAuth();
   const [orders, setOrders] = useState<any[]>([]);
-  const [filter, setFilter] = useState('');
+  const [activeTab, setActiveTab] = useState('');
 
   useEffect(() => {
-    if (!user) return;
+    if (!requireBusinessLogin()) return;
+
     const params: any = {};
-    if (user.storeId && user.role !== 'CLIENT') params.storeId = user.storeId;
-    if (user.role === 'INSTALLER') params.installerId = user.id;
-    if (filter) params.status = filter;
+    if (user?.storeId && user.role !== 'CLIENT') params.storeId = user.storeId;
+    if (user?.role === 'INSTALLER') params.installerId = user.id;
+    if (activeTab) params.status = activeTab;
 
     api.get('/orders', { ...params })
       .then((res: any) => setOrders(res || []))
       .catch(() => setOrders([]));
-  }, [user, filter]);
+  }, [user, activeTab]);
+
+  if (!user || !requireBusinessLogin()) return null;
+
+  const isInstaller = user.role === 'INSTALLER';
 
   return (
-    <View className='bo-page'>
-      {/* 筛选 */}
-      <View className='bo-filter-scroll'>
-        {orderFilters.map((f) => (
+    <ScrollView className='bo-page' scrollY>
+      {/* 页面标题 */}
+      <View className='bo-header'>
+        <Text className='bo-header-title'>{isInstaller ? '我的工单' : '订单管理'}</Text>
+        <Text className='bo-header-desc'>{isInstaller ? '查看分配给我的工单' : `管理${user.storeName || ''}门店所有订单`}</Text>
+      </View>
+
+      {/* 状态筛选 */}
+      <View className='bo-tabs'>
+        {statusTabs.map((tab) => (
           <View
-            key={f.value}
-            className={`bo-filter-item ${filter === f.value ? 'bo-filter-active' : ''}`}
-            onClick={() => setFilter(f.value)}
+            key={tab.value}
+            className={`bo-tab ${activeTab === tab.value ? 'bo-tab-active' : ''}`}
+            onClick={() => setActiveTab(tab.value)}
           >
-            <Text className={`bo-filter-text ${filter === f.value ? 'bo-filter-text-active' : ''}`}>
-              {f.label}
-            </Text>
+            <Text className={`bo-tab-text ${activeTab === tab.value ? 'bo-tab-text-active' : ''}`}>{tab.label}</Text>
           </View>
         ))}
       </View>
 
       {/* 订单列表 */}
       <View className='bo-list'>
-        {orders.map((item: any) => (
-          <View
-            key={item.id}
-            className='bo-card'
-            onClick={() =>
-              Taro.navigateTo({ url: `/subpackages/business/order-manage/index?id=${item.id}` })
-            }
-          >
-            <View className='bo-card-top'>
-              <Text className='bo-card-no'>{item.orderNo}</Text>
-              <Text className='bo-card-status' style={{ backgroundColor: orderStatusMap[item.status]?.bg || '#f3f4f6' }}>
-                {orderStatusMap[item.status]?.label || item.status}
-              </Text>
-            </View>
-            <Text className='bo-card-product'>{item.productName || '未指定产品'}</Text>
-            <View className='bo-card-row'>
-              <Icon name='map-pin' size={28} color='#6b7280' />
-              <Text className='bo-card-addr'> {item.installAddress || item.communityName || '-'}</Text>
-            </View>
-            <View className='bo-card-bottom'>
-              <View className='bo-card-people'>
-                <Text className='bo-card-client'>客户：{item.client?.name || '-'}</Text>
-                {item.installer && <Text className='bo-card-installer'>工人：{item.installer.name}</Text>}
+        {orders.map((item: any) => {
+          const st = statusStyle[item.status] || statusStyle.PENDING;
+          return (
+            <View
+              key={item.id}
+              className='bo-card'
+              onClick={() =>
+                Taro.navigateTo({ url: `/subpackages/business/order-manage/index?id=${item.id}` })
+              }
+            >
+              <View className='bo-card-top'>
+                <Text className='bo-card-no'>{item.orderNo || `#${item.id}`}</Text>
+                <View className='bo-card-status' style={{ background: st.bg }}>
+                  <Text className='bo-card-status-text' style={{ color: st.text }}>
+                    {item.status === 'PENDING' ? (isInstaller ? '待开工' : '待处理') : item.status === 'INSTALLING' ? '施工中' : item.status === 'COMPLETED' ? (isInstaller ? '已完成' : '已完工') : item.status}
+                  </Text>
+                </View>
               </View>
-              <Text className='bo-card-amount'>¥{item.totalAmount?.toLocaleString() || 0}</Text>
+
+              <Text className='bo-card-product'>{item.productName || '未指定产品'}</Text>
+
+              <View className='bo-card-row'>
+                <Icon name='map-pin' size={24} color='#9ca3af' />
+                <Text className='bo-card-addr'>{item.installAddress || item.communityName || '-'}</Text>
+              </View>
+
+              <View className='bo-card-bottom'>
+                <View className='bo-card-left'>
+                  <Text className='bo-card-client'>客户：{item.client?.name || '-'}</Text>
+                  {!isInstaller && item.installer && <Text className='bo-card-installer'>工人：{item.installer.name}</Text>}
+                </View>
+                <Text className='bo-card-amount'>¥{item.totalAmount?.toLocaleString() || 0}</Text>
+              </View>
             </View>
-          </View>
-        ))}
+          );
+        })}
         {orders.length === 0 && (
           <View className='bo-empty'>
-            <Text className='bo-empty-text'>暂无订单</Text>
+            <Icon name='inbox' size={72} color='#d1d5db' />
+            <Text className='bo-empty-text'>{isInstaller ? '暂无工单' : '暂无订单'}</Text>
           </View>
         )}
       </View>
+
       <View className='safe-bottom' />
-    </View>
+    </ScrollView>
   );
 }

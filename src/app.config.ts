@@ -27,7 +27,9 @@ export default defineAppConfig({
         'workbench/index',        // 工作台
         'orders/index',           // 订单列表
         'order-manage/index',     // 订单管理/录入
+        'reservations/index',     // 预约管理
         'admin/index',            // 管理员后台
+        'admin-login/index',      // 管理员登录（扫码）
       ],
     },
   ],

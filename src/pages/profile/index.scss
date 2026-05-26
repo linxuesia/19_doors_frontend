@@ -1,29 +1,146 @@
-.profile-page { min-height: 100vh; background: #f0f5fa; }
+.profile-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
 
-.profile-header { position: relative; padding: 60rpx 32rpx 40rpx; overflow: hidden; }
-.profile-header-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #122b4d, #1b3e6c); border-radius: 0 0 48rpx 48rpx; }
+// ====== 用户信息卡片 ======
+.user-card {
+  margin: 24rpx;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 32rpx 28rpx;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
 
-.profile-user { position: relative; z-index: 1; display: flex; align-items: center; gap: 24rpx; }
-.profile-login-btn { position: relative; z-index: 1; display: flex; align-items: center; gap: 24rpx; }
+.user-card-main {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
 
-.profile-avatar { width: 96rpx; height: 96rpx; border-radius: 9999px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; border: 3px solid rgba(255,255,255,0.4); }
+.user-avatar-img {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
 
-.profile-user-info { position: relative; z-index: 1; flex: 1; }
-.profile-name { display: block; font-size: 36rpx; font-weight: 700; color: #ffffff; }
-.profile-role { display: block; font-size: 24rpx; color: rgba(255,255,255,0.8); margin-top: 8rpx; }
-.profile-phone-sep { color: rgba(255,255,255,0.4); }
+.user-avatar-placeholder {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
 
-.profile-menu { margin: 24rpx; }
-.menu-item { display: flex; align-items: center; gap: 20rpx; padding: 28rpx 24rpx; background: #ffffff; border-radius: 20rpx; margin-bottom: 12rpx; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-.menu-item:active { background: #f9fafb; }
+.user-info { flex: 1; }
 
-/* Button 重置样式，让 open-type="contact" 的按钮看起来和普通菜单项一致 */
-.menu-item-btn {
+.user-name {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8rpx;
+}
+
+.user-store {
+  display: block;
+  font-size: 25rpx;
+  color: #888888;
+}
+
+// ====== 门店入驻卡片 ======
+.store-entry-card {
+  margin: 0 24rpx;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 28rpx 28rpx;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.store-entry-left { flex: 1; }
+
+.store-entry-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 8rpx;
+}
+
+.store-entry-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.store-entry-btn {
+  padding: 14rpx 32rpx;
+  border-radius: 9999px;
+  border: 1px solid #e0e0e0;
+  background: #ffffff;
+  flex-shrink: 0;
+
+  &:active {
+    background: #f9fafb;
+  }
+}
+
+.store-entry-btn-text {
+  font-size: 26rpx;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+// ====== 常用服务 ======
+.service-section {
+  margin-top: 24rpx;
+  padding: 0 24rpx;
+}
+
+.service-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 20rpx;
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 36rpx 12rpx;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.service-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.service-btn {
   border: none;
   line-height: inherit;
-  text-align: left;
+  text-align: center;
   font-size: inherit;
   width: 100%;
+  background: transparent;
+  padding: 0;
   box-sizing: border-box;
 
   &::after {
@@ -31,10 +148,7 @@
   }
 }
 
-.menu-content { flex: 1; }
-.menu-label { display: block; font-size: 28rpx; font-weight: 600; color: #1f2937; }
-.menu-desc { display: block; font-size: 22rpx; color: #9ca3af; margin-top: 4rpx; }
-
-.logout-btn { margin: 24rpx; padding: 28rpx; background: #ffffff; border-radius: 20px; text-align: center; }
-.logout-btn:active { background: #fef2f2; }
-.logout-text { font-size: 28rpx; color: #ef4444; }
+.service-label {
+  font-size: 24rpx;
+  color: #666666;
+}

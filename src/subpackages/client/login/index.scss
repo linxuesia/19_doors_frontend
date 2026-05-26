@@ -8,11 +8,11 @@
 .login-form { display: flex; flex-direction: column; gap: 20rpx; }
 .login-btn-text { margin-left: 12rpx; }
 
-.login-input { width: 100%; padding: 28rpx 24rpx; background: #ffffff; border: 1px solid #ebedf0; border-radius: 20px; font-size: 28rpx; color: #1f2937; box-sizing: border-box; }
+.login-input { width: 100%; height: 88rpx; line-height: 88rpx; padding: 0 24rpx; background: #ffffff; border: 1px solid #ebedf0; border-radius: 20px; font-size: 28rpx; color: #1f2937; box-sizing: border-box; }
 
 .login-error { font-size: 24rpx; color: #ef4444; text-align: center; }
 
-.login-submit { width: 100%; padding: 28rpx; display: flex; align-items: center; justify-content: center; }
+.login-submit { width: 100%; padding: 28rpx; display: flex; align-items: center; justify-content: center; line-height: normal; }
 .login-wechat-btn { background: #07c160; border-color: #07c160; }
 .opacity-50 { opacity: 0.5; }
 

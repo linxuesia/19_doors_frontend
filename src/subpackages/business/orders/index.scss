@@ -1,23 +1,126 @@
-.bo-page { min-height: 100vh; background: #f0f5fa; }
+.bo-page { min-height: 100vh; background: #f5f7fa; }
 
-.bo-filter-scroll { display: flex; gap: 12rpx; padding: 24rpx; white-space: nowrap; overflow-x: auto; }
-.bo-filter-item { display: inline-flex; padding: 12rpx 24rpx; border-radius: 9999px; background: #ffffff; border: 1px solid #ebedf0; }
-.bo-filter-active { background: #122b4d; border-color: #122b4d; }
-.bo-filter-text { font-size: 24rpx; color: #6b7280; }
-.bo-filter-text-active { color: #ffffff; }
+// ====== 头部 ======
+.bo-header {
+  padding: 40rpx 24rpx 24rpx;
+}
 
+.bo-header-title {
+  display: block;
+  font-size: 40rpx; font-weight: 700;
+  color: #122b4d;
+}
+
+.bo-header-desc {
+  display: block;
+  font-size: 25rpx; color: #9ca3af;
+  margin-top: 6rpx;
+}
+
+// ====== 状态筛选 ======
+.bo-tabs {
+  display: flex;
+  padding: 0 24rpx 20rpx;
+  gap: 12rpx;
+}
+
+.bo-tab {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+
+  &:active { opacity: 0.85; }
+}
+
+.bo-tab-active {
+  background: #122b4d;
+  border-color: #122b4d;
+}
+
+.bo-tab-text {
+  font-size: 24rpx; color: #6b7280; font-weight: 500;
+}
+
+.bo-tab-text-active {
+  color: #ffffff;
+}
+
+// ====== 订单列表 ======
 .bo-list { padding: 0 24rpx; }
-.bo-card { background: #ffffff; border-radius: 24rpx; padding: 24rpx; margin-bottom: 12rpx; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-.bo-card:active { opacity: 0.8; }
-.bo-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12rpx; }
-.bo-card-no { font-size: 28rpx; font-weight: 600; color: #1f2937; }
-.bo-card-status { font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 9999px; }
-.bo-card-product { display: block; font-size: 26rpx; color: #4b5563; }
-.bo-card-row { display: flex; align-items: center; margin-top: 4rpx; }
-.bo-card-addr { font-size: 24rpx; color: #6b7280; }
-.bo-card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 16rpx; }
-.bo-card-people { display: flex; gap: 12rpx; font-size: 24rpx; color: #9ca3af; }
-.bo-card-amount { font-size: 28rpx; font-weight: 700; color: #122b4d; }
 
-.bo-empty { display: flex; justify-content: center; padding: 80rpx 0; }
+.bo-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 26rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+
+  &:active { opacity: 0.9; }
+}
+
+.bo-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14rpx;
+}
+
+.bo-card-no {
+  font-size: 28rpx; font-weight: 600;
+  color: #1f2937;
+}
+
+.bo-card-status {
+  padding: 6rpx 18rpx;
+  border-radius: 9999px;
+}
+
+.bo-card-status-text {
+  font-size: 22rpx; font-weight: 500;
+}
+
+.bo-card-product {
+  display: block;
+  font-size: 27rpx; color: #374151;
+  margin-bottom: 10rpx;
+}
+
+.bo-card-row {
+  display: flex; align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.bo-card-addr {
+  font-size: 24rpx; color: #9ca3af;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  flex: 1;
+}
+
+.bo-card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12rpx;
+  padding-top: 16rpx;
+  border-top: 1px solid #f3f4f6;
+}
+
+.bo-card-left { display: flex; flex-direction: column; gap: 4rpx; }
+
+.bo-card-client { font-size: 23rpx; color: #6b7280; }
+.bo-card-installer { font-size: 23rpx; color: #9ca3af; }
+.bo-card-amount { font-size: 30rpx; font-weight: 700; color: #122b4d; }
+
+// 空状态
+.bo-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 0;
+  gap: 16rpx;
+}
+
 .bo-empty-text { font-size: 28rpx; color: #9ca3af; }

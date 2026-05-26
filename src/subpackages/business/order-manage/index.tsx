@@ -118,7 +118,76 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
 }
 
 // 订单详情
-function OrderDetailView({ order }: { order: any }) {
+function OrderDetailView({ order: initialOrder }: { order: any }) {
+  const { user } = useAuth();
+  const [order, setOrder] = useState(initialOrder);
+  const [installers, setInstallers] = useState<any[]>([]);
+  const [showAssign, setShowAssign] = useState(false);
+  const [selectedInstaller, setSelectedInstaller] = useState('');
+  const [actionLoading, setActionLoading] = useState(false);
+
+  useEffect(() => {
+    // 加载门店安装工列表
+    if (user?.storeId) {
+      api.get(`/stores/${user.storeId}`)
+        .then((res: any) => {
+          const list = (res.users || []).filter((u: any) => u.role === 'INSTALLER');
+          setInstallers(list);
+        })
+        .catch(() => {});
+    }
+  }, [user?.storeId]);
+
+  /** 分配安装工并开工 */
+  const handleAssign = async () => {
+    if (!selectedInstaller) {
+      Taro.showToast({ title: '请选择安装工', icon: 'none' });
+      return;
+    }
+    setActionLoading(true);
+    try {
+      const updated = await api.put(`/orders/${order.id}`, {
+        installerId: selectedInstaller,
+        status: 'INSTALLING',
+      });
+      setOrder(updated);
+      setShowAssign(false);
+      Taro.showToast({ title: '已分配并开工', icon: 'success' });
+    } catch (e: any) {
+      Taro.showToast({ title: e.message || '操作失败', icon: 'none' });
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  /** 无需分配，直接开工 */
+  const handleStartInstall = async () => {
+    setActionLoading(true);
+    try {
+      const updated = await api.put(`/orders/${order.id}`, { status: 'INSTALLING' });
+      setOrder(updated);
+      Taro.showToast({ title: '已开工', icon: 'success' });
+    } catch (e: any) {
+      Taro.showToast({ title: e.message || '操作失败', icon: 'none' });
+    } finally {
+      setActionLoading(false);
+    }
+  };
+  const handleComplete = async () => {
+    setActionLoading(true);
+    try {
+      const updated = await api.put(`/orders/${order.id}`, { status: 'COMPLETED' });
+      setOrder(updated);
+      Taro.showToast({ title: '已完工', icon: 'success' });
+    } catch (e: any) {
+      Taro.showToast({ title: e.message || '操作失败', icon: 'none' });
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const isOwnerOrManager = user?.role === 'STORE_OWNER' || user?.role === 'STORE_MANAGER';
+
   return (
     <View className='om-detail-page'>
       <View className='om-detail-header'>
@@ -126,11 +195,64 @@ function OrderDetailView({ order }: { order: any }) {
         <Text className='tag tag-brand'>{orderStatusMap[order.status]?.label || order.status}</Text>
       </View>
 
+      {/* 操作区 */}
+      {isOwnerOrManager && (
+        <View className='om-actions-card'>
+          {order.status === 'PENDING' && (
+            <>
+              {!showAssign ? (
+                <View className='btn-primary om-action-btn' onClick={() => setShowAssign(true)}>
+                  <Text>分配安装工</Text>
+                </View>
+              ) : (
+                <View className='om-assign-panel'>
+                  <Text className='om-section-title'>选择安装工</Text>
+                  {installers.length === 0 ? (
+                    <Text className='om-no-installer'>暂无安装工，请先通过员工认证添加</Text>
+                  ) : (
+                    <View className='om-installer-list'>
+                      {installers.map((ins: any) => (
+                        <View
+                          key={ins.id}
+                          className={`om-installer-item ${selectedInstaller === ins.id ? 'om-installer-active' : ''}`}
+                          onClick={() => setSelectedInstaller(ins.id)}
+                        >
+                          <Text className='om-installer-name'>{ins.name}</Text>
+                          <Text className='om-installer-phone'>{ins.phone || ''}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  )}
+                  <View className='om-assign-actions'>
+                    <View className='btn-ghost' onClick={() => { setShowAssign(false); setSelectedInstaller(''); }}>
+                      <Text>取消</Text>
+                    </View>
+                    <View className={`btn-primary om-assign-confirm ${actionLoading ? 'opacity-50' : ''}`} onClick={handleAssign}>
+                      <Text>{actionLoading ? '处理中...' : '确认分配并开工'}</Text>
+                    </View>
+                  </View>
+                </View>
+              )}
+            </>
+          )}
+          {order.status === 'PENDING' && order.installer && (
+            <View className={`btn-primary om-action-btn ${actionLoading ? 'opacity-50' : ''}`} onClick={handleStartInstall}>
+              <Text>直接开工</Text>
+            </View>
+          )}
+          {order.status === 'INSTALLING' && (
+            <View className={`btn-primary om-action-btn ${actionLoading ? 'opacity-50' : ''}`} onClick={handleComplete}>
+              <Text>{actionLoading ? '处理中...' : '标记完工'}</Text>
+            </View>
+          )}
+        </View>
+      )}
+
       <View className='om-detail-card'>
         <Text className='om-section-title'>基本信息</Text>
         {[
           { label: '产品', value: order.productName || '-' },
-          { label: '客户', value: `${order.client?.name || '-'} ${order.client?.phone || ''}` },
+          { label: '客户', value: `${order.client?.name || order.clientName || '-'} ${order.client?.phone || order.clientPhone || ''}` },
           { label: '门店', value: order.store?.name || '-' },
           { label: '安装工', value: order.installer?.name || '未分配' },
           { label: '小区', value: order.communityName || '-' },

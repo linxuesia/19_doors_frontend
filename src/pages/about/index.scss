@@ -1,12 +1,19 @@
 .about-page {
   min-height: 100vh;
-  background: #f0f5fa;
+  background: #f5f7fa;
 }
 
+// ====== 品牌Banner ======
 .hero-section {
-  background: linear-gradient(135deg, #122b4d 0%, #1b3e6c 50%, #2b5a8e 100%);
+  position: relative;
   padding: 80rpx 32rpx 64rpx;
-  text-align: center;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, #122b4d 0%, #1b3e6c 50%, #2b5a8e 100%);
   border-radius: 0 0 48rpx 48rpx;
 }
 
@@ -16,35 +23,54 @@
   font-weight: 700;
   color: #ffffff;
   margin-bottom: 16rpx;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-subtitle {
   display: block;
   font-size: 28rpx;
   color: rgba(255, 255, 255, 0.9);
+  position: relative;
+  z-index: 1;
 }
 
+// ====== 通用区块 ======
 .about-section {
   padding: 40rpx 24rpx 0;
 }
 
-.about-section-title {
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #122b4d;
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
   margin-bottom: 24rpx;
 }
 
+.section-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #122b4d;
+  white-space: nowrap;
+}
+
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, #e1ecf4 0%, transparent 100%);
+}
+
+// ====== 内容卡片 ======
 .content-card {
   background: #ffffff;
-  border-radius: 24px;
+  border-radius: 20px;
   padding: 32rpx;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .content-text {
   display: block;
-  font-size: 26rpx;
+  font-size: 27rpx;
   color: #4b5563;
   line-height: 1.8;
   margin-bottom: 16rpx;
@@ -57,6 +83,56 @@
   margin-top: 24rpx;
 }
 
+.brand-tag {
+  display: inline-block;
+  padding: 10rpx 22rpx;
+  background: linear-gradient(135deg, #e1ecf4 0%, #dce8f2 100%);
+  color: #122b4d;
+  font-size: 23rpx;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+// ====== 核心优势 ======
+.advantage-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}
+
+.advantage-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28rpx 20rpx;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.advantage-icon-wrap {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16rpx;
+}
+
+.advantage-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8rpx;
+}
+
+.advantage-desc {
+  display: block;
+  font-size: 23rpx;
+  color: #6b7280;
+}
+
+// ====== 门店列表 ======
 .store-list {
   display: flex;
   flex-direction: column;
@@ -65,9 +141,9 @@
 
 .store-card {
   background: #ffffff;
-  border-radius: 24px;
+  border-radius: 16px;
   padding: 24rpx;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .store-header {
@@ -77,59 +153,85 @@
   margin-bottom: 12rpx;
 }
 
+.store-info-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
 .store-name {
-  font-size: 28rpx;
+  font-size: 30rpx;
   font-weight: 600;
   color: #1f2937;
 }
 
+.store-badge {
+  display: inline-block;
+  padding: 4rpx 14rpx;
+  background: #122b4d;
+  color: #ffffff;
+  font-size: 20rpx;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.store-badge-partner {
+  background: #2b5a8e;
+}
+
 .store-address {
   display: block;
-  font-size: 24rpx;
+  font-size: 25rpx;
   color: #6b7280;
-  margin-bottom: 8rpx;
+  margin-bottom: 12rpx;
+  line-height: 1.5;
 }
 
-.store-meta {
+.store-tags {
   display: flex;
-  align-items: center;
-  gap: 16rpx;
+  flex-wrap: wrap;
+  gap: 10rpx;
 }
 
-.store-phone {
-  font-size: 22rpx;
-  color: #9ca3af;
+.store-tag {
+  display: inline-block;
+  padding: 6rpx 14rpx;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 21rpx;
+  border-radius: 6px;
 }
 
+// ====== 检测报告 ======
 .report-list {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  gap: 12rpx;
 }
 
 .report-card {
   background: #ffffff;
-  border-radius: 24px;
+  border-radius: 16px;
   padding: 24rpx;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   display: flex;
   align-items: center;
   gap: 20rpx;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+  &:active {
+    background: #fafbfc;
+  }
 }
 
-.report-icon {
+.report-icon-wrap {
   width: 80rpx;
   height: 80rpx;
   background: #e1ecf4;
-  border-radius: 20px;
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-}
-
-.report-icon-text {
-  font-size: 36rpx;
 }
 
 .report-info {
@@ -141,23 +243,67 @@
   font-size: 28rpx;
   font-weight: 600;
   color: #1f2937;
-  margin-bottom: 8rpx;
+  margin-bottom: 6rpx;
 }
 
 .report-desc {
   display: block;
-  font-size: 22rpx;
+  font-size: 23rpx;
   color: #6b7280;
 }
 
-.tag {
-  display: inline-block;
-  padding: 4rpx 16rpx;
-  border-radius: 9999px;
-  font-size: 20rpx;
+// ====== 联系我们 ======
+.contact-card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-.tag-brand {
-  background-color: #e1ecf4;
-  color: #122b4d;
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 28rpx 24rpx;
+
+  & + .contact-item {
+    border-top: 1px solid #f3f4f6;
+  }
+}
+
+.contact-icon-wrap {
+  width: 68rpx;
+  height: 68rpx;
+  background: linear-gradient(135deg, #122b4d 0%, #2b5a8e 100%);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contact-icon-email {
+  background: linear-gradient(135deg, #1b3e6c 0%, #3a6ba8 100%);
+}
+
+.contact-icon-address {
+  background: linear-gradient(135deg, #2b5a8e 0%, #4a7ab8 100%);
+}
+
+.contact-info {
+  flex: 1;
+}
+
+.contact-label {
+  display: block;
+  font-size: 23rpx;
+  color: #9ca3af;
+  margin-bottom: 4rpx;
+}
+
+.contact-value {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2937;
 }

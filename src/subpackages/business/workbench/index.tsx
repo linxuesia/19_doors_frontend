@@ -1,172 +1,184 @@
 import { useState, useEffect } from 'react';
-import { View, Text } from '@tarojs/components';
+import { View, Text, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuth, roleLabels } from '../../../contexts/AuthContext';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
-import { orderStatusMap, measurementStatusMap } from '../../../constants/status';
 import './index.scss';
 
-const statusMap = { ...orderStatusMap, ...measurementStatusMap };
+const ownerFunctions = [
+  { icon: 'clipboard', label: '订单管理', url: '/subpackages/business/orders/index' },
+  { icon: 'calendar', label: '预约管理', url: '/subpackages/business/reservations/index' },
+  { icon: 'add', label: '录入订单', url: '/subpackages/business/order-manage/index' },
+  { icon: 'user', label: '客户档案', url: '' },
+  { icon: 'image', label: '案例库', url: '/pages/cases/index' },
+  { icon: 'chart', label: '数据看板', url: '' },
+  { icon: 'settings', label: '门店设置', url: '' },
+];
+
+const managerFunctions = [
+  { icon: 'clipboard', label: '订单管理', url: '/subpackages/business/orders/index' },
+  { icon: 'calendar', label: '预约管理', url: '/subpackages/business/reservations/index' },
+  { icon: 'add', label: '录入订单', url: '/subpackages/business/order-manage/index' },
+  { icon: 'user', label: '客户档案', url: '' },
+  { icon: 'image', label: '案例库', url: '/pages/cases/index' },
+  { icon: 'chart', label: '数据看板', url: '' },
+];
+
+const installerFunctions = [
+  { icon: 'clipboard', label: '我的工单', url: '/subpackages/business/orders/index' },
+];
 
 export default function Workbench() {
-  const { user } = useAuth();
+  const { user, requireBusinessLogin, canManageStaff } = useAuth();
   const [orders, setOrders] = useState<any[]>([]);
-  const [measurements, setMeasurements] = useState<any[]>([]);
-  const [activeTab, setActiveTab] = useState('orders');
+  const [stats, setStats] = useState({ total: 0, pending: 0, installing: 0, completed: 0 });
 
   useEffect(() => {
-    if (!user) return;
-    const params: any = {};
-    if (user.storeId && (user.role === 'STORE_OWNER' || user.role === 'STORE_MANAGER')) {
-      params.storeId = user.storeId;
-    }
-    if (user.role === 'INSTALLER') params.installerId = user.id;
-    if (user.role === 'CLIENT') params.clientId = user.id;
+    if (!requireBusinessLogin()) return;
 
-    Promise.all([
-      api.get('/orders', { ...params }).catch(() => []),
-      api.get('/measurements', { storeId: user.storeId || undefined }).catch(() => []),
-    ]).then(([o, m]) => {
-      setOrders((o as any) || []);
-      setMeasurements((m as any) || []);
-    });
+    const params: any = {};
+    if (user?.storeId) params.storeId = user.storeId;
+    if (user?.role === 'INSTALLER') params.installerId = user.id;
+
+    api.get('/orders', { ...params })
+      .then((res: any) => {
+        const list = res || [];
+        setOrders(list);
+        setStats({
+          total: list.length,
+          pending: list.filter((o: any) => o.status === 'PENDING').length,
+          installing: list.filter((o: any) => o.status === 'INSTALLING').length,
+          completed: list.filter((o: any) => o.status === 'COMPLETED').length,
+        });
+      })
+      .catch(() => {});
   }, [user]);
 
-  if (!user) return null;
+  if (!user || !requireBusinessLogin()) return null;
 
-  const stats = {
-    total: orders.length,
-    installing: orders.filter((o: any) => o.status === 'INSTALLING').length,
-    completed: orders.filter((o: any) => o.status === 'COMPLETED').length,
-  };
+  const isOwner = user.role === 'STORE_OWNER';
+  const isManager = user.role === 'STORE_MANAGER';
+  const isInstaller = user.role === 'INSTALLER';
+
+  let functions = ownerFunctions;
+  if (isInstaller) functions = installerFunctions;
+  else if (isManager) functions = managerFunctions;
 
   return (
-    <View className='wb-page'>
-      {/* 头部信息卡 */}
+    <ScrollView className='wb-page' scrollY>
+      {/* 头部 */}
       <View className='wb-header'>
         <View className='wb-header-bg' />
         <View className='wb-header-content'>
           <View className='wb-user-row'>
             <View className='wb-avatar'>
-              <Icon name='user' size={48} color='#ffffff' />
+              <Icon name='user' size={44} color='#ffffff' />
             </View>
             <View className='wb-user-info'>
               <Text className='wb-user-name'>{user.name}</Text>
-              <Text className='wb-user-role'>{roleLabels[user.role] || user.role} 工作台</Text>
+              <View className='wb-user-meta-row'>
+                <Text className='wb-user-role'>{roleLabels[user.role] || user.role}</Text>
+                {user.storeName && (
+                  <>
+                    <Text className='wb-user-sep'>·</Text>
+                    <Text className='wb-user-store'>{user.storeName}</Text>
+                  </>
+                )}
+              </View>
+            </View>
+            <View className='wb-store-tag'>
+              <Text className='wb-store-tag-text'>工作台</Text>
             </View>
           </View>
+
+          {/* 统计栏 */}
           <View className='wb-stats'>
             <View className='wb-stat-item'>
               <Text className='wb-stat-num'>{stats.total}</Text>
-              <Text className='wb-stat-label'>总工单</Text>
+              <Text className='wb-stat-label'>{isInstaller ? '全部' : '全部'}</Text>
             </View>
+            <View className='wb-stat-divider' />
+            <View className='wb-stat-item'>
+              <Text className='wb-stat-num wb-stat-warn'>{stats.pending}</Text>
+              <Text className='wb-stat-label'>{isInstaller ? '待开工' : '待处理'}</Text>
+            </View>
+            <View className='wb-stat-divider' />
             <View className='wb-stat-item'>
               <Text className='wb-stat-num wb-stat-blue'>{stats.installing}</Text>
-              <Text className='wb-stat-label'>施工中</Text>
+              <Text className='wb-stat-label'>{isInstaller ? '施工中' : '施工中'}</Text>
             </View>
+            <View className='wb-stat-divider' />
             <View className='wb-stat-item'>
               <Text className='wb-stat-num wb-stat-green'>{stats.completed}</Text>
-              <Text className='wb-stat-label'>已完工</Text>
+              <Text className='wb-stat-label'>{isInstaller ? '已完成' : '已完工'}</Text>
             </View>
           </View>
         </View>
       </View>
 
-      {/* Tab切换 */}
-      <View className='wb-tabs'>
-        <View
-          className={`wb-tab ${activeTab === 'orders' ? 'wb-tab-active' : ''}`}
-          onClick={() => setActiveTab('orders')}
-        >
-          <Text className={`wb-tab-text ${activeTab === 'orders' ? 'wb-tab-text-active' : ''}`}>工单列表</Text>
-        </View>
-        <View
-          className={`wb-tab ${activeTab === 'measurements' ? 'wb-tab-active' : ''}`}
-          onClick={() => setActiveTab('measurements')}
-        >
-          <Text className={`wb-tab-text ${activeTab === 'measurements' ? 'wb-tab-text-active' : ''}`}>量尺预约</Text>
-        </View>
-      </View>
-
-      {/* 工单列表 */}
-      {activeTab === 'orders' && (
-        <View className='wb-list'>
-          {orders.map((item: any) => (
+      {/* 功能入口 */}
+      <View className='wb-fn-section'>
+        <Text className='wb-section-title'>功能入口</Text>
+        <View className={`wb-fn-grid ${isInstaller ? 'wb-fn-grid-sm' : ''}`}>
+          {functions.map((fn) => (
             <View
-              key={item.id}
-              className='wb-card'
-              onClick={() =>
-                Taro.navigateTo({ url: `/subpackages/business/order-manage/index?id=${item.id}` })
-              }
+              key={fn.label}
+              className='wb-fn-card'
+              onClick={() => fn.url ? Taro.navigateTo({ url: fn.url }) : {}}
             >
-              <View className='wb-card-top'>
-                <Text className='wb-card-no'>{item.orderNo}</Text>
-                <Text className='wb-card-status' style={{ backgroundColor: statusMap[item.status]?.bg || '#f3f4f6' }}>
-                  {statusMap[item.status]?.label || item.status}
-                </Text>
+              <View className='wb-fn-icon-wrap'>
+                <Icon name={fn.icon as any} size={40} color='#122b4d' />
               </View>
-              <Text className='wb-card-product'>{item.productName || '未指定产品'}</Text>
-              <View className='wb-card-row'>
-                <Icon name='map-pin' size={28} color='#6b7280' />
-                <Text className='wb-card-addr'> {item.installAddress || item.communityName || '-'}</Text>
-              </View>
-              <View className='wb-card-bottom'>
-                <Text className='wb-card-client'>客户：{item.client?.name || '-'}</Text>
-                <Text className='wb-card-amount'>¥{item.totalAmount?.toLocaleString() || 0}</Text>
-              </View>
+              <Text className='wb-fn-label'>{fn.label}</Text>
             </View>
           ))}
-          {orders.length === 0 && <View className='wb-empty'><Text className='wb-empty-text'>暂无工单</Text></View>}
-        </View>
-      )}
-
-      {/* 量尺预约 */}
-      {activeTab === 'measurements' && (
-        <View className='wb-list'>
-          {measurements.map((item: any) => (
-            <View key={item.id} className='wb-card'>
-              <View className='wb-card-top'>
-                <Text className='wb-card-client-name'>{item.contactName}</Text>
-                <Text className='wb-card-status' style={{ backgroundColor: statusMap[item.status]?.bg || '#f3f4f6' }}>
-                  {statusMap[item.status]?.label || item.status}
-                </Text>
-              </View>
-              <View className='wb-card-row'>
-                <Icon name='phone' size={28} color='#6b7280' />
-                <Text className='wb-card-addr'> {item.phone}</Text>
-              </View>
-              <View className='wb-card-row'>
-                <Icon name='map-pin' size={28} color='#6b7280' />
-                <Text className='wb-card-addr'> {item.address}</Text>
-              </View>
-              {item.expectedDate && (
-                <View className='wb-card-row'>
-                  <Icon name='calendar' size={28} color='#6b7280' />
-                  <Text className='wb-card-date'> 期望：{item.expectedDate}</Text>
-                </View>
-              )}
-            </View>
-          ))}
-          {measurements.length === 0 && <View className='wb-empty'><Text className='wb-empty-text'>暂无预约</Text></View>}
-        </View>
-      )}
-
-      {/* 快捷操作 */}
-      <View className='wb-actions'>
-        <Text className='wb-actions-title'>快捷操作</Text>
-        <View className='wb-action-grid'>
-          <View className='wb-action-btn' onClick={() => Taro.navigateTo({ url: '/subpackages/business/orders/index' })}>
-            <Icon name='clipboard' size={40} color='#122b4d' />
-            <Text className='wb-action-label'>录入线下订单</Text>
-          </View>
-          <View className='wb-action-btn' onClick={() => Taro.navigateTo({ url: '/subpackages/client/reservation/index' })}>
-            <Icon name='calendar' size={40} color='#122b4d' />
-            <Text className='wb-action-label'>新增量尺预约</Text>
-          </View>
         </View>
       </View>
+
+      {/* 最新动态（老板/店长显示） */}
+      {!isInstaller && (
+        <View className='wb-dynamic-section'>
+          <View className='wb-dynamic-header'>
+            <Text className='wb-section-title'>最新动态</Text>
+            <Text className='wb-dynamic-more' onClick={() => Taro.navigateTo({ url: '/subpackages/business/orders/index' })}>查看全部 ›</Text>
+          </View>
+          <View className='wb-dynamic-list'>
+            {orders.slice(0, 5).map((item: any) => {
+              const statusKey = (item.status || 'PENDING').toLowerCase();
+              return (
+                <View key={item.id} className='wb-dynamic-card'>
+                  <View className='wb-dynamic-top'>
+                    <Text className='wb-dynamic-no'>{item.orderNo || `#${item.id}`}</Text>
+                    <View className={`wb-dynamic-status wb-status-${statusKey}`}>
+                      <Text className='wb-dynamic-status-text'>
+                        {item.status === 'PENDING' ? '待处理' : item.status === 'INSTALLING' ? '施工中' : item.status === 'COMPLETED' ? '已完工' : item.status}
+                      </Text>
+                    </View>
+                  </View>
+                  <Text className='wb-dynamic-product'>{item.productName || '未指定产品'}</Text>
+                  <View className='wb-dynamic-row'>
+                    <Icon name='map-pin' size={24} color='#9ca3af' />
+                    <Text className='wb-dynamic-addr'>{item.installAddress || item.communityName || '-'}</Text>
+                  </View>
+                  <View className='wb-dynamic-bottom'>
+                    <Text className='wb-dynamic-client'>{item.client?.name || '-'}</Text>
+                    <Text className='wb-dynamic-amount'>¥{item.totalAmount?.toLocaleString() || 0}</Text>
+                  </View>
+                </View>
+              );
+            })}
+            {orders.length === 0 && (
+              <View className='wb-empty'>
+                <Icon name='inbox' size={64} color='#d1d5db' />
+                <Text className='wb-empty-text'>暂无动态</Text>
+              </View>
+            )}
+          </View>
+        </View>
+      )}
+
       <View className='safe-bottom' />
-    </View>
+    </ScrollView>
   );
 }
