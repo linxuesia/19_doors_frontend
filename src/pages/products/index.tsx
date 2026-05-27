@@ -12,9 +12,9 @@ const mockProducts = [
 ];
 
 export default function Products() {
-  const [activeSpaces, setActiveSpaces] = useState<string[]>(['客厅']);
-  const [activeStyles, setActiveStyles] = useState<string[]>(['现代简约']);
-  const [activeColors, setActiveColors] = useState<string[]>(['宝马灰']);
+  const [activeSpaces, setActiveSpaces] = useState<string[]>([]);
+  const [activeStyles, setActiveStyles] = useState<string[]>([]);
+  const [activeColors, setActiveColors] = useState<string[]>([]);
 
   const spaces = ['客厅', '厨房', '卫生间', '卧室'];
   const styles = ['现代简约', '奶油风', '中古风'];
@@ -22,7 +22,7 @@ export default function Products() {
 
   const toggleFilter = (value: string, active: string[], setter: (v: string[]) => void) => {
     if (active.includes(value)) {
-      if (active.length > 1) setter(active.filter((v) => v !== value));
+      setter(active.filter((v) => v !== value));
     } else {
       setter([...active, value]);
     }
