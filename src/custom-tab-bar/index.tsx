@@ -21,20 +21,17 @@ function getCurrentRoute(): string {
 }
 
 function matchTab(route: string, tabPath: string): boolean {
-  // 只精确匹配，或匹配到 tab 页本身（不含子页面）
   return route === tabPath;
 }
 
 export default function CustomTabBar() {
   const [current, setCurrent] = useState(() => getCurrentRoute());
 
-  // 页面显示时同步路由（处理 switchTab 跳转）
   useDidShow(() => {
     setCurrent(getCurrentRoute());
   });
 
   const handleClick = useCallback((path: string) => {
-    // 避免重复跳转当前页
     if (getCurrentRoute() === path) return;
     Taro.switchTab({ url: path });
   }, []);

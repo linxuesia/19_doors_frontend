@@ -16,7 +16,9 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
     plugins: [],
     defineConstants: {},
     copy: {
-      patterns: [],
+      patterns: [
+        { from: 'static/**/*', to: 'dist/static' },
+      ],
       options: {},
     },
     framework: 'react',

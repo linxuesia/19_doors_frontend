@@ -1,8 +1,16 @@
 import Taro from '@tarojs/taro';
 
-const BASE_URL = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:3000/api'
-  : 'https://api.19doors.com/api';
+// 微信小程序通过 envVersion 判断环境：develop(开发版) / trial(体验版) / release(正式版)
+const getBaseUrl = () => {
+  try {
+    const accountInfo = Taro.getAccountInfoSync?.();
+    const envVersion = accountInfo?.miniProgram?.envVersion;
+    if (envVersion === 'develop') return 'http://localhost:3000/api';
+  } catch {}
+  return 'https://api.19doors.com/api';
+};
+
+const BASE_URL = getBaseUrl();
 
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';

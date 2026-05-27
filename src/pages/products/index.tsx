@@ -81,7 +81,7 @@ export default function Products() {
           </View>
         </ScrollView>
         <View className='filter-more'>
-          <Text className='filter-more-text'>向左滑动解锁更多 >></Text>
+          <Text className='filter-more-text'>向左滑动解锁更多 &gt;&gt;</Text>
         </View>
       </View>
 
