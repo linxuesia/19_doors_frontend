@@ -146,6 +146,38 @@
   font-weight: 600;
 }
 
+// 距离标签（附近工地模式）
+.case-distance-tag {
+  position: absolute;
+  top: 20rpx;
+  left: 20rpx;
+  background: rgba(229, 62, 62, 0.85);
+  padding: 8rpx 20rpx;
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.distance-tag-text {
+  font-size: 22rpx;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+// 加载提示
+.loading-hint {
+  display: flex;
+  justify-content: center;
+  padding: 80rpx 0;
+}
+
+.loading-text {
+  font-size: 26rpx;
+  color: #9ca3af;
+}
+
 .case-card-body {
   padding: 24rpx;
 }
