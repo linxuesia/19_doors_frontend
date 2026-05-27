@@ -12,13 +12,21 @@ const mockProducts = [
 ];
 
 export default function Products() {
-  const [activeSpace, setActiveSpace] = useState('客厅');
-  const [activeStyle, setActiveStyle] = useState('现代简约');
-  const [activeColor, setActiveColor] = useState('宝马灰');
+  const [activeSpaces, setActiveSpaces] = useState<string[]>(['客厅']);
+  const [activeStyles, setActiveStyles] = useState<string[]>(['现代简约']);
+  const [activeColors, setActiveColors] = useState<string[]>(['宝马灰']);
 
   const spaces = ['客厅', '厨房', '卫生间', '卧室'];
   const styles = ['现代简约', '奶油风', '中古风'];
   const colors = ['宝马灰', '珐琅白', '金属咖', '星空黑', '黑晶石'];
+
+  const toggleFilter = (value: string, active: string[], setter: (v: string[]) => void) => {
+    if (active.includes(value)) {
+      if (active.length > 1) setter(active.filter((v) => v !== value));
+    } else {
+      setter([...active, value]);
+    }
+  };
 
   return (
     <ScrollView className='products-page' scrollY>
@@ -36,8 +44,8 @@ export default function Products() {
             {spaces.map((s) => (
               <View
                 key={s}
-                className={`filter-option ${activeSpace === s ? 'filter-option-active' : ''}`}
-                onClick={() => setActiveSpace(s)}
+                className={`filter-option ${activeSpaces.includes(s) ? 'filter-option-active' : ''}`}
+                onClick={() => toggleFilter(s, activeSpaces, setActiveSpaces)}
               >
                 <Text className='filter-option-text'>{s}</Text>
               </View>
@@ -54,8 +62,8 @@ export default function Products() {
             {styles.map((s) => (
               <View
                 key={s}
-                className={`filter-option ${activeStyle === s ? 'filter-option-active' : ''}`}
-                onClick={() => setActiveStyle(s)}
+                className={`filter-option ${activeStyles.includes(s) ? 'filter-option-active' : ''}`}
+                onClick={() => toggleFilter(s, activeStyles, setActiveStyles)}
               >
                 <Text className='filter-option-text'>{s}</Text>
               </View>
@@ -72,17 +80,14 @@ export default function Products() {
             {colors.map((c) => (
               <View
                 key={c}
-                className={`filter-option ${activeColor === c ? 'filter-option-active' : ''}`}
-                onClick={() => setActiveColor(c)}
+                className={`filter-option ${activeColors.includes(c) ? 'filter-option-active' : ''}`}
+                onClick={() => toggleFilter(c, activeColors, setActiveColors)}
               >
                 <Text className='filter-option-text'>{c}</Text>
               </View>
             ))}
           </View>
         </ScrollView>
-        <View className='filter-more'>
-          <Text className='filter-more-text'>向左滑动解锁更多 &gt;&gt;</Text>
-        </View>
       </View>
 
       {/* 产品网格 */}
@@ -105,10 +110,7 @@ export default function Products() {
               )}
             </View>
             <View className='product-card-body'>
-              <View className='product-card-header'>
-                <Text className='product-card-name'>{item.name}</Text>
-                <Icon name='star' size={24} color='#f59e0b' />
-              </View>
+              <Text className='product-card-name'>{item.name}</Text>
               <Text className='product-card-series'>{item.series}</Text>
               {item.features?.length > 0 && (
                 <View className='product-card-tags'>

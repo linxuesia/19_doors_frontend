@@ -1,3 +1,12 @@
+// 补充 icon-ri 样式（custom-tab-bar 是独立组件，不继承 app.wxss）
+.icon-ri {
+  font-family: 'remixicon';
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  display: inline;
+  line-height: 1;
+}
+
 .custom-tab-bar {
   position: fixed;
   bottom: 0;
