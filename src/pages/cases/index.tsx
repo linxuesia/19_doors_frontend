@@ -18,18 +18,17 @@ export default function Cases() {
     try {
       let url = '/cases?published=true';
       if (mode === 'local') {
-        const loc = await Taro.getLocation({ type: 'gcj02' });
-        url += `&lat=${loc.latitude}&lng=${loc.longitude}`;
+        try {
+          const loc = await Taro.getLocation({ type: 'gcj02' });
+          url += `&lat=${loc.latitude}&lng=${loc.longitude}`;
+        } catch {
+          // 定位失败继续请求，仅不传坐标
+          Taro.showToast({ title: '定位失败，展示全部案例', icon: 'none' });
+        }
       }
       const res: any = await api.get(url);
       setCases(res || []);
     } catch {
-      if (mode === 'local') {
-        Taro.showToast({ title: '请开启定位权限', icon: 'none' });
-        setViewMode('national');
-        fetchCases('national');
-        return;
-      }
       setCases([]);
     } finally {
       setLoading(false);
