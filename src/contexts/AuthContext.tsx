@@ -32,6 +32,7 @@ interface AuthContextType {
   phoneLogin: (params: { phoneCode?: string; wxCode?: string; phone?: string }) => Promise<void>;
   wechatLogin: (role: string) => Promise<void>;
   adminLogin: (username: string, password: string) => Promise<void>;
+  refreshUser: () => Promise<void>;
   logout: () => void;
 }
 
@@ -78,6 +79,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     Taro.removeStorageSync('user');
   }, []);
 
+  const refreshUser = useCallback(async () => {
+    try {
+      const res: any = await api.get('/auth/profile');
+      if (res) {
+        setUser(res);
+        Taro.setStorageSync('user', res);
+      }
+    } catch {
+      logout();
+    }
+  }, [logout]);
+
   const requireLogin = useCallback(() => {
     if (!user || !token) {
       Taro.navigateTo({ url: '/subpackages/client/login/index' });
@@ -100,7 +113,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const canManageStaff = user?.role === 'STORE_OWNER' || user?.role === 'ADMIN';
 
   return (
-    <AuthContext.Provider value={{ user, token, isBusiness, canManageStaff, requireBusinessLogin, requireLogin, phoneLogin, wechatLogin, adminLogin, logout }}>
+    <AuthContext.Provider value={{ user, token, isBusiness, canManageStaff, requireBusinessLogin, requireLogin, phoneLogin, wechatLogin, adminLogin, refreshUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

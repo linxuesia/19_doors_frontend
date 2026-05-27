@@ -28,6 +28,7 @@ export default defineAppConfig({
         'orders/index',           // 订单列表
         'order-manage/index',     // 订单管理/录入
         'reservations/index',     // 预约管理
+        'store-manage/index',     // 门店设置
         'admin/index',            // 管理员后台
         'admin-login/index',      // 管理员登录（扫码）
       ],
@@ -35,10 +36,10 @@ export default defineAppConfig({
   ],
   permission: {
     'scope.userLocation': {
-      desc: '用于展示您附近的工地及门店位置',
+      desc: '用于展示您附近的工地及门店位置、选择施工地址',
     },
   },
-  requiredPrivateInfos: ['getLocation'],
+  requiredPrivateInfos: ['getLocation', 'chooseLocation'],
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#122b4d',

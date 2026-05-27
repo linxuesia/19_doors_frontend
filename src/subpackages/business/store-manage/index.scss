@@ -1,0 +1,20 @@
+.sm-loading { display: flex; justify-content: center; align-items: center; height: 400rpx; }
+.sm-loading-text { font-size: 28rpx; color: #9ca3af; }
+
+.sm-page { min-height: 100vh; background: #f0f5fa; }
+
+.sm-header { padding: 32rpx 24rpx 0; }
+.sm-title { display: block; font-size: 36rpx; font-weight: 700; color: #122b4d; }
+.sm-subtitle { display: block; font-size: 26rpx; color: #6b7280; margin-top: 8rpx; }
+
+.sm-form { padding: 24rpx; display: flex; flex-direction: column; gap: 20rpx; }
+
+.sm-field { display: flex; flex-direction: column; gap: 8rpx; }
+.sm-label { font-size: 26rpx; font-weight: 600; color: #1f2937; }
+.sm-input { width: 100%; height: 88rpx; line-height: 88rpx; padding: 0 24rpx; background: #ffffff; border: 1px solid #ebedf0; border-radius: 16rpx; font-size: 28rpx; color: #1f2937; box-sizing: border-box; }
+
+.sm-textarea { width: 100%; min-height: 160rpx; padding: 24rpx; background: #ffffff; border: 1px solid #ebedf0; border-radius: 16rpx; font-size: 28rpx; color: #1f2937; box-sizing: border-box; }
+.sm-count { text-align: right; font-size: 22rpx; color: #9ca3af; }
+
+.sm-submit { width: 100%; padding: 28rpx; margin-top: 8rpx; }
+.opacity-50 { opacity: 0.5; }

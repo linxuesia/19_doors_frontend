@@ -13,7 +13,7 @@ const ownerFunctions = [
   { icon: 'user', label: '客户档案', url: '' },
   { icon: 'image', label: '案例库', url: '/pages/cases/index' },
   { icon: 'chart', label: '数据看板', url: '' },
-  { icon: 'settings', label: '门店设置', url: '' },
+  { icon: 'settings', label: '门店设置', url: '/subpackages/business/store-manage/index' },
 ];
 
 const managerFunctions = [
@@ -30,9 +30,12 @@ const installerFunctions = [
 ];
 
 export default function Workbench() {
-  const { user, requireBusinessLogin, canManageStaff } = useAuth();
+  const { user, requireBusinessLogin, canManageStaff, refreshUser } = useAuth();
   const [orders, setOrders] = useState<any[]>([]);
   const [stats, setStats] = useState({ total: 0, pending: 0, installing: 0, completed: 0 });
+
+  // 每次进入工作台时刷新用户信息（角色变更后无需重新登录）
+  useEffect(() => { refreshUser(); }, []);
 
   useEffect(() => {
     if (!requireBusinessLogin()) return;

@@ -11,6 +11,14 @@
 
 .login-error { font-size: 24rpx; color: #ef4444; text-align: center; }
 
-.login-submit { width: 100%; padding: 28rpx; display: flex; align-items: center; justify-content: center; }
-
+.login-submit { 
+  width: 100%; 
+  box-sizing: border-box;
+  padding: 28rpx; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  background: #122b4d;
+  color: #ffffff;
+}
 .opacity-50 { opacity: 0.5; }

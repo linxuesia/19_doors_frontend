@@ -12,7 +12,17 @@
 
 .login-error { font-size: 24rpx; color: #ef4444; text-align: center; }
 
-.login-submit { width: 100%; padding: 28rpx; display: flex; align-items: center; justify-content: center; line-height: normal; }
+.login-submit { 
+  width: 100%; 
+  box-sizing: border-box;
+  padding: 28rpx; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  line-height: normal; 
+  background: #122b4d;
+  color: #ffffff;
+}
 .login-wechat-btn { background: #07c160; border-color: #07c160; }
 .opacity-50 { opacity: 0.5; }
 

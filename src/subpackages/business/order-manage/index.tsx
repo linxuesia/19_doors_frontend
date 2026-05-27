@@ -67,6 +67,21 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
 
   const update = (key: string, value: string) => setForm({ ...form, [key]: value });
 
+  const chooseLocation = () => {
+    Taro.chooseLocation({
+      success: (res) => {
+        setForm({
+          ...form,
+          communityName: res.name || '',
+          installAddress: res.address || res.name || '',
+        });
+      },
+      fail: () => {
+        Taro.showToast({ title: '选择地址失败', icon: 'none' });
+      },
+    });
+  };
+
   return (
     <View className='om-form-page'>
       <Text className='om-form-title'>录入线下订单</Text>
@@ -75,8 +90,6 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
           { label: '客户姓名 *', key: 'clientName', placeholder: '请输入客户姓名' },
           { label: '客户电话 *', key: 'clientPhone', placeholder: '请输入客户电话' },
           { label: '产品名称', key: 'productName', placeholder: '例如：S100 内开窗' },
-          { label: '小区名称', key: 'communityName', placeholder: '请输入小区名称' },
-          { label: '施工地址 *', key: 'installAddress', placeholder: '请输入详细施工地址' },
         ].map((f) => (
           <View key={f.key} className='om-field'>
             <Text className='om-label'>{f.label}</Text>
@@ -85,6 +98,15 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
             </View>
           </View>
         ))}
+        <View className='om-field'>
+          <Text className='om-label'>小区名称 / 施工地址</Text>
+          <View className='om-input-wrap om-location-picker' onClick={chooseLocation}>
+            <Text className='om-input om-location-text'>
+              {form.communityName || form.installAddress ? `${form.communityName} ${form.installAddress}` : '点击选择位置'}
+            </Text>
+            <Text className='om-location-icon'>📍</Text>
+          </View>
+        </View>
         <View className='om-row'>
           <View className='om-field om-half'>
             <Text className='om-label'>订单金额</Text>
@@ -107,7 +129,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
         </View>
         <View className='om-field'>
           <Text className='om-label'>备注</Text>
-          <View className='om-input-wrap'><textarea className='om-textarea' placeholder='备注说明' value={form.remarks} onInput={(e) => update('remarks', e.detail.value)} /></View>
+          <View className='om-textarea-wrap'><textarea className='om-textarea' placeholder='备注说明' value={form.remarks} onInput={(e) => update('remarks', e.detail.value)} /></View>
         </View>
         <View className={`btn-primary om-submit ${loading ? 'opacity-50' : ''}`} onClick={handleSubmit}>
           <Text>{loading ? '提交中...' : '创建订单'}</Text>
@@ -187,6 +209,9 @@ function OrderDetailView({ order: initialOrder }: { order: any }) {
   };
 
   const isOwnerOrManager = user?.role === 'STORE_OWNER' || user?.role === 'STORE_MANAGER';
+  
+  // 判断是否有可操作的按钮（只有待分配/施工中状态有操作）
+  const hasActions = order.status === 'PENDING' || order.status === 'INSTALLING';
 
   return (
     <View className='om-detail-page'>
@@ -195,8 +220,8 @@ function OrderDetailView({ order: initialOrder }: { order: any }) {
         <Text className='tag tag-brand'>{orderStatusMap[order.status]?.label || order.status}</Text>
       </View>
 
-      {/* 操作区 */}
-      {isOwnerOrManager && (
+      {/* 操作区 - 只有有权限且有可操作状态时才显示 */}
+      {isOwnerOrManager && hasActions && (
         <View className='om-actions-card'>
           {order.status === 'PENDING' && (
             <>

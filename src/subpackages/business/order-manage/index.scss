@@ -1,6 +1,18 @@
 .loading { display: flex; justify-content: center; align-items: center; height: 400rpx; }
 .loading-text { font-size: 28rpx; color: #9ca3af; }
 
+// ====== 按钮基础规范（Sass mixin）=======
+@mixin btn-base {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 16px;
+  font-size: 28rpx;
+  font-weight: 500;
+
+  &:active { opacity: 0.85; }
+}
+
 // 创建表单
 .om-form-page { min-height: 100vh; background: #f0f5fa; padding: 24rpx; }
 .om-form-title { display: block; font-size: 36rpx; font-weight: 700; color: #122b4d; margin-bottom: 24rpx; }
@@ -9,10 +21,22 @@
 .om-label { font-size: 24rpx; color: #6b7280; }
 .om-input-wrap { background: #ffffff; border: 1px solid #ebedf0; border-radius: 16px; overflow: hidden; }
 .om-input { width: 100%; height: 88rpx; line-height: 88rpx; padding: 0 24rpx; font-size: 28rpx; color: #1f2937; border: none; outline: none; box-sizing: border-box; }
+.om-textarea-wrap { background: #ffffff; border: 1px solid #ebedf0; border-radius: 16px; overflow: hidden; }
 .om-textarea { width: 100%; min-height: 160rpx; padding: 24rpx; font-size: 28rpx; color: #1f2937; border: none; outline: none; box-sizing: border-box; }
 .om-row { display: flex; gap: 16rpx; }
 .om-half { flex: 1; }
-.om-submit { width: 100%; padding: 28rpx; margin-top: 8rpx; }
+.om-location-picker { display: flex; justify-content: space-between; align-items: center; }
+.om-location-text { flex: 1; text-align: left; }
+.om-location-icon { font-size: 32rpx; margin-left: 12rpx; }
+.om-submit { 
+  @include btn-base();
+  width: 100%; 
+  box-sizing: border-box;
+  padding: 28rpx; 
+  margin-top: 8rpx; 
+  background: #122b4d;
+  color: #ffffff;
+}
 .opacity-50 { opacity: 0.5; }
 
 // 订单详情
@@ -34,10 +58,24 @@
 .om-log-date { font-size: 22rpx; color: #9ca3af; }
 .om-log-text { font-size: 26rpx; color: #4b5563; line-height: 1.5; }
 
-// 操作区
-.om-actions-card { background: #ffffff; border-radius: 24rpx; padding: 24rpx; margin: 0 24rpx 16rpx; }
-.om-action-btn { width: 100%; padding: 28rpx; text-align: center; }
-.om-assign-panel { display: flex; flex-direction: column; gap: 16rpx; }
+// 操作区 — 所有按钮统一使用 flex 居中，保持风格一致
+.om-actions-card { 
+  background: #ffffff; 
+  border-radius: 24rpx; 
+  padding: 24rpx; 
+  margin: 0 24rpx 16rpx;
+  display: flex;        // ← 确保卡片内内容居中
+  justify-content: center;
+}
+.om-action-btn {
+  @include btn-base();
+  width: 100%;
+  box-sizing: border-box;
+  padding: 28rpx;
+  background: #122b4d;
+  color: #ffffff;
+}
+.om-assign-panel { display: flex; flex-direction: column; gap: 16rpx; width: 100%; }
 .om-no-installer { font-size: 26rpx; color: #9ca3af; text-align: center; padding: 24rpx 0; }
 .om-installer-list { display: flex; flex-direction: column; gap: 12rpx; }
 .om-installer-item { display: flex; align-items: center; justify-content: space-between; padding: 20rpx 24rpx; border: 1px solid #ebedf0; border-radius: 16px; }
@@ -45,5 +83,24 @@
 .om-installer-name { font-size: 28rpx; font-weight: 500; color: #1f2937; }
 .om-installer-phone { font-size: 24rpx; color: #9ca3af; }
 .om-assign-actions { display: flex; gap: 16rpx; margin-top: 8rpx; }
-.om-assign-actions .btn-ghost { flex: 1; padding: 24rpx; border: 1px solid #ebedf0; border-radius: 16px; text-align: center; }
-.om-assign-confirm { flex: 1; padding: 24rpx; text-align: center; }
+
+// 操作按钮 — 统一样式（取消和确认按钮共用）
+.om-assign-btn {
+  @include btn-base();
+  flex: 1;                  // ← 两个按钮等分空间
+  padding: 24rpx;
+}
+
+// 取消按钮 — 次按钮风格
+.om-assign-actions .btn-ghost {
+  @extend .om-assign-btn;
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+// 确认分配按钮 — 主按钮风格
+.om-assign-confirm {
+  @extend .om-assign-btn;
+  background: #122b4d;
+  color: #ffffff;
+}

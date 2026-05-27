@@ -68,7 +68,7 @@ export default function Home() {
         <View className='hero-banner-bg' />
         <Image
           className='hero-image'
-          src='https://cdn.juesedao.cn/mdy/120bdd3bf36f49e49ef335d346e91ec4'
+          src='cloud://prod-d7g81p837f1219e28.7072-prod-d7g81p837f1219e28-1436604435/common/banner.jpeg'
           mode='widthFix'
         />
         <Button className='customer-service' openType='contact'>

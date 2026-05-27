@@ -87,10 +87,15 @@
 
 .res-submit {
   width: 100%;
+  box-sizing: border-box;
   padding: 28rpx;
   margin-top: 8rpx;
+  background: #122b4d;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
 .res-submit-loading {
   opacity: 0.6;
 }
