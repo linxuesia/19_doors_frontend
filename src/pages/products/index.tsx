@@ -1,82 +1,45 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { View, Text, ScrollView, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import Icon from '../../components/Icon';
-import api from '../../utils/api';
 import './index.scss';
 
-const seriesList = ['全部', 'S100系列', 'S97系列', '全景落地窗', '推拉门', '平开门'];
-const spaceList = ['全部空间', '客厅', '卧室', '阳台', '厨房', '书房'];
-const styleList = ['全部风格', '现代简约', '轻奢', '新中式', '北欧'];
+const mockProducts = [
+  { id: 1, name: 'S100内开窗纱一体', series: 'S100', coverImage: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=modern%20aluminum%20window%20in%20luxury%20living%20room%20with%20city%20view%20daylight&image_size=landscape_4_3', features: ['纱网一体', '隔音隔热'] },
+  { id: 2, name: 'S97内开窗纱一体', series: 'S97', coverImage: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=modern%20aluminum%20casement%20window%20in%20home%20office%20with%20bookshelf&image_size=landscape_4_3', features: ['静音设计', '安全防护'] },
+  { id: 3, name: 'S88断桥平开窗', series: 'S88', coverImage: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=minimalist%20aluminum%20window%20with%20curved%20design%20in%20modern%20apartment&image_size=landscape_4_3', features: ['断桥隔热', '节能保温'] },
+  { id: 4, name: 'S110推拉门', series: 'S110', coverImage: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=large%20sliding%20glass%20door%20in%20modern%20living%20room%20with%20panoramic%20view&image_size=landscape_4_3', features: ['超大视野', '推拉顺畅'] },
+];
 
 export default function Products() {
-  const [products, setProducts] = useState<any[]>([]);
-  const [activeSeries, setActiveSeries] = useState('全部');
-  const [activeSpace, setActiveSpace] = useState('全部空间');
-  const [activeStyle, setActiveStyle] = useState('全部风格');
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [showFilter, setShowFilter] = useState(false);
+  const [activeSpace, setActiveSpace] = useState('客厅');
+  const [activeStyle, setActiveStyle] = useState('现代简约');
+  const [activeColor, setActiveColor] = useState('宝马灰');
 
-  useEffect(() => {
-    api.get('/products')
-      .then((res: any) => setProducts(res || []))
-      .catch(() => setProducts([]));
-  }, []);
-
-  const filteredProducts = products.filter((item: any) => {
-    if (activeSeries !== '全部' && item.series !== activeSeries) return false;
-    if (searchKeyword && !item.name?.includes(searchKeyword)) return false;
-    return true;
-  });
+  const spaces = ['客厅', '厨房', '卫生间', '卧室'];
+  const styles = ['现代简约', '奶油风', '中古风'];
+  const colors = ['宝马灰', '珐琅白', '金属咖', '星空黑', '黑晶石'];
 
   return (
     <ScrollView className='products-page' scrollY>
-      {/* 搜索栏 */}
-      <View className='search-bar'>
-        <View className='search-input-wrap'>
-          <Icon name='search' size={32} color='#9ca3af' />
-          <Text
-            className='search-input'
-            onClick={() => Taro.navigateTo({ url: '/subpackages/client/search/index?type=product' })}
-          >搜索产品名称或型号</Text>
-        </View>
-      </View>
-
-      {/* 系列筛选 */}
-      <View className='filter-section'>
-        <View className='filter-label'>
-          <Text className='filter-label-text'>产品系列</Text>
-          <Icon name='chevron-down' size={24} color='#6b7280' />
-        </View>
-        <ScrollView className='filter-scroll' scrollX showScrollbar={false}>
-          <View className='filter-tags'>
-            {seriesList.map((s) => (
-              <View
-                key={s}
-                className={`filter-tag ${activeSeries === s ? 'filter-tag-active' : ''}`}
-                onClick={() => setActiveSeries(s)}
-              >
-                <Text className={`filter-tag-text ${activeSeries === s ? 'filter-tag-text-active' : ''}`}>{s}</Text>
-              </View>
-            ))}
-          </View>
-        </ScrollView>
+      {/* 系列标签 */}
+      <View className='series-tag'>
+        <Text className='series-label'>系列:</Text>
+        <Text className='series-value'>平开窗</Text>
       </View>
 
       {/* 空间筛选 */}
       <View className='filter-section'>
-        <View className='filter-label'>
-          <Text className='filter-label-text'>适用空间</Text>
-        </View>
+        <Text className='filter-label'>空间:</Text>
         <ScrollView className='filter-scroll' scrollX showScrollbar={false}>
-          <View className='filter-tags'>
-            {spaceList.map((s) => (
+          <View className='filter-options'>
+            {spaces.map((s) => (
               <View
                 key={s}
-                className={`filter-tag ${activeSpace === s ? 'filter-tag-active' : ''}`}
+                className={`filter-option ${activeSpace === s ? 'filter-option-active' : ''}`}
                 onClick={() => setActiveSpace(s)}
               >
-                <Text className={`filter-tag-text ${activeSpace === s ? 'filter-tag-text-active' : ''}`}>{s}</Text>
+                <Text className='filter-option-text'>{s}</Text>
               </View>
             ))}
           </View>
@@ -85,64 +48,78 @@ export default function Products() {
 
       {/* 风格筛选 */}
       <View className='filter-section'>
-        <View className='filter-label'>
-          <Text className='filter-label-text'>设计风格</Text>
-        </View>
+        <Text className='filter-label'>风格:</Text>
         <ScrollView className='filter-scroll' scrollX showScrollbar={false}>
-          <View className='filter-tags'>
-            {styleList.map((s) => (
+          <View className='filter-options'>
+            {styles.map((s) => (
               <View
                 key={s}
-                className={`filter-tag ${activeStyle === s ? 'filter-tag-active' : ''}`}
+                className={`filter-option ${activeStyle === s ? 'filter-option-active' : ''}`}
                 onClick={() => setActiveStyle(s)}
               >
-                <Text className={`filter-tag-text ${activeStyle === s ? 'filter-tag-text-active' : ''}`}>{s}</Text>
+                <Text className='filter-option-text'>{s}</Text>
               </View>
             ))}
           </View>
         </ScrollView>
       </View>
 
+      {/* 色彩筛选 */}
+      <View className='filter-section'>
+        <Text className='filter-label'>色彩:</Text>
+        <ScrollView className='filter-scroll' scrollX showScrollbar={false}>
+          <View className='filter-options'>
+            {colors.map((c) => (
+              <View
+                key={c}
+                className={`filter-option ${activeColor === c ? 'filter-option-active' : ''}`}
+                onClick={() => setActiveColor(c)}
+              >
+                <Text className='filter-option-text'>{c}</Text>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+        <View className='filter-more'>
+          <Text className='filter-more-text'>向左滑动解锁更多 >></Text>
+        </View>
+      </View>
+
       {/* 产品网格 */}
       <View className='product-grid'>
-        {filteredProducts.map((item: any) => {
-          let features: string[] = [];
-          try { features = JSON.parse(item.features || '[]'); } catch {}
-          return (
-            <View
-              key={item.id}
-              className='product-card'
-              onClick={() =>
-                Taro.navigateTo({ url: `/subpackages/client/product-detail/index?id=${item.id}` })
-              }
-            >
-              <View className='product-card-img'>
-                {item.imageUrl ? (
-                  <Image className='product-card-image' src={item.imageUrl} mode='aspectFill' />
-                ) : (
-                  <View className='product-card-placeholder'>
-                    <Icon name='window' size={72} color='#b0c4d8' />
-                  </View>
-                )}
+        {mockProducts.map((item: any) => (
+          <View
+            key={item.id}
+            className='product-card'
+            onClick={() =>
+              Taro.navigateTo({ url: `/subpackages/client/product-detail/index?id=${item.id}` })
+            }
+          >
+            <View className='product-card-img'>
+              {item.coverImage ? (
+                <Image className='product-card-image' src={item.coverImage} mode='aspectFill' />
+              ) : (
+                <View className='product-card-placeholder'>
+                  <Icon name='window' size={72} color='#b0c4d8' />
+                </View>
+              )}
+            </View>
+            <View className='product-card-body'>
+              <View className='product-card-header'>
+                <Text className='product-card-name'>{item.name}</Text>
+                <Icon name='star' size={24} color='#f59e0b' />
               </View>
-              <View className='product-card-body'>
-                <Text className='product-card-name'>{item.name || item.title}</Text>
-                <Text className='product-card-series'>{item.series || item.category}</Text>
+              <Text className='product-card-series'>{item.series}</Text>
+              {item.features?.length > 0 && (
                 <View className='product-card-tags'>
-                  {features.slice(0, 3).map((f, i) => (
+                  {item.features.slice(0, 3).map((f: string, i: number) => (
                     <Text key={i} className='feature-tag'>{f}</Text>
                   ))}
                 </View>
-              </View>
+              )}
             </View>
-          );
-        })}
-        {filteredProducts.length === 0 && (
-          <View className='empty-state'>
-            <Icon name='inbox' size={80} color='#d1d5db' />
-            <Text className='empty-text'>暂无相关产品</Text>
           </View>
-        )}
+        ))}
       </View>
 
       <View className='safe-bottom' />
