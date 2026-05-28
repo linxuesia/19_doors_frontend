@@ -16,6 +16,10 @@ function App({ children }: PropsWithChildren) {
         success: () => console.log('Remix Icon font loaded'),
         fail: (err) => console.warn('Font load failed:', err),
       });
+      // 初始化微信云开发（云存储）
+      if (Taro.cloud) {
+        Taro.cloud.init({ env: 'prod-d7g81p837f1219e28' });
+      }
     }
   });
 

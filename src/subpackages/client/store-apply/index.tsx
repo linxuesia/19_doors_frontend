@@ -1,70 +1,197 @@
-import { useState } from 'react';
-import { View, Text, Input, Button } from '@tarojs/components';
+import { useState, useEffect } from 'react';
+import { View, Text, Input, Image, Button, Picker } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
+import { uploadImages } from '../../../utils/cloud';
 import './index.scss';
 
+const roles = [
+  {
+    key: 'STORE_OWNER',
+    title: '门店老板',
+    desc: '拥有最高管理权限',
+    icon: 'user',
+  },
+  {
+    key: 'STORE_MANAGER',
+    title: '门店店长',
+    desc: '负责门店日常运营',
+    icon: 'clipboard',
+  },
+];
+
+interface StoreItem {
+  id: number;
+  name: string;
+}
+
 export default function StoreApply() {
-  const [companyName, setCompanyName] = useState('');
+  const [role, setRole] = useState('STORE_OWNER');
+  const [storeName, setStoreName] = useState('');
+  const [selectedStoreId, setSelectedStoreId] = useState<number>(0);
   const [contactName, setContactName] = useState('');
   const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
+  const [licenseImages, setLicenseImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [storeList, setStoreList] = useState<StoreItem[]>([]);
+
+  useEffect(() => {
+    fetchStores();
+  }, []);
+
+  const fetchStores = async () => {
+    try {
+      const res: any = await api.get('/stores', { params: { status: 'active' } });
+      const list = (res.data || []).map((s: any) => ({ id: s.id, name: s.name }));
+      setStoreList(list);
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  const handleUpload = () => {
+    Taro.chooseImage({
+      count: 3,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        setLicenseImages([...licenseImages, ...res.tempFilePaths]);
+      },
+    });
+  };
+
+  const removeImage = (index: number) => {
+    setLicenseImages(licenseImages.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = async () => {
-    setError('');
-    if (!companyName || !contactName || !phone) {
-      setError('请填写公司名称、联系人及手机号');
+    if (role === 'STORE_OWNER' && !storeName) {
+      Taro.showToast({ title: '请填写门店名称', icon: 'none' });
+      return;
+    }
+    if (role === 'STORE_MANAGER' && !selectedStoreId) {
+      Taro.showToast({ title: '请选择门店', icon: 'none' });
+      return;
+    }
+    if (!contactName || !phone) {
+      Taro.showToast({ title: '请填写必填项', icon: 'none' });
+      return;
+    }
+    if (!/^1\d{10}$/.test(phone)) {
+      Taro.showToast({ title: '请输入正确的手机号', icon: 'none' });
       return;
     }
     setLoading(true);
     try {
+      // 先上传图片到云存储
+      let fileIDs: string[] = [];
+      if (licenseImages.length > 0) {
+        fileIDs = await uploadImages(licenseImages, 'store-apply');
+      }
       await api.post('/store-applications', {
-        companyName,
+        role,
+        ...(role === 'STORE_OWNER'
+          ? { storeName }
+          : { storeId: selectedStoreId }),
         contactName,
         phone,
-        address,
+        licenseImages: fileIDs, // 提交云存储 fileID 而非本地临时路径
       });
       Taro.showToast({ title: '申请已提交，等待审核', icon: 'success' });
       setTimeout(() => Taro.navigateBack(), 1500);
     } catch (e: any) {
-      setError(e.message || '提交失败');
+      Taro.showToast({ title: e.message || '提交失败', icon: 'none' });
     } finally {
       setLoading(false);
     }
   };
 
+  const onStoreChange = (e: any) => {
+    const idx = e.detail.value as number;
+    setSelectedStoreId(storeList[idx]?.id || 0);
+  };
+
   return (
-    <View className='apply-page'>
-      <View className='apply-header'>
-        <Icon name='building' size={56} color='#122b4d' />
-        <Text className='apply-title'>门店入驻申请</Text>
-        <Text className='apply-subtitle'>填写门店信息，提交后等待管理员审核</Text>
-      </View>
-
-      <View className='apply-form'>
-        <View className='apply-field'>
-          <Text className='apply-label'>公司名称</Text>
-          <Input className='apply-input' placeholder='请输入公司/门店名称' value={companyName} onInput={(e) => setCompanyName(e.detail.value)} />
-        </View>
-        <View className='apply-field'>
-          <Text className='apply-label'>联系人</Text>
-          <Input className='apply-input' placeholder='请输入联系人姓名' value={contactName} onInput={(e) => setContactName(e.detail.value)} />
-        </View>
-        <View className='apply-field'>
-          <Text className='apply-label'>手机号</Text>
-          <Input className='apply-input' type='number' placeholder='请输入手机号' value={phone} onInput={(e) => setPhone(e.detail.value)} maxlength={11} />
-        </View>
-        <View className='apply-field'>
-          <Text className='apply-label'>门店地址</Text>
-          <Input className='apply-input' placeholder='请输入门店地址（选填）' value={address} onInput={(e) => setAddress(e.detail.value)} />
+    <View className='sa-page'>
+      <View className='sa-form'>
+        {/* 角色选择 */}
+        <View className='sa-role-row'>
+          {roles.map((r) => (
+            <View
+              key={r.key}
+              className={`sa-role-card ${role === r.key ? 'sa-role-active' : ''}`}
+              onClick={() => { setRole(r.key); setSelectedStoreId(0); }}
+            >
+              <Icon name={r.icon as any} size={48} color={role === r.key ? '#122b4d' : '#9ca3af'} />
+              <Text className={`sa-role-title ${role === r.key ? 'sa-role-title-active' : ''}`}>{r.title}</Text>
+              <Text className='sa-role-desc'>{r.desc}</Text>
+            </View>
+          ))}
         </View>
 
-        {error && <Text className='apply-error'>{error}</Text>}
+        {/* 老板：门店名称输入 */}
+        {role === 'STORE_OWNER' && (
+        <View className='sa-field'>
+          <Text className='sa-label'>门店名称</Text>
+          <Input className='sa-input' placeholder='例如：上海19分贝门窗直营店' value={storeName} onInput={(e) => setStoreName(e.detail.value)} />
+        </View>
+        )}
 
-        <Button className='btn-primary apply-submit' onClick={handleSubmit} disabled={loading}>
+        {/* 店长：门店选择 */}
+        {role === 'STORE_MANAGER' && (
+        <View className='sa-field'>
+          <Text className='sa-label'>选择门店</Text>
+          <Picker mode='selector' range={storeList.map(s => s.name)} value={storeList.findIndex(s => s.id === selectedStoreId)} onChange={onStoreChange}>
+            <View className='sa-picker'>
+              <Text className={selectedStoreId ? '' : 'sa-picker-placeholder'}>
+                {storeList.find(s => s.id === selectedStoreId)?.name || '请选择要加入的门店'}
+              </Text>
+              <Icon name='arrow-down' size={28} color='#9ca3af' />
+            </View>
+          </Picker>
+        </View>
+        )}
+
+        <View className='sa-field'>
+          <Text className='sa-label'>您的姓名</Text>
+          <Input className='sa-input' placeholder='真实姓名' value={contactName} onInput={(e) => setContactName(e.detail.value)} />
+        </View>
+        <View className='sa-field'>
+          <Text className='sa-label'>联系电话</Text>
+          <Input className='sa-input' type='number' placeholder='11位手机号码' value={phone} onInput={(e) => setPhone(e.detail.value)} maxlength={11} />
+        </View>
+        {role === 'STORE_OWNER' && (
+        <View className='sa-field'>
+          <Text className='sa-label'>门店资质材料（营业执照等图片）</Text>
+          <View className='sa-upload-area' onClick={handleUpload}>
+            {licenseImages.length > 0 ? (
+              <View className='sa-image-list'>
+                {licenseImages.map((img, i) => (
+                  <View key={i} className='sa-image-item'>
+                    <Image className='sa-image-preview' src={img} mode='aspectFill' />
+                    <View className='sa-image-delete' onClick={(e) => { e.stopPropagation(); removeImage(i); }}>
+                      <Icon name='close' size={20} color='#ffffff' />
+                    </View>
+                  </View>
+                ))}
+                {licenseImages.length < 3 && (
+                  <View className='sa-add-btn'>
+                    <Icon name='add' size={40} color='#c0c4cc' />
+                  </View>
+                )}
+              </View>
+            ) : (
+              <View className='sa-upload-placeholder'>
+                <Icon name='camera' size={56} color='#c0c4cc' />
+                <Text className='sa-upload-text'>点击上传图片</Text>
+              </View>
+            )}
+          </View>
+        </View>
+        )}
+
+        <Button className={`btn-primary sa-submit ${loading ? 'opacity-50' : ''}`} onClick={handleSubmit}>
           <Text>{loading ? '提交中...' : '提交申请'}</Text>
         </Button>
       </View>

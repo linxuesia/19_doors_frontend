@@ -26,6 +26,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
     cache: { enable: false },
     mini: {
       compileMode: 'page',
+      cloud: true,
       condition: {
         miniprogram: {
           list: [
