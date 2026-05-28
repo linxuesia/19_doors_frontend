@@ -52,10 +52,10 @@ export default function Home() {
   useEffect(() => {
     // 获取默认门店信息
     api.get(`/stores/${storeId}`).then((store: any) => setStoreInfo(store)).catch(() => {});
-    // 获取产品、案例、工地
+    // 获取产品、门店案例、工地
     Promise.all([
       api.get('/products').catch(() => []),
-      api.get('/cases?published=true').catch(() => []),
+      api.get(`/cases/store/${storeId}`).catch(() => []),
       api.get('/sites').catch(() => []),
     ]).then(([p, c, s]) => {
       setProducts((p as any)?.slice?.(0, 4) || []);
@@ -144,8 +144,8 @@ export default function Home() {
         <View className='map-container'>
           <Map
             className='index-map'
-            longitude={121.4737}
-            latitude={31.2304}
+            longitude={storeInfo?.longitude || 121.4737}
+            latitude={storeInfo?.latitude || 31.2304}
             scale={12}
             markers={markers}
             showLocation
@@ -237,25 +237,30 @@ export default function Home() {
           <Text className='badge-text'>实景案例</Text>
           <Text className='badge-en'>REAL CASES</Text>
         </View>
-        {[
-          { id: 'c1', title: '上海市松江区涞亭南路S78', city: '上海', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80' },
-          { id: 'c2', title: '上海市松江区涞亭南路S88', city: '上海', image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80' },
-          { id: 'c3', title: '上海市松江区涞亭南路S89', city: '上海', image: 'https://images.unsplash.com/photo-1600607688969-a5bfcd64bd40?auto=format&fit=crop&w=800&q=80' },
-        ].map((item) => (
+        {cases.length > 0 ? cases.map((item: any) => (
           <View
             key={item.id}
             className='case-card'
             onClick={() => navigate(`/subpackages/client/case-detail/index?id=${item.id}`)}
           >
             <View className='case-city-tag'>
-              <Text className='city-tag-text'>{item.city}</Text>
+              <Text className='city-tag-text'>{item.store?.name || item.communityName || ''}</Text>
             </View>
-            <Image className='case-img' src={item.image} mode='aspectFill' />
+            <Image
+              className='case-img'
+              src={item.coverImage || item.imageUrl || ''}
+              mode='aspectFill'
+            />
             <View className='case-footer'>
               <Text className='case-title'>{item.title}</Text>
             </View>
           </View>
-        ))}
+        )) : (
+          <View className='site-empty'>
+            <Icon name='image' size={48} color='#d1d5db' />
+            <Text className='empty-text'>暂无案例</Text>
+          </View>
+        )}
       </View>
 
       <View className='safe-bottom' />
