@@ -66,6 +66,22 @@ export default function Profile() {
       </View>
       )}
 
+      {/* 工作台入口（仅店长/老板可见） */}
+      {user && (user.role === 'STORE_OWNER' || user.role === 'STORE_MANAGER') && (
+      <View className='store-entry-card'>
+        <View className='store-entry-left'>
+          <Text className='store-entry-title'>工作台</Text>
+          <Text className='store-entry-desc'>管理订单、预约与门店</Text>
+        </View>
+        <View
+          className='store-entry-btn'
+          onClick={() => Taro.navigateTo({ url: '/subpackages/business/workbench/index' })}
+        >
+          <Text className='store-entry-btn-text'>进入</Text>
+        </View>
+      </View>
+      )}
+
       {/* 常用服务 */}
       <View className='service-section'>
         <Text className='service-title'>常用服务</Text>
