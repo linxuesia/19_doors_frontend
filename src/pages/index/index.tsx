@@ -92,7 +92,7 @@ export default function Home() {
           <Text className='manager-store'>{storeInfo?.name || '加载中...'}</Text>
         </View>
         <View className='manager-actions'>
-          <View className='action-icon' onClick={() => storeInfo?.phone && Taro.makePhoneCall({ phoneNumber: storeInfo.phone })}>
+          <View className='action-icon' onClick={() => storeInfo?.owner?.phone && Taro.makePhoneCall({ phoneNumber: storeInfo.owner.phone })}>
             <Icon name='phone' size={36} color='#122b4d' />
           </View>
           <View className='action-icon' onClick={() => {}}>
