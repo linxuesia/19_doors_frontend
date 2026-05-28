@@ -41,6 +41,9 @@ export default function StoreApply() {
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [storeList, setStoreList] = useState<StoreItem[]>([]);
+  const [address, setAddress] = useState('');
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
 
   useEffect(() => {
     fetchStores();
@@ -85,6 +88,19 @@ export default function StoreApply() {
     setLicenseImages(licenseImages.filter((_, i) => i !== index));
   };
 
+  const handleChooseLocation = () => {
+    Taro.chooseLocation({
+      success: (res: any) => {
+        setAddress(res.address || res.name || '');
+        setLatitude(res.latitude);
+        setLongitude(res.longitude);
+      },
+      fail: () => {
+        Taro.showToast({ title: '定位失败，请重试', icon: 'none' });
+      },
+    });
+  };
+
   const handleSubmit = async () => {
     if (role === 'STORE_OWNER' && !storeName) {
       Taro.showToast({ title: '请填写门店名称', icon: 'none' });
@@ -112,6 +128,9 @@ export default function StoreApply() {
         contactName,
         phone,
         licenseImages: licenseImages.map((img) => img.fileID),
+        address,
+        latitude,
+        longitude,
       });
       Taro.showToast({ title: '申请已提交，等待审核', icon: 'success' });
       setTimeout(() => Taro.navigateBack(), 1500);
@@ -147,10 +166,22 @@ export default function StoreApply() {
 
         {/* 老板：门店名称输入 */}
         {role === 'STORE_OWNER' && (
+        <>
         <View className='sa-field'>
           <Text className='sa-label'>门店名称</Text>
           <Input className='sa-input' placeholder='例如：上海19分贝门窗直营店' value={storeName} onInput={(e) => setStoreName(e.detail.value)} />
         </View>
+        <View className='sa-field'>
+          <Text className='sa-label'>门店位置</Text>
+          <View className='sa-location-row' onClick={handleChooseLocation}>
+            <Icon name='map-pin' size={32} color='#122b4d' />
+            <Text className={address ? 'sa-location-text' : 'sa-location-placeholder'}>
+              {address || '点击选择门店地址'}
+            </Text>
+            <Icon name='arrow-right' size={28} color='#d1d5db' />
+          </View>
+        </View>
+        </>
         )}
 
         {/* 店长：门店选择 */}

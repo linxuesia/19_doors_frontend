@@ -1,22 +1,201 @@
-.apply-page { min-height: 100vh; background: #f0f5fa; padding: 48rpx 32rpx; }
+.sa-page { min-height: 100vh; background: #f5f7fa; padding: 24rpx; }
 
-.apply-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 48rpx; }
-.apply-title { font-size: 36rpx; font-weight: 700; color: #122b4d; margin-top: 16rpx; }
-.apply-subtitle { font-size: 26rpx; color: #6b7280; margin-top: 8rpx; }
+.sa-form {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+}
 
-.apply-form { background: #ffffff; border-radius: 24rpx; padding: 32rpx; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+// ====== 角色选择 ======
+.sa-role-row {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 32rpx;
+}
 
-.apply-field { margin-bottom: 24rpx; }
-.apply-label { display: block; font-size: 26rpx; font-weight: 600; color: #1f2937; margin-bottom: 12rpx; }
-.apply-input { width: 100%; height: 88rpx; line-height: 88rpx; padding: 0 24rpx; background: #f9fafb; border: 1px solid #ebedf0; border-radius: 16px; font-size: 28rpx; color: #1f2937; box-sizing: border-box; }
+.sa-role-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 28rpx 16rpx;
+  border-radius: 16rpx;
+  border: 2px solid #ebedf0;
+  background: #ffffff;
+  transition: all 0.2s;
 
-.apply-error { display: block; font-size: 24rpx; color: #ef4444; text-align: center; margin-bottom: 16rpx; }
+  &:active {
+    opacity: 0.85;
+  }
+}
 
-.apply-submit { 
-  width: 100%; 
+.sa-role-active {
+  border-color: #122b4d;
+  background: #f8faff;
+}
+
+.sa-role-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.sa-role-title-active {
+  color: #122b4d;
+}
+
+.sa-role-desc {
+  font-size: 22rpx;
+  color: #9ca3af;
+}
+
+// ====== 表单字段 ======
+.sa-field {
+  margin-bottom: 28rpx;
+}
+
+.sa-label {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 12rpx;
+}
+
+.sa-input {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  padding: 0 24rpx;
+  background: #f9fafb;
+  border: 1px solid #ebedf0;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #1f2937;
   box-sizing: border-box;
-  margin-top: 16rpx; 
-  padding: 28rpx; 
+}
+
+// ====== 门店选择器 ======
+.sa-picker {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  padding: 0 24rpx;
+  background: #f9fafb;
+  border: 1px solid #ebedf0;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #1f2937;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sa-picker-placeholder {
+  color: #c0c4cc;
+}
+
+// ====== 图片上传 ======
+.sa-upload-area {
+  border: 2rpx dashed #d1d5db;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.sa-upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 240rpx;
+  gap: 12rpx;
+}
+
+.sa-upload-text {
+  font-size: 26rpx;
+  color: #9ca3af;
+}
+
+.sa-image-list {
+  display: flex;
+  gap: 16rpx;
+  padding: 16rpx;
+  flex-wrap: wrap;
+}
+
+.sa-image-item {
+  position: relative;
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.sa-image-preview {
+  width: 100%;
+  height: 100%;
+}
+
+.sa-image-delete {
+  position: absolute;
+  top: 4rpx;
+  right: 4rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sa-add-btn {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 12rpx;
+  border: 2rpx dashed #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9fafb;
+}
+
+// ====== 门店定位 ======
+.sa-location-row {
+  width: 100%;
+  height: 88rpx;
+  padding: 0 24rpx;
+  background: #f9fafb;
+  border: 1px solid #ebedf0;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.sa-location-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #1f2937;
+}
+
+.sa-location-placeholder {
+  flex: 1;
+  font-size: 28rpx;
+  color: #c0c4cc;
+}
+
+// ====== 提交按钮 ======
+.sa-submit {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 16rpx;
+  padding: 28rpx;
   background: #122b4d;
   color: #ffffff;
   display: flex;
