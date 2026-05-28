@@ -208,7 +208,11 @@ export default function Home() {
             { id: 'q1', title: '行业发展标杆', store: '上海19分贝门窗直营店', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=400&q=80' },
             { id: 'q2', title: '大商资质', store: '上海19分贝门窗直营店', image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80' },
           ].map((item) => (
-            <View key={item.id} className='qualification-card'>
+            <View
+              key={item.id}
+              className='qualification-card'
+              onClick={() => Taro.previewImage({ current: item.image, urls: [item.image] })}
+            >
               <Image className='qualification-img' src={item.image} mode='aspectFill' />
               <Text className='qualification-title'>{item.title}</Text>
               <Text className='qualification-store'>{item.store}</Text>
@@ -253,7 +257,7 @@ export default function Home() {
 
       {/* 客服悬浮按钮 */}
       <Button className='float-cs-btn' openType='contact'>
-        <Text className='float-cs-text'>客服</Text>
+        <Icon name='chat' size={36} color='#ffffff' />
       </Button>
     </ScrollView>
   );

@@ -122,40 +122,23 @@ export default function About() {
           <Text className='section-title'>产品检测报告</Text>
           <View className='section-line' />
         </View>
-        <View className='report-list'>
-          <View className='report-card'>
-            <View className='report-icon-wrap'>
-              <Icon name='clipboard' size={44} color='#122b4d' />
+        <ScrollView className='qualification-scroll' scrollX showScrollbar={false}>
+          {[
+            { id: 'r1', title: '门窗隔音检测报告', desc: '国家检测中心认证 · 隔音性能达19分贝', image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=400&q=80' },
+            { id: 'r2', title: '抗风压性能报告', desc: '最高等级特级认证 · 抗风压性能优异', image: 'https://images.unsplash.com/photo-1581092335871-4c7c80f83b8e?auto=format&fit=crop&w=400&q=80' },
+            { id: 'r3', title: '保温性能检测报告', desc: '节能保温 · 符合国家建筑节能标准', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
+          ].map((item) => (
+            <View
+              key={item.id}
+              className='qualification-card'
+              onClick={() => Taro.previewImage({ current: item.image, urls: [item.image] })}
+            >
+              <Image className='qualification-img' src={item.image} mode='aspectFill' />
+              <Text className='qualification-title'>{item.title}</Text>
+              <Text className='qualification-store'>{item.desc}</Text>
             </View>
-            <View className='report-info'>
-              <Text className='report-title'>门窗隔音检测报告</Text>
-              <Text className='report-desc'>国家检测中心认证 · 隔音性能达19分贝</Text>
-            </View>
-            <Icon name='chevron-right' size={28} color='#d1d5db' />
-          </View>
-
-          <View className='report-card'>
-            <View className='report-icon-wrap'>
-              <Icon name='shield-check' size={44} color='#122b4d' />
-            </View>
-            <View className='report-info'>
-              <Text className='report-title'>抗风压性能报告</Text>
-              <Text className='report-desc'>最高等级特级认证 · 抗风压性能优异</Text>
-            </View>
-            <Icon name='chevron-right' size={28} color='#d1d5db' />
-          </View>
-
-          <View className='report-card'>
-            <View className='report-icon-wrap'>
-              <Icon name='thermometer' size={44} color='#122b4d' />
-            </View>
-            <View className='report-info'>
-              <Text className='report-title'>保温性能检测报告</Text>
-              <Text className='report-desc'>节能保温 · 符合国家建筑节能标准</Text>
-            </View>
-            <Icon name='chevron-right' size={28} color='#d1d5db' />
-          </View>
-        </View>
+          ))}
+        </ScrollView>
       </View>
 
       {/* 联系我们 */}

@@ -202,54 +202,45 @@
   border-radius: 6px;
 }
 
-// ====== 检测报告 ======
-.report-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12rpx;
+// ====== 检测报告 / 资质 ======
+.qualification-scroll {
+  white-space: nowrap;
+  margin-bottom: 20rpx;
 }
 
-.report-card {
+.qualification-card {
+  display: inline-block;
+  width: 280rpx;
   background: #ffffff;
   border-radius: 16px;
-  padding: 24rpx;
-  display: flex;
-  align-items: center;
-  gap: 20rpx;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  margin-right: 20rpx;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 
   &:active {
-    background: #fafbfc;
+    opacity: 0.9;
   }
 }
 
-.report-icon-wrap {
-  width: 80rpx;
-  height: 80rpx;
-  background: #e1ecf4;
-  border-radius: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.report-info {
-  flex: 1;
-}
-
-.report-title {
+.qualification-img {
+  width: 280rpx;
+  height: 240rpx;
   display: block;
-  font-size: 28rpx;
+}
+
+.qualification-title {
+  display: block;
+  font-size: 26rpx;
   font-weight: 600;
   color: #1f2937;
-  margin-bottom: 6rpx;
+  padding: 16rpx 20rpx 8rpx;
 }
 
-.report-desc {
+.qualification-store {
   display: block;
-  font-size: 23rpx;
-  color: #6b7280;
+  font-size: 22rpx;
+  color: #9ca3af;
+  padding: 0 20rpx 20rpx;
 }
 
 // ====== 联系我们 ======
