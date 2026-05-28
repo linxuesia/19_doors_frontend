@@ -51,8 +51,8 @@ export default function StoreApply() {
 
   const fetchStores = async () => {
     try {
-      const res: any = await api.get('/stores', { params: { status: 'active' } });
-      const list = (res.data || []).map((s: any) => ({ id: s.id, name: s.name }));
+      const res: any = await api.get('/stores');
+      const list = (Array.isArray(res) ? res : []).map((s: any) => ({ id: s.id, name: s.name }));
       setStoreList(list);
     } catch (e) {
       // ignore
