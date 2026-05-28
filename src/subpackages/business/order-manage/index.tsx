@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text } from '@tarojs/components';
+import { View, Text, Picker } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import api from '../../../utils/api';
@@ -36,10 +36,34 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
   const { user } = useAuth();
   const [form, setForm] = useState({
     clientName: '', clientPhone: '', communityName: '', installAddress: '',
-    productName: '', totalAmount: '', paidAmount: '', warrantyYears: '5',
+    productId: '', productName: '', productSeries: '',
+    totalAmount: '', paidAmount: '', warrantyYears: '5',
     scheduledInstallDate: '', remarks: '',
   });
   const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState<any[]>([]);
+  const [productIndex, setProductIndex] = useState(-1);
+
+  useEffect(() => {
+    api.get('/products').then((res: any) => {
+      const list = Array.isArray(res) ? res : [];
+      setProducts(list);
+    }).catch(() => {});
+  }, []);
+
+  const handleSelectProduct = (e: any) => {
+    const idx = e.detail.value as number;
+    const p = products[idx];
+    if (p) {
+      setProductIndex(idx);
+      setForm({
+        ...form,
+        productId: p.id,
+        productName: p.name,
+        productSeries: p.series || '',
+      });
+    }
+  };
 
   const handleSubmit = async () => {
     if (!form.clientName || !form.clientPhone || !form.installAddress) {
@@ -89,7 +113,6 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
         {[
           { label: '客户姓名 *', key: 'clientName', placeholder: '请输入客户姓名' },
           { label: '客户电话 *', key: 'clientPhone', placeholder: '请输入客户电话' },
-          { label: '产品名称', key: 'productName', placeholder: '例如：S100 内开窗' },
         ].map((f) => (
           <View key={f.key} className='om-field'>
             <Text className='om-label'>{f.label}</Text>
@@ -98,6 +121,16 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
             </View>
           </View>
         ))}
+        <View className='om-field'>
+          <Text className='om-label'>选择产品</Text>
+          <Picker mode='selector' range={products.map((p: any) => p.name)} value={productIndex} onChange={handleSelectProduct}>
+            <View className='om-input-wrap'>
+              <Text className={form.productName ? 'om-input' : 'om-input om-placeholder'}>
+                {form.productName || '请选择产品'}
+              </Text>
+            </View>
+          </Picker>
+        </View>
         <View className='om-field'>
           <Text className='om-label'>小区名称 / 施工地址</Text>
           <View className='om-input-wrap om-location-picker' onClick={chooseLocation}>
