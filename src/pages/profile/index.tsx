@@ -28,8 +28,8 @@ export default function Profile() {
         </View>
       </View>
 
-      {/* 门店入驻（仅登录后可见） */}
-      {user && (
+      {/* 门店入驻（仅登录且未绑定门店时可见） */}
+      {user && !user.storeId && (
       <View className='store-entry-card'>
         <View className='store-entry-left'>
           <Text className='store-entry-title'>门店入驻</Text>
