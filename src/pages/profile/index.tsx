@@ -1,11 +1,33 @@
+import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Button, Image } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import { useAuth } from '../../contexts/AuthContext';
 import Icon from '../../components/Icon';
+import api from '../../utils/api';
 import './index.scss';
 
 export default function Profile() {
   const { user } = useAuth();
+  const [hasPendingApply, setHasPendingApply] = useState(false);
+
+  useEffect(() => {
+    checkPending();
+  }, [user]);
+
+  useDidShow(() => {
+    checkPending();
+  });
+
+  const checkPending = async () => {
+    if (!user) { setHasPendingApply(false); return; }
+    try {
+      const res: any = await api.get('/store-applications/my');
+      const list = Array.isArray(res) ? res : [];
+      setHasPendingApply(list.some((a: any) => a.status === 'PENDING'));
+    } catch {
+      setHasPendingApply(false);
+    }
+  };
 
   return (
     <ScrollView className='profile-page' scrollY>
@@ -22,14 +44,14 @@ export default function Profile() {
           <View className='user-info'>
             <Text className='user-name'>{user?.name || '登录 / 注册'}</Text>
             <Text className='user-store'>
-              {user ? `所属门店: ${user.storeName || '上海19分贝门窗直营店'}` : '点击登录查看更多信息'}
+              {user ? `所属门店: ${user.storeName || '长沙19分贝门窗旗舰店'}` : '点击登录查看更多信息'}
             </Text>
           </View>
         </View>
       </View>
 
-      {/* 门店入驻（仅登录且未绑定门店时可见） */}
-      {user && !user.storeId && (
+      {/* 门店入驻（仅登录、未绑定门店、无申请中的记录时可见） */}
+      {user && !user.storeId && !hasPendingApply && (
       <View className='store-entry-card'>
         <View className='store-entry-left'>
           <Text className='store-entry-title'>门店入驻</Text>
