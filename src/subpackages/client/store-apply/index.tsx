@@ -3,7 +3,12 @@ import { View, Text, Input, Image, Button, Picker } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
-import { uploadImages } from '../../../utils/cloud';
+import { uploadFile } from '../../../utils/cloud';
+
+interface ImageItem {
+  fileID: string;
+  cloudUrl: string;
+}
 import './index.scss';
 
 const roles = [
@@ -32,7 +37,8 @@ export default function StoreApply() {
   const [selectedStoreId, setSelectedStoreId] = useState<number>(0);
   const [contactName, setContactName] = useState('');
   const [phone, setPhone] = useState('');
-  const [licenseImages, setLicenseImages] = useState<string[]>([]);
+  const [licenseImages, setLicenseImages] = useState<ImageItem[]>([]);
+  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [storeList, setStoreList] = useState<StoreItem[]>([]);
 
@@ -52,12 +58,26 @@ export default function StoreApply() {
 
   const handleUpload = () => {
     Taro.chooseImage({
-      count: 3,
+      count: 3 - licenseImages.length,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
-      success: (res) => {
-        setLicenseImages([...licenseImages, ...res.tempFilePaths]);
+      success: async (res) => {
+        setUploading(true);
+        const newImages: ImageItem[] = [];
+        for (let i = 0; i < res.tempFilePaths.length; i++) {
+          try {
+            const ext = res.tempFilePaths[i].split('.').pop() || 'jpg';
+            const cloudPath = `store-apply/${Date.now()}_${i}.${ext}`;
+            const result = await uploadFile(res.tempFilePaths[i], cloudPath);
+            newImages.push(result);
+          } catch {
+            Taro.showToast({ title: '图片上传失败', icon: 'none' });
+          }
+        }
+        setLicenseImages([...licenseImages, ...newImages]);
+        setUploading(false);
       },
+      fail: () => setUploading(false),
     });
   };
 
@@ -84,11 +104,6 @@ export default function StoreApply() {
     }
     setLoading(true);
     try {
-      // 先上传图片到云存储
-      let fileIDs: string[] = [];
-      if (licenseImages.length > 0) {
-        fileIDs = await uploadImages(licenseImages, 'store-apply');
-      }
       await api.post('/store-applications', {
         role,
         ...(role === 'STORE_OWNER'
@@ -96,7 +111,7 @@ export default function StoreApply() {
           : { storeId: selectedStoreId }),
         contactName,
         phone,
-        licenseImages: fileIDs, // 提交云存储 fileID 而非本地临时路径
+        licenseImages: licenseImages.map((img) => img.fileID),
       });
       Taro.showToast({ title: '申请已提交，等待审核', icon: 'success' });
       setTimeout(() => Taro.navigateBack(), 1500);
@@ -164,12 +179,12 @@ export default function StoreApply() {
         {role === 'STORE_OWNER' && (
         <View className='sa-field'>
           <Text className='sa-label'>门店资质材料（营业执照等图片）</Text>
-          <View className='sa-upload-area' onClick={handleUpload}>
+          <View className='sa-upload-area' onClick={uploading ? undefined : handleUpload}>
             {licenseImages.length > 0 ? (
               <View className='sa-image-list'>
                 {licenseImages.map((img, i) => (
                   <View key={i} className='sa-image-item'>
-                    <Image className='sa-image-preview' src={img} mode='aspectFill' />
+                    <Image className='sa-image-preview' src={img.cloudUrl} mode='aspectFill' />
                     <View className='sa-image-delete' onClick={(e) => { e.stopPropagation(); removeImage(i); }}>
                       <Icon name='close' size={20} color='#ffffff' />
                     </View>
@@ -177,14 +192,24 @@ export default function StoreApply() {
                 ))}
                 {licenseImages.length < 3 && (
                   <View className='sa-add-btn'>
-                    <Icon name='add' size={40} color='#c0c4cc' />
+                    {uploading ? (
+                      <Text className='sa-upload-text'>上传中...</Text>
+                    ) : (
+                      <Icon name='add' size={40} color='#c0c4cc' />
+                    )}
                   </View>
                 )}
               </View>
             ) : (
               <View className='sa-upload-placeholder'>
-                <Icon name='camera' size={56} color='#c0c4cc' />
-                <Text className='sa-upload-text'>点击上传图片</Text>
+                {uploading ? (
+                  <Text className='sa-upload-text'>上传中...</Text>
+                ) : (
+                  <>
+                    <Icon name='camera' size={56} color='#c0c4cc' />
+                    <Text className='sa-upload-text'>点击上传图片</Text>
+                  </>
+                )}
               </View>
             )}
           </View>
