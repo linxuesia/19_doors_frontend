@@ -55,62 +55,29 @@
   color: #ffffff;
 }
 
-// ====== 分类标签 ======
-.cat-scroll {
-  white-space: nowrap;
-  padding: 8rpx 24rpx 20rpx;
-}
-
-.cat-list {
-  display: inline-flex;
-  gap: 12rpx;
-}
-
-.cat-item {
-  display: inline-flex;
-  padding: 14rpx 28rpx;
-  border-radius: 9999px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  flex-shrink: 0;
-}
-
-.cat-active {
-  background: #122b4d;
-  border-color: #122b4d;
-}
-
-.cat-text {
-  font-size: 24rpx;
-  color: #6b7280;
-  white-space: nowrap;
-}
-
-.cat-text-active {
-  color: #ffffff;
-  font-weight: 500;
-}
-
 // ====== 案例列表 ======
 .case-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
   padding: 0 24rpx;
 }
 
 .case-card {
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
-  margin-bottom: 24rpx;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 
   &:active {
     opacity: 0.95;
+    transform: scale(0.98);
   }
 }
 
 .case-card-img {
   width: 100%;
-  height: 360rpx;
+  height: 200rpx;
   position: relative;
   overflow: hidden;
   background: linear-gradient(180deg, #e1ecf4 0%, #f0f5fa 100%);
@@ -132,16 +99,16 @@
 
 .case-city-tag {
   position: absolute;
-  top: 20rpx;
-  left: 20rpx;
+  top: 12rpx;
+  left: 12rpx;
   background: rgba(0, 0, 0, 0.6);
-  padding: 8rpx 20rpx;
-  border-radius: 8px;
+  padding: 4rpx 12rpx;
+  border-radius: 6px;
   backdrop-filter: blur(8px);
 }
 
 .city-tag-text {
-  font-size: 22rpx;
+  font-size: 20rpx;
   color: #ffffff;
   font-weight: 600;
 }
@@ -149,19 +116,19 @@
 // 距离标签（附近工地模式）
 .case-distance-tag {
   position: absolute;
-  top: 20rpx;
-  left: 20rpx;
+  top: 12rpx;
+  left: 12rpx;
   background: rgba(229, 62, 62, 0.85);
-  padding: 8rpx 20rpx;
-  border-radius: 8px;
+  padding: 4rpx 12rpx;
+  border-radius: 6px;
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
-  gap: 6rpx;
+  gap: 4rpx;
 }
 
 .distance-tag-text {
-  font-size: 22rpx;
+  font-size: 20rpx;
   color: #ffffff;
   font-weight: 600;
 }
@@ -179,33 +146,36 @@
 }
 
 .case-card-body {
-  padding: 24rpx;
+  padding: 16rpx;
 }
 
 .case-card-title {
   display: block;
-  font-size: 30rpx;
+  font-size: 26rpx;
   font-weight: 600;
   color: #1f2937;
-  margin-bottom: 16rpx;
-  line-height: 1.4;
+  margin-bottom: 10rpx;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .case-card-meta {
   display: flex;
   flex-direction: column;
-  gap: 10rpx;
-  margin-bottom: 16rpx;
+  gap: 6rpx;
+  margin-bottom: 10rpx;
 }
 
 .meta-item {
   display: flex;
   align-items: center;
-  gap: 8rpx;
+  gap: 4rpx;
 }
 
 .meta-text {
-  font-size: 24rpx;
+  font-size: 20rpx;
   color: #6b7280;
 }
 
@@ -217,13 +187,13 @@
 
 .case-product-tag {
   display: inline-block;
-  padding: 6rpx 18rpx;
+  padding: 4rpx 12rpx;
   background: #e1ecf4;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .product-tag-text {
-  font-size: 22rpx;
+  font-size: 20rpx;
   color: #122b4d;
   font-weight: 500;
 }
@@ -231,11 +201,11 @@
 .case-views {
   display: flex;
   align-items: center;
-  gap: 6rpx;
+  gap: 4rpx;
 }
 
 .views-text {
-  font-size: 22rpx;
+  font-size: 20rpx;
   color: #9ca3af;
 }
 

@@ -5,11 +5,8 @@ import Icon from '../../components/Icon';
 import api from '../../utils/api';
 import './index.scss';
 
-const caseCategories = ['全部案例', '住宅案例', '商业案例', '工程案例'];
-
 export default function Cases() {
   const [cases, setCases] = useState<any[]>([]);
-  const [activeTab, setActiveTab] = useState('全部案例');
   const [viewMode, setViewMode] = useState<'national' | 'local'>('national');
   const [loading, setLoading] = useState(false);
 
@@ -44,14 +41,6 @@ export default function Cases() {
     fetchCases(mode);
   };
 
-  const filteredCases = cases.filter((item: any) => {
-    if (activeTab === '全部案例') return true;
-    if (activeTab === '住宅案例' && item.houseType) return true;
-    if (activeTab === '商业案例' && item.category === 'commercial') return true;
-    if (activeTab === '工程案例' && item.category === 'engineering') return true;
-    return true;
-  });
-
   return (
     <ScrollView className='cases-page' scrollY>
       {/* 顶部标题区 */}
@@ -76,21 +65,6 @@ export default function Cases() {
         </View>
       </View>
 
-      {/* 分类标签 */}
-      <ScrollView className='cat-scroll' scrollX showScrollbar={false}>
-        <View className='cat-list'>
-          {caseCategories.map((cat) => (
-            <View
-              key={cat}
-              className={`cat-item ${activeTab === cat ? 'cat-active' : ''}`}
-              onClick={() => setActiveTab(cat)}
-            >
-              <Text className={`cat-text ${activeTab === cat ? 'cat-text-active' : ''}`}>{cat}</Text>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
-
       {/* 加载中 */}
       {loading && (
         <View className='loading-hint'>
@@ -101,7 +75,7 @@ export default function Cases() {
       {/* 案例列表 */}
       {!loading && (
         <View className='case-list'>
-          {filteredCases.map((item: any) => (
+          {cases.map((item: any) => (
             <View
               key={item.id}
               className='case-card'
@@ -156,7 +130,7 @@ export default function Cases() {
               </View>
             </View>
           ))}
-          {filteredCases.length === 0 && (
+          {cases.length === 0 && (
             <View className='empty-state'>
               <Icon name='inbox' size={80} color='#d1d5db' />
               <Text className='empty-text'>暂无相关案例</Text>
