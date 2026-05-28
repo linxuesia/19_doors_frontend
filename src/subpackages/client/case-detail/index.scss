@@ -1,23 +1,33 @@
-.cd-page { min-height: 100vh; background: #f0f5fa; }
-.loading { display: flex; justify-content: center; align-items: center; height: 400rpx; font-size: 28rpx; color: #9ca3af; }
+.cs-loading { display: flex; justify-content: center; align-items: center; height: 400rpx; font-size: 28rpx; color: #9ca3af; }
 
-.cd-hero { width: 100%; height: 400rpx; }
-.cd-hero-placeholder { width: 100%; height: 100%; background: #e1ecf4; display: flex; align-items: center; justify-content: center; }
+.cs-page { min-height: 100vh; background: #ffffff; }
 
-.cd-body { padding: 32rpx 24rpx; }
-.cd-title { display: block; font-size: 40rpx; font-weight: 700; color: #122b4d; }
-.cd-meta { display: flex; gap: 16rpx; margin-top: 12rpx; }
-.cd-meta-item { display: flex; align-items: center; font-size: 24rpx; color: #6b7280; }
-.cd-views { display: flex; align-items: center; font-size: 22rpx; color: #9ca3af; margin-top: 8rpx; }
+// 图片轮播
+.cs-swiper-wrap { width: 100%; height: 500rpx; }
+.cs-swiper { width: 100%; height: 100%; }
+.cs-swiper-img { width: 100%; height: 100%; display: block; }
+.cs-hero-placeholder { width: 100%; height: 500rpx; background: #e1ecf4; display: flex; align-items: center; justify-content: center; }
 
-.cd-section { margin-top: 40rpx; }
-.cd-section-title { display: block; font-size: 32rpx; font-weight: 700; color: #122b4d; margin-bottom: 16rpx; }
-.cd-desc { font-size: 28rpx; color: #4b5563; line-height: 1.8; }
+// 内容
+.cs-body { padding: 32rpx 24rpx; }
+.cs-title { display: block; font-size: 40rpx; font-weight: 700; color: #122b4d; }
+.cs-meta { display: flex; gap: 16rpx; margin-top: 12rpx; }
+.cs-meta-item { display: flex; align-items: center; font-size: 24rpx; color: #6b7280; }
+.cs-views { display: flex; align-items: center; font-size: 22rpx; color: #9ca3af; margin-top: 8rpx; }
 
-.cd-team { display: flex; justify-content: space-around; background: #ffffff; border-radius: 24rpx; padding: 32rpx 16rpx; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.cd-team-item { display: flex; flex-direction: column; align-items: center; gap: 8rpx; }
-.cd-team-label { font-size: 22rpx; color: #9ca3af; }
-.cd-team-name { font-size: 26rpx; font-weight: 600; color: #1f2937; }
+.cs-section { margin-top: 40rpx; }
+.cs-section-title { display: block; font-size: 32rpx; font-weight: 700; color: #122b4d; margin-bottom: 16rpx; }
+.cs-desc { font-size: 28rpx; color: #4b5563; line-height: 1.8; }
 
-.cd-actions { margin-top: 40rpx; display: flex; gap: 16rpx; }
-.cd-btn { flex: 1; padding: 24rpx; text-align: center; }
+// 相关产品
+.cs-products { display: flex; flex-direction: column; gap: 12rpx; }
+.cs-product-item { display: flex; align-items: center; gap: 16rpx; background: #f5f7fa; border-radius: 16rpx; padding: 16rpx; }
+.cs-product-img { width: 100rpx; height: 80rpx; border-radius: 10rpx; overflow: hidden; background: #e1ecf4; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.cs-product-image { width: 100%; height: 100%; display: block; }
+.cs-product-info { flex: 1; display: flex; flex-direction: column; gap: 4rpx; }
+.cs-product-name { font-size: 28rpx; font-weight: 600; color: #1f2937; }
+.cs-product-series { font-size: 22rpx; color: #6b7280; }
+
+// 固定底部按钮
+.cs-bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom)); background: #ffffff; border-top: 1px solid #f3f4f6; z-index: 100; }
+.cs-reserve-btn { padding: 28rpx; text-align: center; }
