@@ -19,6 +19,8 @@ export default function Home() {
   const [cases, setCases] = useState<any[]>([]);
   const [sites, setSites] = useState<any[]>([]);
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
+  const [storeId] = useState('S001');
+  const [storeInfo, setStoreInfo] = useState<any>(null);
 
   // 统一数据源：优先 API 数据，无数据时使用缺省点位
   const siteDataSource = sites.length > 0 ? sites : defaultMarkers;
@@ -48,6 +50,9 @@ export default function Home() {
   };
 
   useEffect(() => {
+    // 获取默认门店信息
+    api.get(`/stores/${storeId}`).then((store: any) => setStoreInfo(store)).catch(() => {});
+    // 获取产品、案例、工地
     Promise.all([
       api.get('/products').catch(() => []),
       api.get('/cases?published=true').catch(() => []),
@@ -57,7 +62,7 @@ export default function Home() {
       setCases((c as any)?.slice?.(0, 6) || []);
       setSites((s as any)?.slice?.(0, 6) || []);
     });
-  }, []);
+  }, [storeId]);
 
   const navigate = (url: string) => Taro.navigateTo({ url });
 
@@ -76,18 +81,18 @@ export default function Home() {
         </Button>
       </View>
 
-      {/* 负责人信息卡片 */}
+      {/* 门店信息卡片 */}
       <View className='manager-card'>
         <Image
           className='manager-avatar'
-          src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80'
+          src={storeInfo?.coverImage || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80'}
         />
         <View className='manager-info'>
-          <Text className='manager-name'>李振扬</Text>
-          <Text className='manager-store'>上海19分贝门窗直营店</Text>
+          <Text className='manager-name'>{storeInfo?.owner?.name || '门店负责人'}</Text>
+          <Text className='manager-store'>{storeInfo?.name || '加载中...'}</Text>
         </View>
         <View className='manager-actions'>
-          <View className='action-icon' onClick={() => Taro.makePhoneCall({ phoneNumber: '13800138000' })}>
+          <View className='action-icon' onClick={() => storeInfo?.phone && Taro.makePhoneCall({ phoneNumber: storeInfo.phone })}>
             <Icon name='phone' size={36} color='#122b4d' />
           </View>
           <View className='action-icon' onClick={() => {}}>
