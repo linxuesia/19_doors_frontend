@@ -25,11 +25,15 @@ function matchTab(route: string, tabPath: string): boolean {
 }
 
 export default function CustomTabBar() {
-  const [current, setCurrent] = useState(() => getCurrentRoute());
+  // 用计数器强制 re-render，而不是缓存 route 到 state
+  const [tick, setTick] = useState(0);
 
   useDidShow(() => {
-    setCurrent(getCurrentRoute());
+    setTick(t => t + 1);
   });
+
+  // 每次渲染直接从页面栈计算当前路由，避免 state 延迟导致的 tab 高亮错误
+  const current = getCurrentRoute();
 
   const handleClick = useCallback((path: string) => {
     if (getCurrentRoute() === path) return;

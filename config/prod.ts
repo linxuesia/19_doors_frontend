@@ -3,7 +3,11 @@ export default {
     NODE_ENV: '"production"',
   },
   defineConstants: {},
-  mini: {},
+  mini: {
+    webpackChain(chain) {
+      chain.optimization.minimize(true);
+    },
+  },
   h5: {
     publicPath: '/',
   },

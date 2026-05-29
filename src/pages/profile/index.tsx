@@ -29,6 +29,24 @@ export default function Profile() {
     }
   };
 
+  const handleWarrantyClick = async () => {
+    if (!user) {
+      Taro.navigateTo({ url: '/subpackages/client/login/index' });
+      return;
+    }
+    try {
+      const res: any = await api.get('/orders?status=WARRANTY_ACTIVE');
+      const orders = Array.isArray(res) ? res : [];
+      if (orders.length === 0) {
+        Taro.showToast({ title: '您当前没有在质保中的订单', icon: 'none' });
+      } else {
+        Taro.navigateTo({ url: `/subpackages/client/warranty/index?orderId=${orders[0].id}` });
+      }
+    } catch {
+      Taro.showToast({ title: '获取订单信息失败', icon: 'none' });
+    }
+  };
+
   return (
     <ScrollView className='profile-page' scrollY>
       {/* 用户信息卡片 */}
@@ -90,7 +108,7 @@ export default function Profile() {
             <Icon name='home' size={44} color='#4b5563' />
             <Text className='service-label'>我的新家</Text>
           </View>
-          <View className='service-item' onClick={() => Taro.navigateTo({ url: '/subpackages/client/order-detail/index?list=1' })}>
+          <View className='service-item' onClick={handleWarrantyClick}>
             <Icon name='file-text' size={44} color='#4b5563' />
             <Text className='service-label'>质保卡</Text>
           </View>
