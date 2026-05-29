@@ -92,19 +92,23 @@ interface IconProps {
   size?: number;
   color?: string;
   className?: string;
+  style?: React.CSSProperties;
+  onClick?: () => void;
 }
 
-export default function Icon({ name, size = 24, color, className = '' }: IconProps) {
+export default function Icon({ name, size = 24, color, className = '', style: extraStyle, onClick }: IconProps) {
   const char = iconUnicode[name] || '';
   const style = {
     fontSize: `${size}rpx`,
     ...(color ? { color } : {}),
+    ...(extraStyle || {}),
   };
 
   return (
     <Text
       className={`icon-ri ${className}`}
       style={style}
+      onClick={onClick}
     >
       {char}
     </Text>
