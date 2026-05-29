@@ -7,7 +7,7 @@ const getBaseUrl = () => {
     const envVersion = accountInfo?.miniProgram?.envVersion;
     if (envVersion === 'develop') return 'http://localhost:3000/api';
   } catch {}
-  return 'https://api.19doors.com/api';
+  return 'https://attblqgz.sojoy-api.ekj84738.rgpykbwx.com/api';
 };
 
 const BASE_URL = getBaseUrl();
