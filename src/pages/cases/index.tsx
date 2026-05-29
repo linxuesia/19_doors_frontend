@@ -132,7 +132,7 @@ export default function Cases() {
           ))}
           {cases.length === 0 && (
             <View className='empty-state'>
-              <Icon name='inbox' size={80} color='#d1d5db' />
+              <Icon name='file-text' size={80} color='#d1d5db' />
               <Text className='empty-text'>暂无相关案例</Text>
             </View>
           )}

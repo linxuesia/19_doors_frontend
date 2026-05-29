@@ -171,7 +171,7 @@ export default function Workbench() {
             })}
             {orders.length === 0 && (
               <View className='wb-empty'>
-                <Icon name='inbox' size={64} color='#d1d5db' />
+                <Icon name='file-text' size={64} color='#d1d5db' />
                 <Text className='wb-empty-text'>暂无动态</Text>
               </View>
             )}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Picker } from '@tarojs/components';
+import { View, Text, Picker, Input, Textarea, Image } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import api from '../../../utils/api';
@@ -185,7 +185,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
                 <View key={idx} className='omf-blueprint-item'>
                   <View className='omf-blueprint-img-wrap'>
                     {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                    <image className='omf-blueprint-img' src={file} mode='aspectFill' />
+                    <Image className='omf-blueprint-img' src={file} mode='aspectFill' />
                   </View>
                   <View className='omf-blueprint-remove' onClick={() => removeBlueprint(idx)}>
                     <Text className='omf-blueprint-remove-icon'>✕</Text>
@@ -207,13 +207,13 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
                 订单金额(元) <Text className='omf-required'>*</Text>
               </Text>
               <View className='omf-input-wrap'>
-                <input className='omf-input' type='digit' placeholder='请输入订单金额' value={form.totalAmount} onInput={(e) => update('totalAmount', e.detail.value)} />
+                <Input className='omf-input' type='digit' placeholder='请输入订单金额' value={form.totalAmount} onInput={(e) => update('totalAmount', e.detail.value)} />
               </View>
             </View>
             <View className='omf-field omf-half'>
               <Text className='omf-label'>已付金额</Text>
               <View className='omf-input-wrap'>
-                <input className='omf-input' type='digit' placeholder='0' value={form.paidAmount} onInput={(e) => update('paidAmount', e.detail.value)} />
+                <Input className='omf-input' type='digit' placeholder='0' value={form.paidAmount} onInput={(e) => update('paidAmount', e.detail.value)} />
               </View>
             </View>
           </View>
@@ -227,7 +227,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
               客户姓名 <Text className='omf-required'>*</Text>
             </Text>
             <View className='omf-input-wrap'>
-              <input className='omf-input' placeholder='请输入客户姓名' value={form.clientName} onInput={(e) => update('clientName', e.detail.value)} />
+              <Input className='omf-input' placeholder='请输入客户姓名' value={form.clientName} onInput={(e) => update('clientName', e.detail.value)} />
             </View>
           </View>
           <View className='omf-field'>
@@ -235,13 +235,13 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
               联系电话 <Text className='omf-required'>*</Text>
             </Text>
             <View className='omf-input-wrap'>
-              <input className='omf-input' type='number' placeholder='请输入手机号码' value={form.clientPhone} onInput={(e) => update('clientPhone', e.detail.value)} />
+              <Input className='omf-input' type='number' placeholder='请输入手机号码' value={form.clientPhone} onInput={(e) => update('clientPhone', e.detail.value)} />
             </View>
           </View>
           <View className='omf-field'>
             <Text className='omf-label'>小区名称</Text>
             <View className='omf-input-wrap'>
-              <input className='omf-input' placeholder='请输入小区名称' value={form.communityName} onInput={(e) => update('communityName', e.detail.value)} />
+              <Input className='omf-input' placeholder='请输入小区名称' value={form.communityName} onInput={(e) => update('communityName', e.detail.value)} />
             </View>
           </View>
           <View className='omf-field'>
@@ -249,7 +249,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
               施工地址 <Text className='omf-required'>*</Text>
             </Text>
             <View className='omf-textarea-wrap'>
-              <textarea className='omf-textarea' placeholder='请输入详细施工地址（省市区+详细地址）' value={form.installAddress} onInput={(e) => update('installAddress', e.detail.value)} />
+              <Textarea className='omf-textarea' placeholder='请输入详细施工地址（省市区+详细地址）' value={form.installAddress} onInput={(e) => update('installAddress', e.detail.value)} />
             </View>
             <View className='omf-location-btn' onClick={chooseLocation}>
               <Text className='omf-location-btn-text'>📍 从地图选择地址</Text>
@@ -258,7 +258,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
           <View className='omf-field'>
             <Text className='omf-label'>预计安装日期</Text>
             <View className='omf-input-wrap'>
-              <input className='omf-input' placeholder='2026-06-01' value={form.scheduledInstallDate} onInput={(e) => update('scheduledInstallDate', e.detail.value)} />
+              <Input className='omf-input' placeholder='2026-06-01' value={form.scheduledInstallDate} onInput={(e) => update('scheduledInstallDate', e.detail.value)} />
             </View>
           </View>
         </View>
@@ -281,7 +281,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
           <View className='omf-field'>
             <Text className='omf-label'>备注说明</Text>
             <View className='omf-textarea-wrap'>
-              <textarea className='omf-textarea' placeholder='可输入其他补充信息...' value={form.remarks} onInput={(e) => update('remarks', e.detail.value)} />
+              <Textarea className='omf-textarea' placeholder='可输入其他补充信息...' value={form.remarks} onInput={(e) => update('remarks', e.detail.value)} />
             </View>
           </View>
         </View>

@@ -187,7 +187,7 @@ export default function Reservations() {
         })}
         {list.length === 0 && (
           <View className='br-empty'>
-            <Icon name='inbox' size={72} color='#d1d5db' />
+            <Icon name='file-text' size={72} color='#d1d5db' />
             <Text className='br-empty-text'>暂无预约</Text>
           </View>
         )}

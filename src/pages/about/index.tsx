@@ -147,7 +147,7 @@ export default function About() {
           </View>
           <View className='contact-item'>
             <View className='contact-icon-wrap contact-icon-email'>
-              <Icon name='mail' size={32} color='#ffffff' />
+              <Icon name='chat' size={32} color='#ffffff' />
             </View>
             <View className='contact-info'>
               <Text className='contact-label'>官方邮箱</Text>

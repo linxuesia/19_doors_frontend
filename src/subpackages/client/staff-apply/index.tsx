@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, Picker, Button } from '@tarojs/components';
+import { View, Text, Picker, Button, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';

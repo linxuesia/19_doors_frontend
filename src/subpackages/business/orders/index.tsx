@@ -102,7 +102,7 @@ export default function Orders() {
         })}
         {orders.length === 0 && (
           <View className='bo-empty'>
-            <Icon name='inbox' size={72} color='#d1d5db' />
+            <Icon name='file-text' size={72} color='#d1d5db' />
             <Text className='bo-empty-text'>{isInstaller ? '暂无工单' : '暂无订单'}</Text>
           </View>
         )}

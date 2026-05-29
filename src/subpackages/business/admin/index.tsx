@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView } from '@tarojs/components';
+import { View, Text, ScrollView, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import Icon from '../../../components/Icon';
@@ -8,14 +8,14 @@ import './index.scss';
 
 const mainModules = [
   {
-    icon: 'building-2',
+    icon: 'building',
     title: '门店账号管理',
     desc: '查看和管理所有门店账号',
     key: 'stores',
     color: '#122b4d',
   },
   {
-    icon: 'clipboard-check',
+    icon: 'clipboard',
     title: '门店开通审核',
     desc: '处理门店入驻申请审批',
     key: 'applications',
@@ -140,7 +140,7 @@ export default function Admin() {
                     <Text className='admin-module-title'>{mod.title}</Text>
                     <Text className='admin-module-desc'>{mod.desc}</Text>
                   </View>
-                  <Icon name='chevron-right' size={28} color='#d1d5db' />
+                  <Icon name='arrow-right' size={28} color='#d1d5db' />
                 </View>
               ))}
             </View>
@@ -152,7 +152,7 @@ export default function Admin() {
       {activeTab === 'stores' && (
         <View className='admin-subpage'>
           <View className='admin-subpage-header'>
-            <Icon name='arrow-left' size={32} color='#374151' onClick={() => setActiveTab('dashboard')} />
+            <Icon name='close' size={32} color='#374151' onClick={() => setActiveTab('dashboard')} />
             <Text className='admin-subpage-title'>门店账号管理</Text>
             <View style={{ width: 32 }} />
           </View>
@@ -186,7 +186,7 @@ export default function Admin() {
               </View>
             ))}
             {stores.length === 0 && (
-              <View className='admin-empty'><Icon name='inbox' size={64} color='#d1d5db' /><Text className='admin-empty-text'>暂无门店数据</Text></View>
+              <View className='admin-empty'><Icon name='file-text' size={64} color='#d1d5db' /><Text className='admin-empty-text'>暂无门店数据</Text></View>
             )}
           </View>
         </View>
@@ -196,7 +196,7 @@ export default function Admin() {
       {activeTab === 'applications' && (
         <View className='admin-subpage'>
           <View className='admin-subpage-header'>
-            <Icon name='arrow-left' size={32} color='#374151' onClick={() => setActiveTab('dashboard')} />
+            <Icon name='close' size={32} color='#374151' onClick={() => setActiveTab('dashboard')} />
             <Text className='admin-subpage-title'>门店开通审核</Text>
             <View style={{ width: 32 }} />
           </View>
@@ -251,7 +251,7 @@ export default function Admin() {
       {activeTab === 'cases' && (
         <View className='admin-subpage'>
           <View className='admin-subpage-header'>
-            <Icon name='arrow-left' size={32} color='#374151' onClick={() => setActiveTab('dashboard')} />
+            <Icon name='close' size={32} color='#374151' onClick={() => setActiveTab('dashboard')} />
             <Text className='admin-subpage-title'>全国案例管理</Text>
             <View style={{ width: 32 }} />
           </View>
@@ -269,7 +269,7 @@ export default function Admin() {
                 <View className='admin-case-body'>
                   <Text className='admin-case-title'>{item.title}</Text>
                   <View className='admin-case-meta-row'>
-                    <Icon name='building-2' size={22} color='#9ca3af' />
+                    <Icon name='building' size={22} color='#9ca3af' />
                     <Text className='admin-case-meta'>{item.storeName || '未知门店'}</Text>
                   </View>
                   <View className='admin-case-meta-row'>
@@ -286,7 +286,7 @@ export default function Admin() {
               </View>
             ))}
             {cases.length === 0 && (
-              <View className='admin-empty'><Icon name='inbox' size={64} color='#d1d5db' /><Text className='admin-empty-text'>暂无案例数据</Text></View>
+              <View className='admin-empty'><Icon name='file-text' size={64} color='#d1d5db' /><Text className='admin-empty-text'>暂无案例数据</Text></View>
             )}
           </View>
         </View>
