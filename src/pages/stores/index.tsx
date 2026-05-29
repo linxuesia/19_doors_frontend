@@ -5,11 +5,11 @@ import Icon from '../../components/Icon';
 import api from '../../utils/api';
 import './index.scss';
 
-const cities = ['上海', '北京', '苏州', '杭州'];
+const cities = ['长沙', '北京', '苏州', '杭州'];
 
 export default function Stores() {
   const [stores, setStores] = useState<any[]>([]);
-  const [activeCity, setActiveCity] = useState('上海');
+  const [activeCity, setActiveCity] = useState('长沙');
 
   useEffect(() => {
     api.get('/stores')

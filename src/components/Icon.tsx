@@ -36,7 +36,12 @@ export type IconName =
   | 'check'
   | 'arrow-down'
   | 'qr-code'
-  | 'file-text';
+  | 'file-text'
+  | 'camera'
+  | 'wind'
+  | 'thermometer'
+  | 'award'
+  | 'play-circle';
 
 // Unicode code points from Remix Icon v4.6.0 (subset)
 const iconUnicode: Record<IconName, string> = {
@@ -46,6 +51,7 @@ const iconUnicode: Record<IconName, string> = {
   'chart': '\uea9e',
   'building': '\ueb0f',
   'calendar': '\ueb27',
+  'camera': '\uef0f',
   'check': '\ueb7b',
   'check-circle': '\ueb81',
   'clipboard': '\ueb91',
@@ -75,6 +81,10 @@ const iconUnicode: Record<IconName, string> = {
   'tools': '\uf21b',
   'user': '\uf264',
   'window': '\uf2c4',
+  'wind': '\uf3c9',
+  'thermometer': '\uf0b5',
+  'award': '\uf1cd',
+  'play-circle': '\uf0ae',
 };
 
 interface IconProps {

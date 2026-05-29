@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, Input, Button } from '@tarojs/components';
+import { View, Text, Input, Button, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import Icon from '../../../components/Icon';
@@ -10,21 +10,55 @@ export default function Login() {
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState('');
+  const [nickname, setNickname] = useState('');
 
   if (user) {
     Taro.switchTab({ url: '/pages/profile/index' });
     return null;
   }
 
+  /** 选择头像 */
+  const handleChooseAvatar = (e: any) => {
+    const avatarUrl = e.detail?.avatarUrl;
+    if (avatarUrl) {
+      setAvatarUrl(avatarUrl);
+      console.log('[Login] 用户选择头像:', avatarUrl);
+    }
+  };
+
+  /** 输入昵称 */
+  const handleNicknameInput = (e: any) => {
+    const value = e.detail?.value;
+    if (value) {
+      setNickname(value);
+    }
+  };
+
   /** 微信手机号一键登录 */
   const handleGetPhoneNumber = async (e: any) => {
     const phoneCode = e.detail?.code;
     if (!phoneCode) return;
+
+    if (!nickname.trim()) {
+      setError('请输入您的昵称');
+      return;
+    }
+    if (!avatarUrl) {
+      setError('请选择头像');
+      return;
+    }
+
     setError('');
     setLoading(true);
     try {
       const loginRes = await Taro.login();
-      await phoneLogin({ phoneCode, wxCode: loginRes.code });
+      await phoneLogin({
+        phoneCode,
+        wxCode: loginRes.code,
+        avatarUrl,
+        nickname: nickname.trim(),
+      });
       Taro.switchTab({ url: '/pages/profile/index' });
     } catch (err: any) {
       setError(err.message || '登录失败');
@@ -39,11 +73,26 @@ export default function Login() {
       setError('请输入正确的手机号');
       return;
     }
+
+    if (!nickname.trim()) {
+      setError('请输入您的昵称');
+      return;
+    }
+    if (!avatarUrl) {
+      setError('请选择头像');
+      return;
+    }
+
     setError('');
     setLoading(true);
     try {
       const loginRes = await Taro.login();
-      await phoneLogin({ phone, wxCode: loginRes.code });
+      await phoneLogin({
+        phone,
+        wxCode: loginRes.code,
+        avatarUrl,
+        nickname: nickname.trim(),
+      });
       Taro.switchTab({ url: '/pages/profile/index' });
     } catch (err: any) {
       setError(err.message || '登录失败');
@@ -59,7 +108,39 @@ export default function Login() {
           <Icon name='window' size={72} color='#122b4d' />
         </View>
         <Text className='login-title'>19分贝门窗</Text>
-        <Text className='login-subtitle'>手机号登录</Text>
+        <Text className='login-subtitle'>完善个人信息</Text>
+
+        {/* 头像和昵称区域 */}
+        <View className='login-profile-section'>
+          {/* 头像选择 */}
+          <Button
+            className='login-avatar-btn'
+            openType='chooseAvatar'
+            onChooseAvatar={handleChooseAvatar}
+          >
+            {avatarUrl ? (
+              <Image className='login-avatar-image' src={avatarUrl} mode='aspectFill' />
+            ) : (
+              <View className='login-avatar-placeholder'>
+                <Icon name='user' size={48} color='#9ca3af' />
+                <Text className='login-avatar-text'>点击设置头像</Text>
+              </View>
+            )}
+          </Button>
+
+          {/* 昵称输入 */}
+          <View className='login-nickname-field'>
+            <Text className='login-label'>昵称</Text>
+            <Input
+              className='login-nickname-input'
+              type='nickname'
+              placeholder='请输入您的昵称'
+              value={nickname}
+              onInput={handleNicknameInput}
+              maxlength={20}
+            />
+          </View>
+        </View>
 
         <View className='login-form'>
           {error && <Text className='login-error'>{error}</Text>}

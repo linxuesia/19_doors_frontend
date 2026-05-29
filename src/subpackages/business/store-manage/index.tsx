@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Input, ScrollView } from '@tarojs/components';
+import { View, Text, Input, Textarea, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import api from '../../../utils/api';
@@ -127,13 +127,14 @@ export default function StoreManage() {
 
         <View className='sm-field'>
           <Text className='sm-label'>门店简介</Text>
-          <textarea
+          <Textarea
             className='sm-textarea'
             placeholder='请输入门店简介（选填）'
             value={form.description}
             onInput={(e) => update('description', e.detail.value)}
             disabled={!isOwner}
             maxlength={200}
+            autoHeight
           />
           <Text className='sm-count'>{form.description.length}/200</Text>
         </View>

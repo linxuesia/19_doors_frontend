@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import Icon from '../../components/Icon';
@@ -5,6 +6,14 @@ import api from '../../utils/api';
 import './index.scss';
 
 export default function About() {
+  const [brandStores, setBrandStores] = useState<any[]>([]);
+
+  useEffect(() => {
+    api.get('/brand-stores')
+      .then((res: any) => setBrandStores(res || []))
+      .catch(() => setBrandStores([]));
+  }, []);
+
   return (
     <ScrollView className='about-page' scrollY>
       {/* 品牌Banner */}
@@ -69,50 +78,29 @@ export default function About() {
           <View className='section-line' />
         </View>
         <View className='store-list'>
-          <View className='store-card'>
-            <View className='store-header'>
-              <View className='store-info-row'>
-                <Text className='store-name'>上海松江直营店</Text>
-                <Text className='store-badge'>直营</Text>
+          {brandStores.map((s: any) => (
+            <View key={s.id} className='store-card'>
+              <View className='store-header'>
+                <View className='store-info-row'>
+                  <Text className='store-name'>{s.name}</Text>
+                  <Text className={`store-badge ${s.type === '合作' ? 'store-badge-partner' : ''}`}>{s.type}</Text>
+                </View>
+                {s.phone && (
+                  <Icon name='phone' size={32} color='#122b4d' onClick={() => Taro.makePhoneCall({ phoneNumber: s.phone })} />
+                )}
               </View>
-              <Icon name='phone' size={32} color='#122b4d' onClick={() => Taro.makePhoneCall({ phoneNumber: '13800138000' })} />
-            </View>
-            <Text className='store-address'>上海市松江区涞亭南路S88号SOJOY体验中心</Text>
-            <View className='store-tags'>
-              <Text className='store-tag'>展厅面积 800㎡</Text>
-              <Text className='store-tag'>营业时间 9:00-18:00</Text>
-            </View>
-          </View>
-
-          <View className='store-card'>
-            <View className='store-header'>
-              <View className='store-info-row'>
-                <Text className='store-name'>北京朝阳体验馆</Text>
-                <Text className='store-badge'>直营</Text>
+              {s.address && <Text className='store-address'>{s.address}</Text>}
+              <View className='store-tags'>
+                {s.area && <Text className='store-tag'>展厅面积 {s.area}</Text>}
+                {s.businessHours && <Text className='store-tag'>营业时间 {s.businessHours}</Text>}
               </View>
-              <Icon name='phone' size={32} color='#122b4d' onClick={() => Taro.makePhoneCall({ phoneNumber: '01012345678' })} />
             </View>
-            <Text className='store-address'>北京市朝阳区建国路88号SOHO现代城</Text>
-            <View className='store-tags'>
-              <Text className='store-tag'>展厅面积 600㎡</Text>
-              <Text className='store-tag'>营业时间 9:00-18:00</Text>
+          ))}
+          {brandStores.length === 0 && (
+            <View className='empty-state'>
+              <Text className='empty-text'>暂无门店信息</Text>
             </View>
-          </View>
-
-          <View className='store-card'>
-            <View className='store-header'>
-              <View className='store-info-row'>
-                <Text className='store-name'>苏州园区店</Text>
-                <Text className='store-badge store-badge-partner'>合作</Text>
-              </View>
-              <Icon name='phone' size={32} color='#122b4d' onClick={() => Taro.makePhoneCall({ phoneNumber: '05128888888' })} />
-            </View>
-            <Text className='store-address'>苏州工业园区星湖街218号</Text>
-            <View className='store-tags'>
-              <Text className='store-tag'>展厅面积 500㎡</Text>
-              <Text className='store-tag'>营业时间 9:00-18:00</Text>
-            </View>
-          </View>
+          )}
         </View>
       </View>
 

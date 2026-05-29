@@ -29,7 +29,7 @@ interface AuthContextType {
   canManageStaff: boolean;
   requireBusinessLogin: () => boolean;
   requireLogin: () => boolean;
-  phoneLogin: (params: { phoneCode?: string; wxCode?: string; phone?: string }) => Promise<void>;
+  phoneLogin: (params: { phoneCode?: string; wxCode?: string; phone?: string; avatarUrl?: string; nickname?: string }) => Promise<void>;
   wechatLogin: (role: string) => Promise<void>;
   adminLogin: (username: string, password: string) => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -55,8 +55,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     Taro.setStorageSync('user', u);
   }, []);
 
-  const phoneLogin = useCallback(async (params: { phoneCode?: string; wxCode?: string; phone?: string }) => {
-    const res: any = await api.post('/auth/phone-login', params);
+  const phoneLogin = useCallback(async (params: { phoneCode?: string; wxCode?: string; phone?: string; avatarUrl?: string; nickname?: string }) => {
+    const { avatarUrl, nickname, ...loginParams } = params;
+    const res: any = await api.post('/auth/phone-login', {
+      ...loginParams,
+      ...(avatarUrl && { avatarUrl }),
+      ...(nickname && { nickname: nickname.trim() }),
+    });
     saveAuth(res.accessToken, res.user);
   }, [saveAuth]);
 

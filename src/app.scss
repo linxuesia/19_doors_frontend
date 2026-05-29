@@ -112,6 +112,7 @@ page {
   padding: 24rpx 48rpx;
   border-radius: 9999px;
   border: none;
+  box-sizing: border-box;
   transition: opacity 0.2s;
 
   &:active {
@@ -130,6 +131,7 @@ page {
   padding: 24rpx 48rpx;
   border-radius: 9999px;
   border: 2px solid #122b4d;
+  box-sizing: border-box;
   transition: background-color 0.2s;
 
   &:active {
@@ -147,6 +149,7 @@ page {
   padding: 16rpx 32rpx;
   border-radius: 9999px;
   border: none;
+  box-sizing: border-box;
 
   &:active {
     background-color: rgba(18, 43, 77, 0.05);
@@ -163,6 +166,7 @@ page {
   font-size: 28rpx;
   color: #1f2937;
   outline: none;
+  box-sizing: border-box;
 
   &:focus {
     border-color: #122b4d;

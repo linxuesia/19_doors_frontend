@@ -102,7 +102,7 @@ export default function Cases() {
                   </View>
                 ) : (
                   <View className='case-city-tag'>
-                    <Text className='city-tag-text'>{item.store?.name || '上海'}</Text>
+                    <Text className='city-tag-text'>{item.store?.name || '长沙'}</Text>
                   </View>
                 )}
               </View>
@@ -115,7 +115,7 @@ export default function Cases() {
                   </View>
                   <View className='meta-item'>
                     <Icon name='map-pin' size={24} color='#9ca3af' />
-                    <Text className='meta-text'>{item.communityName || '上海市松江区'}</Text>
+                    <Text className='meta-text'>{item.communityName || '长沙市岳麓区'}</Text>
                   </View>
                 </View>
                 <View className='case-card-footer'>

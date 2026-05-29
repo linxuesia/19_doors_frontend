@@ -1,33 +1,344 @@
 .cs-loading { display: flex; justify-content: center; align-items: center; height: 400rpx; font-size: 28rpx; color: #9ca3af; }
 
-.cs-page { min-height: 100vh; background: #ffffff; }
+.cs-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+  display: flex;
+  flex-direction: column;
+}
 
 // 图片轮播
-.cs-swiper-wrap { width: 100%; height: 500rpx; }
+.cs-swiper-wrap { width: 100%; height: 500rpx; flex-shrink: 0; }
 .cs-swiper { width: 100%; height: 100%; }
 .cs-swiper-img { width: 100%; height: 100%; display: block; }
 .cs-hero-placeholder { width: 100%; height: 500rpx; background: #e1ecf4; display: flex; align-items: center; justify-content: center; }
 
-// 内容
-.cs-body { padding: 32rpx 24rpx; }
-.cs-title { display: block; font-size: 40rpx; font-weight: 700; color: #122b4d; }
-.cs-meta { display: flex; gap: 16rpx; margin-top: 12rpx; }
-.cs-meta-item { display: flex; align-items: center; font-size: 24rpx; color: #6b7280; }
-.cs-views { display: flex; align-items: center; font-size: 22rpx; color: #9ca3af; margin-top: 8rpx; }
+// 内容区 - 可滚动
+.cs-body {
+  flex: 1;
+  padding: 24rpx;
+  padding-bottom: 140rpx;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
 
-.cs-section { margin-top: 40rpx; }
-.cs-section-title { display: block; font-size: 32rpx; font-weight: 700; color: #122b4d; margin-bottom: 16rpx; }
+// 标题卡片
+.cs-title-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 28rpx 32rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+.cs-title { display: block; font-size: 36rpx; font-weight: 700; color: #122b4d; line-height: 1.4; margin-bottom: 16rpx; }
+.cs-meta { display: flex; gap: 16rpx; align-items: center; flex-wrap: wrap; }
+.cs-meta-item { display: flex; align-items: center; gap: 6rpx; font-size: 24rpx; color: #6b7280; }
+
+// 本地案例徽章
+.cs-badge {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+.cs-badge-local {
+  background: linear-gradient(135deg, #122b4d 0%, #2b5a8e 100%);
+  color: #ffffff;
+}
+
+// 区块卡片
+.cs-section-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 28rpx 32rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+// 区块标题 - 左边框装饰
+.cs-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+.cs-section-indicator {
+  width: 6rpx;
+  height: 32rpx;
+  background: linear-gradient(180deg, #122b4d 0%, #2b5a8e 100%);
+  border-radius: 3rpx;
+  flex-shrink: 0;
+}
+.cs-section-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #122b4d;
+}
+
 .cs-desc { font-size: 28rpx; color: #4b5563; line-height: 1.8; }
 
-// 相关产品
-.cs-products { display: flex; flex-direction: column; gap: 12rpx; }
-.cs-product-item { display: flex; align-items: center; gap: 16rpx; background: #f5f7fa; border-radius: 16rpx; padding: 16rpx; }
-.cs-product-img { width: 100rpx; height: 80rpx; border-radius: 10rpx; overflow: hidden; background: #e1ecf4; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+// 相关产品列表
+.cs-products { display: flex; flex-direction: column; gap: 16rpx; }
+.cs-product-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  background: #f8f9fb;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  transition: all 0.2s ease;
+
+  &:active {
+    background: #eef1f5;
+    transform: scale(0.98);
+  }
+}
+.cs-product-img {
+  width: 120rpx;
+  height: 96rpx;
+  border-radius: 10rpx;
+  overflow: hidden;
+  background: #e1ecf4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
 .cs-product-image { width: 100%; height: 100%; display: block; }
-.cs-product-info { flex: 1; display: flex; flex-direction: column; gap: 4rpx; }
+.cs-product-info { flex: 1; display: flex; flex-direction: column; gap: 6rpx; }
 .cs-product-name { font-size: 28rpx; font-weight: 600; color: #1f2937; }
 .cs-product-series { font-size: 22rpx; color: #6b7280; }
 
-// 固定底部按钮
-.cs-bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom)); background: #ffffff; border-top: 1px solid #f3f4f6; z-index: 100; }
-.cs-reserve-btn { padding: 28rpx; text-align: center; }
+// ====== 施工进度步骤条 ======
+.cs-progress-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx 8rpx;
+  position: relative;
+}
+
+.cs-step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(25% - 12rpx);
+  position: relative;
+  padding-bottom: 8rpx;
+}
+
+.cs-step-icon-wrap {
+  margin-bottom: 10rpx;
+}
+
+.cs-step-icon {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+// 已完成状态 - 绿色背景+白色勾
+.cs-step-completed {
+  background: linear-gradient(135deg, #00c758 0%, #00a84d 100%);
+  box-shadow: 0 4rpx 12rpx rgba(0, 199, 88, 0.3);
+}
+
+// 进行中状态 - 蓝色背景
+.cs-step-active {
+  background: linear-gradient(135deg, #122b4d 0%, #2b5a8e 100%);
+  box-shadow: 0 4rpx 12rpx rgba(18, 43, 77, 0.3);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+// 待完成状态 - 灰色背景
+.cs-step-pending {
+  background: #e5e7eb;
+}
+
+.cs-step-index {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #6b7280;
+}
+
+.cs-step-name {
+  font-size: 22rpx;
+  text-align: center;
+  color: #6b7280;
+  line-height: 1.3;
+
+  &.completed {
+    color: #00c758;
+    font-weight: 600;
+  }
+
+  &.in_progress {
+    color: #122b4d;
+    font-weight: 600;
+  }
+
+  &.pending {
+    color: #9ca3af;
+  }
+}
+
+// 连接线（可选：如果需要连接线可以启用）
+.cs-step-line {
+  position: absolute;
+  top: 28rpx;
+  left: calc(50% + 36rpx);
+  width: calc(100% - 72rpx);
+  height: 4rpx;
+  background: #e5e7eb;
+  z-index: 0;
+}
+
+.cs-line-completed {
+  background: linear-gradient(90deg, #00c758 0%, #00c758 100%);
+}
+
+// ====== 工地动态 ======
+
+// 动态分组
+.cs-update-group {
+  margin-bottom: 28rpx;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// 阶段标签 - 蓝色背景标签
+.cs-update-step-tag {
+  display: inline-block;
+  padding: 8rpx 20rpx;
+  background: linear-gradient(135deg, #e1ecf4 0%, #d4e4f5 100%);
+  color: #122b4d;
+  font-size: 24rpx;
+  font-weight: 600;
+  border-radius: 8rpx;
+  margin-bottom: 16rpx;
+  border-left: 4rpx solid #122b4d;
+}
+
+// 单条动态
+.cs-update-item {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f3f4f6;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+// 发布者
+.cs-update-author {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 10rpx;
+}
+
+// 动态内容文字
+.cs-update-content {
+  display: block;
+  font-size: 27rpx;
+  color: #4b5563;
+  line-height: 1.7;
+  margin-bottom: 16rpx;
+}
+
+// 媒体网格（图片/视频）
+.cs-media-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12rpx;
+}
+
+.cs-media-item {
+  aspect-ratio: 1;
+  border-radius: 10rpx;
+  overflow: hidden;
+  background: #f3f4f6;
+  position: relative;
+}
+
+.cs-media-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+// 视频项
+.cs-media-video {
+  position: relative;
+}
+
+.cs-video-thumb {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.cs-video-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80rpx;
+  height: 80rpx;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4rpx);
+}
+
+// 固定底部预约按钮
+.cs-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16rpx 32rpx calc(16rpx + env(safe-area-inset-bottom));
+  background: #ffffff;
+  border-top: 1px solid #f3f4f6;
+  z-index: 100;
+}
+.cs-reserve-btn {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 48rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  background: #122b4d;
+
+  &::after {
+    border: none;
+  }
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+    transition: all 0.2s ease;
+  }
+}
+.cs-reserve-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #ffffff;
+}

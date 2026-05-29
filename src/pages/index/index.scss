@@ -508,7 +508,7 @@
 .float-cs-btn {
   position: fixed;
   right: 24rpx;
-  bottom: 130rpx;
+  bottom: calc(100rpx + env(safe-area-inset-bottom) + 24rpx);
   width: 88rpx;
   height: 88rpx;
   border-radius: 50%;
