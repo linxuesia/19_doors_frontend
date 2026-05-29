@@ -33,6 +33,7 @@ export default defineAppConfig({
         'reservations/index',     // 预约管理
         'store-manage/index',     // 门店设置
         'clients/index',          // 客户档案
+        'client-detail/index',    // 客户详情
         'admin/index',            // 管理员后台
         'admin-login/index',      // 管理员登录（扫码）
       ],

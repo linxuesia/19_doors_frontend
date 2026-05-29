@@ -83,7 +83,13 @@ export default function Clients() {
         {clients.length > 0 ? (
           <View className='cl-list'>
             {clients.map((client, idx) => (
-              <View key={idx} className='cl-card'>
+              <View
+                key={idx}
+                className='cl-card'
+                onClick={() => Taro.navigateTo({
+                  url: `/subpackages/business/client-detail/index?name=${encodeURIComponent(client.name)}&phone=${encodeURIComponent(client.phone)}`,
+                })}
+              >
                 <View className='cl-card-top'>
                   <View className='cl-avatar'>
                     <Text className='cl-avatar-text'>{client.name.charAt(0)}</Text>
