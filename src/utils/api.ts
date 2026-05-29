@@ -1,9 +1,17 @@
 import Taro from '@tarojs/taro';
 
-// dev:weapp 用本地接口，build:weapp 用云托管接口
-const BASE_URL = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:3000/api'
-  : 'https://attblqgz.sojoy-api.ekj84738.rgpykbwx.com/api';
+// 云托管内网域名只能在微信客户端中访问，DevTools 中走本地
+const getBaseUrl = () => {
+  try {
+    const accountInfo = Taro.getAccountInfoSync?.();
+    const env = accountInfo?.miniProgram?.envVersion;
+    // develop(开发版/DevTools) → 本地后端；trial/release → 云托管内网域名
+    if (env === 'develop') return 'http://localhost:3000/api';
+  } catch {}
+  return 'https://attblqgz.sojoy-api.ekj84738.rgpykbwx.com/api';
+};
+
+const BASE_URL = getBaseUrl();
 
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
