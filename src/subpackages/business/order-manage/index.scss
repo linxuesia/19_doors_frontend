@@ -13,31 +13,247 @@
   &:active { opacity: 0.85; }
 }
 
-// 创建表单
-.om-form-page { min-height: 100vh; background: #f0f5fa; padding: 24rpx; }
-.om-form-title { display: block; font-size: 36rpx; font-weight: 700; color: #122b4d; margin-bottom: 24rpx; }
-.om-form { display: flex; flex-direction: column; gap: 20rpx; }
-.om-field { display: flex; flex-direction: column; gap: 8rpx; }
-.om-label { font-size: 24rpx; color: #6b7280; }
-.om-input-wrap { background: #ffffff; border: 1px solid #ebedf0; border-radius: 16px; overflow: hidden; }
-.om-input { width: 100%; height: 88rpx; line-height: 88rpx; padding: 0 24rpx; font-size: 28rpx; color: #1f2937; border: none; outline: none; box-sizing: border-box; }
-.om-placeholder { color: #c0c4cc; }
-.om-textarea-wrap { background: #ffffff; border: 1px solid #ebedf0; border-radius: 16px; overflow: hidden; }
-.om-textarea { width: 100%; min-height: 160rpx; padding: 24rpx; font-size: 28rpx; color: #1f2937; border: none; outline: none; box-sizing: border-box; }
-.om-row { display: flex; gap: 16rpx; }
-.om-half { flex: 1; }
-.om-location-picker { display: flex; justify-content: space-between; align-items: center; }
-.om-location-text { flex: 1; text-align: left; }
-.om-location-icon { font-size: 32rpx; margin-left: 12rpx; }
-.om-submit { 
-  @include btn-base();
-  width: 100%; 
+// ====== 创建表单（原型风格）=======
+.omf-page {
+  min-height: 100vh;
+  background: #f9fafb;
+  padding-bottom: 160rpx; // 底部提交栏高度
+}
+
+.omf-form {
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+// 卡片
+.omf-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 28rpx 24rpx;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+// 卡片内分区标题
+.omf-section-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1f2937;
+  padding-bottom: 16rpx;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 4rpx;
+}
+
+// 字段
+.omf-field { display: flex; flex-direction: column; gap: 10rpx; }
+
+// 标签
+.omf-label {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #374151;
+  margin-left: 4rpx;
+}
+
+.omf-required {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+// 输入框
+.omf-input-wrap {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.omf-input {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #1f2937;
+  border: none;
+  outline: none;
   box-sizing: border-box;
-  padding: 28rpx; 
-  margin-top: 8rpx; 
+  background: transparent;
+}
+
+// Picker 选择器
+.omf-picker {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 20rpx;
+  padding: 0 24rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.omf-picker-text {
+  font-size: 28rpx;
+  color: #1f2937;
+  font-weight: 500;
+  flex: 1;
+}
+
+.omf-picker-placeholder {
+  color: #c0c4cc;
+  font-weight: 400;
+}
+
+.omf-picker-arrow {
+  font-size: 36rpx;
+  color: #9ca3af;
+  margin-left: 8rpx;
+}
+
+// 多行文本
+.omf-textarea-wrap {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.omf-textarea {
+  width: 100%;
+  min-height: 140rpx;
+  padding: 20rpx 24rpx;
+  font-size: 28rpx;
+  color: #1f2937;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+  background: transparent;
+  resize: none;
+}
+
+// 行内双列
+.omf-row { display: flex; gap: 16rpx; }
+.omf-half { flex: 1; }
+
+// 位置选择按钮
+.omf-location-btn {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 16rpx 0 0;
+}
+
+.omf-location-btn-text {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+// 图纸上传
+.omf-blueprint-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.omf-blueprint-item {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.omf-blueprint-img-wrap {
+  width: 100%;
+  height: 100%;
+}
+
+.omf-blueprint-img {
+  width: 100%;
+  height: 100%;
+}
+
+.omf-blueprint-remove {
+  position: absolute;
+  top: 4rpx;
+  right: 4rpx;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.omf-blueprint-remove-icon {
+  color: #ffffff;
+  font-size: 22rpx;
+  line-height: 1;
+}
+
+.omf-blueprint-add {
+  width: 200rpx;
+  height: 200rpx;
+  background: #f9fafb;
+  border: 2px dashed #d1d5db;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.omf-blueprint-add-icon {
+  font-size: 48rpx;
+  color: #9ca3af;
+  line-height: 1;
+}
+
+.omf-blueprint-add-text {
+  font-size: 22rpx;
+  color: #9ca3af;
+}
+
+// 固定底部提交栏
+.omf-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom));
+  border-top: 1px solid #f3f4f6;
+  box-shadow: 0 -4rpx 20rpx rgba(0,0,0,0.05);
+  z-index: 100;
+}
+
+.omf-submit-btn {
+  @include btn-base();
+  width: 100%;
+  padding: 28rpx;
   background: #122b4d;
   color: #ffffff;
+  border-radius: 20rpx;
+  box-shadow: 0 2px 8px rgba(18,43,77,0.3);
 }
+
+.omf-submit-text {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.omf-submit-disabled {
+  opacity: 0.5;
+}
+
 .opacity-50 { opacity: 0.5; }
 
 // 订单详情

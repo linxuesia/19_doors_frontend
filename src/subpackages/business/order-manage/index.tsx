@@ -31,6 +31,9 @@ export default function OrderManage() {
   return <OrderDetailView order={order} />;
 }
 
+// 质保选项
+const WARRANTY_OPTIONS = ['1', '2', '3', '5', '10', '终身'];
+
 // 创建订单表单
 function CreateOrderForm({ onDone }: { onDone: () => void }) {
   const { user } = useAuth();
@@ -43,6 +46,10 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
   const [productIndex, setProductIndex] = useState(-1);
+  const [warrantyIndex, setWarrantyIndex] = useState(3); // 默认'5'
+  const [blueprintFiles, setBlueprintFiles] = useState<string[]>([]); // tmp file paths for preview
+  const [blueprintIds, setBlueprintIds] = useState<string[]>([]);   // cloud fileIDs for submit
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     api.get('/products').then((res: any) => {
@@ -65,7 +72,51 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
     }
   };
 
+  const handleSelectWarranty = (e: any) => {
+    const idx = e.detail.value as number;
+    setWarrantyIndex(idx);
+    setForm({ ...form, warrantyYears: WARRANTY_OPTIONS[idx] });
+  };
+
+  const handleChooseBlueprint = () => {
+    Taro.chooseImage({
+      count: 6 - blueprintFiles.length,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        const newFiles = res.tempFilePaths;
+        setBlueprintFiles([...blueprintFiles, ...newFiles]);
+        // 开始上传到云存储
+        uploadBlueprints(newFiles);
+      },
+    });
+  };
+
+  const uploadBlueprints = async (files: string[]) => {
+    setUploading(true);
+    try {
+      const { uploadImages } = await import('../../../utils/cloud');
+      const ids = await uploadImages(files, 'order-blueprints');
+      setBlueprintIds([...blueprintIds, ...ids]);
+    } catch {
+      Taro.showToast({ title: '图纸上传失败', icon: 'none' });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeBlueprint = (index: number) => {
+    const newFiles = blueprintFiles.filter((_, i) => i !== index);
+    const newIds = blueprintIds.filter((_, i) => i !== index);
+    setBlueprintFiles(newFiles);
+    setBlueprintIds(newIds);
+  };
+
   const handleSubmit = async () => {
+    if (!form.productName) {
+      Taro.showToast({ title: '请选择产品', icon: 'none' });
+      return;
+    }
     if (!form.clientName || !form.clientPhone || !form.installAddress) {
       Taro.showToast({ title: '请填写必填项', icon: 'none' });
       return;
@@ -76,7 +127,8 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
         ...form,
         totalAmount: parseFloat(form.totalAmount) || 0,
         paidAmount: parseFloat(form.paidAmount) || 0,
-        warrantyYears: parseInt(form.warrantyYears) || 5,
+        warrantyYears: form.warrantyYears === '终身' ? 99 : (parseInt(form.warrantyYears) || 5),
+        blueprintUrl: blueprintIds.length > 0 ? JSON.stringify(blueprintIds) : undefined,
         storeId: user?.storeId,
         status: 'PENDING',
       });
@@ -96,7 +148,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
       success: (res) => {
         setForm({
           ...form,
-          communityName: res.name || '',
+          communityName: res.name || form.communityName,
           installAddress: res.address || res.name || '',
         });
       },
@@ -107,65 +159,138 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
   };
 
   return (
-    <View className='om-form-page'>
-      <Text className='om-form-title'>录入线下订单</Text>
-      <View className='om-form'>
-        {[
-          { label: '客户姓名 *', key: 'clientName', placeholder: '请输入客户姓名' },
-          { label: '客户电话 *', key: 'clientPhone', placeholder: '请输入客户电话' },
-        ].map((f) => (
-          <View key={f.key} className='om-field'>
-            <Text className='om-label'>{f.label}</Text>
-            <View className='om-input-wrap'>
-              <input className='om-input' placeholder={f.placeholder} value={(form as any)[f.key]} onInput={(e) => update(f.key, e.detail.value)} />
-            </View>
-          </View>
-        ))}
-        <View className='om-field'>
-          <Text className='om-label'>选择产品</Text>
-          <Picker mode='selector' range={products.map((p: any) => p.name)} value={productIndex} onChange={handleSelectProduct}>
-            <View className='om-input-wrap'>
-              <Text className={form.productName ? 'om-input' : 'om-input om-placeholder'}>
-                {form.productName || '请选择产品'}
-              </Text>
-            </View>
-          </Picker>
-        </View>
-        <View className='om-field'>
-          <Text className='om-label'>小区名称 / 施工地址</Text>
-          <View className='om-input-wrap om-location-picker' onClick={chooseLocation}>
-            <Text className='om-input om-location-text'>
-              {form.communityName || form.installAddress ? `${form.communityName} ${form.installAddress}` : '点击选择位置'}
+    <View className='omf-page'>
+      <View className='omf-form'>
+        {/* 卡片1：订单信息 */}
+        <View className='omf-card'>
+          <View className='omf-field'>
+            <Text className='omf-label'>
+              选择产品 <Text className='omf-required'>*</Text>
             </Text>
-            <Text className='om-location-icon'>📍</Text>
+            <Picker mode='selector' range={products.map((p: any) => p.name)} value={productIndex} onChange={handleSelectProduct}>
+              <View className='omf-picker'>
+                <Text className={form.productName ? 'omf-picker-text' : 'omf-picker-text omf-picker-placeholder'}>
+                  {form.productName || '请选择产品名称，如：S100内开窗'}
+                </Text>
+              </View>
+            </Picker>
+          </View>
+
+          <View className='omf-field'>
+            <Text className='omf-label'>
+              上传图纸 <Text className='omf-required'>*</Text>
+            </Text>
+            <View className='omf-blueprint-grid'>
+              {blueprintFiles.map((file, idx) => (
+                <View key={idx} className='omf-blueprint-item'>
+                  <View className='omf-blueprint-img-wrap'>
+                    {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                    <image className='omf-blueprint-img' src={file} mode='aspectFill' />
+                  </View>
+                  <View className='omf-blueprint-remove' onClick={() => removeBlueprint(idx)}>
+                    <Text className='omf-blueprint-remove-icon'>✕</Text>
+                  </View>
+                </View>
+              ))}
+              {blueprintFiles.length < 6 && (
+                <View className='omf-blueprint-add' onClick={handleChooseBlueprint}>
+                  <Text className='omf-blueprint-add-icon'>+</Text>
+                  <Text className='omf-blueprint-add-text'>添加图片</Text>
+                </View>
+              )}
+            </View>
+          </View>
+
+          <View className='omf-row'>
+            <View className='omf-field omf-half'>
+              <Text className='omf-label'>
+                订单金额(元) <Text className='omf-required'>*</Text>
+              </Text>
+              <View className='omf-input-wrap'>
+                <input className='omf-input' type='digit' placeholder='请输入订单金额' value={form.totalAmount} onInput={(e) => update('totalAmount', e.detail.value)} />
+              </View>
+            </View>
+            <View className='omf-field omf-half'>
+              <Text className='omf-label'>已付金额</Text>
+              <View className='omf-input-wrap'>
+                <input className='omf-input' type='digit' placeholder='0' value={form.paidAmount} onInput={(e) => update('paidAmount', e.detail.value)} />
+              </View>
+            </View>
           </View>
         </View>
-        <View className='om-row'>
-          <View className='om-field om-half'>
-            <Text className='om-label'>订单金额</Text>
-            <View className='om-input-wrap'><input className='om-input' type='digit' placeholder='0' value={form.totalAmount} onInput={(e) => update('totalAmount', e.detail.value)} /></View>
+
+        {/* 卡片2：客户基本资料 */}
+        <View className='omf-card'>
+          <Text className='omf-section-title'>客户基本资料</Text>
+          <View className='omf-field'>
+            <Text className='omf-label'>
+              客户姓名 <Text className='omf-required'>*</Text>
+            </Text>
+            <View className='omf-input-wrap'>
+              <input className='omf-input' placeholder='请输入客户姓名' value={form.clientName} onInput={(e) => update('clientName', e.detail.value)} />
+            </View>
           </View>
-          <View className='om-field om-half'>
-            <Text className='om-label'>已付金额</Text>
-            <View className='om-input-wrap'><input className='om-input' type='digit' placeholder='0' value={form.paidAmount} onInput={(e) => update('paidAmount', e.detail.value)} /></View>
+          <View className='omf-field'>
+            <Text className='omf-label'>
+              联系电话 <Text className='omf-required'>*</Text>
+            </Text>
+            <View className='omf-input-wrap'>
+              <input className='omf-input' type='number' placeholder='请输入手机号码' value={form.clientPhone} onInput={(e) => update('clientPhone', e.detail.value)} />
+            </View>
+          </View>
+          <View className='omf-field'>
+            <Text className='omf-label'>小区名称</Text>
+            <View className='omf-input-wrap'>
+              <input className='omf-input' placeholder='请输入小区名称' value={form.communityName} onInput={(e) => update('communityName', e.detail.value)} />
+            </View>
+          </View>
+          <View className='omf-field'>
+            <Text className='omf-label'>
+              施工地址 <Text className='omf-required'>*</Text>
+            </Text>
+            <View className='omf-textarea-wrap'>
+              <textarea className='omf-textarea' placeholder='请输入详细施工地址（省市区+详细地址）' value={form.installAddress} onInput={(e) => update('installAddress', e.detail.value)} />
+            </View>
+            <View className='omf-location-btn' onClick={chooseLocation}>
+              <Text className='omf-location-btn-text'>📍 从地图选择地址</Text>
+            </View>
+          </View>
+          <View className='omf-field'>
+            <Text className='omf-label'>预计安装日期</Text>
+            <View className='omf-input-wrap'>
+              <input className='omf-input' placeholder='2026-06-01' value={form.scheduledInstallDate} onInput={(e) => update('scheduledInstallDate', e.detail.value)} />
+            </View>
           </View>
         </View>
-        <View className='om-row'>
-          <View className='om-field om-half'>
-            <Text className='om-label'>质保年限</Text>
-            <View className='om-input-wrap'><input className='om-input' type='number' placeholder='5' value={form.warrantyYears} onInput={(e) => update('warrantyYears', e.detail.value)} /></View>
+
+        {/* 卡片3：质保与备注 */}
+        <View className='omf-card'>
+          <View className='omf-field'>
+            <Text className='omf-label'>
+              质保时长 <Text className='omf-required'>*</Text>
+            </Text>
+            <Picker mode='selector' range={WARRANTY_OPTIONS.map(o => o === '终身' ? o : `${o}年质保`)} value={warrantyIndex} onChange={handleSelectWarranty}>
+              <View className='omf-picker'>
+                <Text className='omf-picker-text'>
+                  {WARRANTY_OPTIONS[warrantyIndex] === '终身' ? '终身质保' : `${WARRANTY_OPTIONS[warrantyIndex]}年质保`}
+                </Text>
+                <Text className='omf-picker-arrow'>›</Text>
+              </View>
+            </Picker>
           </View>
-          <View className='om-field om-half'>
-            <Text className='om-label'>预计安装日期</Text>
-            <View className='om-input-wrap'><input className='om-input' placeholder='2026-06-01' value={form.scheduledInstallDate} onInput={(e) => update('scheduledInstallDate', e.detail.value)} /></View>
+          <View className='omf-field'>
+            <Text className='omf-label'>备注说明</Text>
+            <View className='omf-textarea-wrap'>
+              <textarea className='omf-textarea' placeholder='可输入其他补充信息...' value={form.remarks} onInput={(e) => update('remarks', e.detail.value)} />
+            </View>
           </View>
         </View>
-        <View className='om-field'>
-          <Text className='om-label'>备注</Text>
-          <View className='om-textarea-wrap'><textarea className='om-textarea' placeholder='备注说明' value={form.remarks} onInput={(e) => update('remarks', e.detail.value)} /></View>
-        </View>
-        <View className={`btn-primary om-submit ${loading ? 'opacity-50' : ''}`} onClick={handleSubmit}>
-          <Text>{loading ? '提交中...' : '创建订单'}</Text>
+      </View>
+
+      {/* 固定底部提交栏 */}
+      <View className='omf-bottom-bar'>
+        <View className={`omf-submit-btn ${loading ? 'omf-submit-disabled' : ''}`} onClick={handleSubmit}>
+          <Text className='omf-submit-text'>{loading ? '提交中...' : '提交保存'}</Text>
         </View>
       </View>
     </View>
