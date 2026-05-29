@@ -75,8 +75,8 @@ export default function StoreManage() {
         try {
           const ext = filePath.split('.').pop() || 'jpg';
           const cloudPath = `store-cover/${user!.storeId}_${Date.now()}.${ext}`;
-          const { fileID } = await uploadFile(filePath, cloudPath);
-          setForm(prev => ({ ...prev, coverImage: fileID }));
+          const { cloudUrl } = await uploadFile(filePath, cloudPath);
+          setForm(prev => ({ ...prev, coverImage: cloudUrl }));
           Taro.showToast({ title: '封面上传成功', icon: 'success' });
         } catch {
           Taro.showToast({ title: '封面上传失败', icon: 'none' });

@@ -96,11 +96,7 @@ export default function Clients() {
                   </View>
                   <View className='cl-info'>
                     <Text className='cl-name'>{client.name}</Text>
-                    <Text className='cl-phone'>{client.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')}</Text>
-                  </View>
-                  <View className='cl-order-badge'>
-                    <Text className='cl-order-count'>{client.orderCount}</Text>
-                    <Text className='cl-order-label'>单</Text>
+                    <Text className='cl-phone'>{client.phone}</Text>
                   </View>
                 </View>
 
@@ -116,11 +112,11 @@ export default function Clients() {
 
                 <View className='cl-card-bottom'>
                   <View className='cl-bottom-item'>
-                    <Text className='cl-bottom-label'>累计金额</Text>
+                    <Text className='cl-bottom-label'>订单金额</Text>
                     <Text className='cl-bottom-value'>¥{client.totalAmount.toLocaleString()}</Text>
                   </View>
                   <View className='cl-bottom-item'>
-                    <Text className='cl-bottom-label'>最近订单</Text>
+                    <Text className='cl-bottom-label'>订单编号</Text>
                     <Text className='cl-bottom-value'>{client.latestOrder}</Text>
                   </View>
                 </View>

@@ -48,7 +48,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
   const [productIndex, setProductIndex] = useState(-1);
   const [warrantyIndex, setWarrantyIndex] = useState(3); // 默认'5'
   const [blueprintFiles, setBlueprintFiles] = useState<string[]>([]); // tmp file paths for preview
-  const [blueprintIds, setBlueprintIds] = useState<string[]>([]);   // cloud fileIDs for submit
+  const [blueprintUrls, setBlueprintUrls] = useState<string[]>([]);   // cloudUrl 用于 API 提交和显示
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -95,9 +95,9 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
   const uploadBlueprints = async (files: string[]) => {
     setUploading(true);
     try {
-      const { uploadImages } = await import('../../../utils/cloud');
-      const ids = await uploadImages(files, 'order-blueprints');
-      setBlueprintIds([...blueprintIds, ...ids]);
+      const { uploadImages: uploadToCloud } = await import('../../../utils/cloud');
+      const results = await uploadToCloud(files, 'order-blueprints');
+      setBlueprintUrls([...blueprintUrls, ...results.map(r => r.cloudUrl)]);
     } catch {
       Taro.showToast({ title: '图纸上传失败', icon: 'none' });
     } finally {
@@ -107,9 +107,9 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
 
   const removeBlueprint = (index: number) => {
     const newFiles = blueprintFiles.filter((_, i) => i !== index);
-    const newIds = blueprintIds.filter((_, i) => i !== index);
+    const newIds = blueprintUrls.filter((_, i) => i !== index);
     setBlueprintFiles(newFiles);
-    setBlueprintIds(newIds);
+    setBlueprintUrls(newIds);
   };
 
   const handleSubmit = async () => {
@@ -128,7 +128,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
         totalAmount: parseFloat(form.totalAmount) || 0,
         paidAmount: parseFloat(form.paidAmount) || 0,
         warrantyYears: form.warrantyYears === '终身' ? 99 : (parseInt(form.warrantyYears) || 5),
-        blueprintUrl: blueprintIds.length > 0 ? JSON.stringify(blueprintIds) : undefined,
+        blueprintUrl: blueprintUrls.length > 0 ? JSON.stringify(blueprintUrls) : undefined,
         storeId: user?.storeId,
         status: 'PENDING',
       });

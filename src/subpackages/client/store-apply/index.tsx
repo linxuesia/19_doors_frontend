@@ -127,7 +127,7 @@ export default function StoreApply() {
           : { storeId: selectedStoreId }),
         contactName,
         phone,
-        licenseImages: licenseImages.map((img) => img.fileID),
+        licenseImages: licenseImages.map((img) => img.cloudUrl),
         address,
         latitude,
         longitude,
