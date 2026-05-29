@@ -90,3 +90,70 @@
 }
 
 .opacity-50 { opacity: 0.5; }
+
+// 封面图上传
+.sm-cover-upload {
+  width: 100%;
+  border-radius: 16rpx;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #ebedf0;
+}
+
+.sm-cover-preview-wrap {
+  position: relative;
+  width: 100%;
+  height: 320rpx;
+}
+
+.sm-cover-image {
+  width: 100%;
+  height: 100%;
+}
+
+.sm-cover-uploading-mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sm-cover-change-btn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72rpx;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.sm-cover-change-text, .sm-cover-uploading-text {
+  font-size: 24rpx;
+  color: #ffffff;
+}
+
+.sm-cover-placeholder {
+  width: 100%;
+  height: 320rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.sm-cover-placeholder-text {
+  font-size: 28rpx;
+  color: #6b7280;
+}
+
+.sm-cover-placeholder-hint {
+  font-size: 22rpx;
+  color: #9ca3af;
+}
