@@ -10,9 +10,8 @@ const ownerFunctions = [
   { icon: 'clipboard', label: '订单管理', url: '/subpackages/business/orders/index' },
   { icon: 'calendar', label: '预约管理', url: '/subpackages/business/reservations/index' },
   { icon: 'add', label: '录入订单', url: '/subpackages/business/order-manage/index' },
-  { icon: 'user', label: '客户档案', url: '' },
+  { icon: 'user', label: '客户档案', url: '/subpackages/business/clients/index' },
   { icon: 'image', label: '案例库', url: '/pages/cases/index' },
-  { icon: 'chart', label: '数据看板', url: '' },
   { icon: 'settings', label: '门店设置', url: '/subpackages/business/store-manage/index' },
 ];
 
@@ -20,9 +19,8 @@ const managerFunctions = [
   { icon: 'clipboard', label: '订单管理', url: '/subpackages/business/orders/index' },
   { icon: 'calendar', label: '预约管理', url: '/subpackages/business/reservations/index' },
   { icon: 'add', label: '录入订单', url: '/subpackages/business/order-manage/index' },
-  { icon: 'user', label: '客户档案', url: '' },
+  { icon: 'user', label: '客户档案', url: '/subpackages/business/clients/index' },
   { icon: 'image', label: '案例库', url: '/pages/cases/index' },
-  { icon: 'chart', label: '数据看板', url: '' },
 ];
 
 const installerFunctions = [

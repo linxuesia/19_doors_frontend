@@ -1,0 +1,172 @@
+.wty-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.wty-loading, .wty-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400rpx;
+}
+
+.wty-loading-text, .wty-empty-text {
+  font-size: 28rpx;
+  color: #9ca3af;
+}
+
+.wty-content {
+  padding: 32rpx 24rpx;
+}
+
+// 质保卡主体
+.wty-card {
+  position: relative;
+  background: linear-gradient(135deg, #122b4d 0%, #1b3e6c 50%, #0d2240 100%);
+  border-radius: 40rpx;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(18, 43, 77, 0.3);
+}
+
+.wty-card-bg {
+  position: absolute;
+  right: -60rpx;
+  top: -60rpx;
+  width: 300rpx;
+  height: 300rpx;
+  background: rgba(255,255,255,0.05);
+  border-radius: 50%;
+}
+
+.wty-card-body {
+  position: relative;
+  z-index: 1;
+  padding: 48rpx 36rpx;
+}
+
+.wty-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40rpx;
+}
+
+.wty-card-subtitle {
+  display: block;
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 4rpx;
+  margin-bottom: 8rpx;
+}
+
+.wty-card-title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.wty-card-badge {
+  width: 80rpx;
+  height: 80rpx;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wty-badge-num {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+// 质保倒计时
+.wty-countdown-box {
+  background: rgba(0,0,0,0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 24rpx;
+  padding: 32rpx 28rpx;
+  margin-bottom: 40rpx;
+}
+
+.wty-countdown-label {
+  display: block;
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 8rpx;
+}
+
+.wty-countdown-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+}
+
+.wty-countdown-num {
+  font-size: 72rpx;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.wty-countdown-unit {
+  font-size: 28rpx;
+  color: rgba(255,255,255,0.7);
+}
+
+.wty-countdown-date {
+  display: block;
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.4);
+  margin-top: 12rpx;
+}
+
+.wty-expired-tag {
+  display: inline-block;
+  margin-top: 12rpx;
+  padding: 4rpx 16rpx;
+  background: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  font-size: 22rpx;
+  border-radius: 8rpx;
+}
+
+.wty-no-warranty-text {
+  display: block;
+  font-size: 28rpx;
+  color: rgba(255,255,255,0.7);
+  margin-top: 12rpx;
+}
+
+// 信息列表
+.wty-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.wty-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wty-info-label {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.5);
+}
+
+.wty-info-value {
+  font-size: 26rpx;
+  color: rgba(255,255,255,0.85);
+  font-weight: 500;
+}
+
+.wty-footer-text {
+  text-align: center;
+  margin-top: 40rpx;
+  font-size: 24rpx;
+  color: #9ca3af;
+}

@@ -20,6 +20,7 @@ export default defineAppConfig({
         'site-detail/index',      // 工地详情
         'store-apply/index',      // 门店入驻申请
         'staff-apply/index',      // 员工认证申请
+        'warranty/index',         // 质保卡
       ],
     },
     {
@@ -30,6 +31,7 @@ export default defineAppConfig({
         'order-manage/index',     // 订单管理/录入
         'reservations/index',     // 预约管理
         'store-manage/index',     // 门店设置
+        'clients/index',          // 客户档案
         'admin/index',            // 管理员后台
         'admin-login/index',      // 管理员登录（扫码）
       ],

@@ -15,7 +15,9 @@
 .ol-card-addr { font-size: 24rpx; color: #9ca3af; }
 .ol-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 16rpx; }
 .ol-card-amount { font-size: 28rpx; font-weight: 700; color: #122b4d; }
+.ol-card-right { display: flex; align-items: center; gap: 16rpx; }
 .ol-card-warranty { font-size: 22rpx; color: #9ca3af; }
+.ol-warranty-link { font-size: 22rpx; color: #122b4d; font-weight: 500; padding: 4rpx 12rpx; background: #e1ecf4; border-radius: 8rpx; }
 .ol-empty { display: flex; justify-content: center; padding: 80rpx 0; }
 .ol-empty-text { font-size: 28rpx; color: #9ca3af; }
 
@@ -32,6 +34,21 @@
 .od-amount-label { display: block; font-size: 22rpx; color: rgba(255,255,255,0.6); }
 .od-amount-value { display: block; font-size: 32rpx; font-weight: 700; color: #ffffff; margin-top: 4rpx; }
 .od-amount-sub { display: block; font-size: 28rpx; font-weight: 500; color: rgba(255,255,255,0.9); margin-top: 4rpx; }
+
+.od-warranty-btn {
+  margin-top: 20rpx;
+  padding: 16rpx 24rpx;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 16rpx;
+  text-align: center;
+}
+
+.od-warranty-btn-text {
+  font-size: 26rpx;
+  color: #ffffff;
+  font-weight: 500;
+}
 
 .od-progress-card, .od-info-card, .od-logs-card { background: #ffffff; border-radius: 24rpx; padding: 24rpx; margin: 0 24rpx 16rpx; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
 .od-section-title { display: block; font-size: 32rpx; font-weight: 700; color: #122b4d; margin-bottom: 20rpx; }

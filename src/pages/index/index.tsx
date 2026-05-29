@@ -98,7 +98,7 @@ export default function Home() {
           <View className='action-icon' onClick={() => storeInfo?.address && Taro.openLocation({ latitude: storeInfo.latitude || 0, longitude: storeInfo.longitude || 0, name: storeInfo.name, address: storeInfo.address })}>
             <Icon name='map-pin' size={36} color='#122b4d' />
           </View>
-          <View className='action-icon' onClick={() => Taro.showToast({ title: '功能开发中', icon: 'none' })}>
+          <View className='action-icon' onClick={() => Taro.navigateTo({ url: `/subpackages/client/store-detail/index?id=${storeId}` })}>
             <Icon name='qr-code' size={36} color='#122b4d' />
           </View>
         </View>

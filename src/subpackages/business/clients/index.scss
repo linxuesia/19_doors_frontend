@@ -1,0 +1,165 @@
+.cl-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.cl-loading, .cl-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400rpx;
+}
+
+.cl-empty {
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.cl-loading-text, .cl-empty-text {
+  font-size: 28rpx;
+  color: #9ca3af;
+}
+
+.cl-content {
+  padding: 24rpx;
+}
+
+.cl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 20rpx;
+}
+
+.cl-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #122b4d;
+}
+
+.cl-count {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.cl-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.cl-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.cl-card-top {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.cl-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #122b4d, #2b5a8e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cl-avatar-text {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.cl-info {
+  flex: 1;
+}
+
+.cl-name {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 4rpx;
+}
+
+.cl-phone {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.cl-order-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.cl-order-count {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #122b4d;
+  line-height: 1;
+}
+
+.cl-order-label {
+  font-size: 20rpx;
+  color: #9ca3af;
+  margin-top: 2rpx;
+}
+
+.cl-addresses {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1px solid #f3f4f6;
+}
+
+.cl-addr-text {
+  flex: 1;
+  font-size: 24rpx;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cl-addr-more {
+  font-size: 22rpx;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.cl-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1px solid #f3f4f6;
+}
+
+.cl-bottom-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.cl-bottom-label {
+  font-size: 22rpx;
+  color: #9ca3af;
+}
+
+.cl-bottom-value {
+  font-size: 26rpx;
+  color: #1f2937;
+  font-weight: 500;
+}

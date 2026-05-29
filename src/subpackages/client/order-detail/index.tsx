@@ -55,7 +55,14 @@ export default function OrderDetail() {
               </View>
               <View className='ol-card-footer'>
                 <Text className='ol-card-amount'>¥{item.totalAmount?.toLocaleString() || 0}</Text>
-                <Text className='ol-card-warranty'>质保{item.warrantyYears}年</Text>
+                <View className='ol-card-right'>
+                  <Text className='ol-card-warranty'>质保{item.warrantyYears}年</Text>
+                  {item.status === 'COMPLETED' && (
+                    <Text className='ol-warranty-link' onClick={(e) => { e.stopPropagation(); Taro.navigateTo({ url: `/subpackages/client/warranty/index?orderId=${item.id}` }); }}>
+                      质保卡 ›
+                    </Text>
+                  )}
+                </View>
               </View>
             </View>
           ))}
@@ -103,6 +110,11 @@ export default function OrderDetail() {
               <Text className='od-amount-sub'>{order.warrantyYears}年</Text>
             </View>
           </View>
+          {order.status === 'COMPLETED' && (
+            <View className='od-warranty-btn' onClick={() => Taro.navigateTo({ url: `/subpackages/client/warranty/index?orderId=${order.id}` })}>
+              <Text className='od-warranty-btn-text'>查看质保卡 ›</Text>
+            </View>
+          )}
         </View>
       </View>
 
