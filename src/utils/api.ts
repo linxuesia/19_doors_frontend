@@ -1,16 +1,9 @@
 import Taro from '@tarojs/taro';
 
-// 微信小程序通过 envVersion 判断环境：develop(开发版) / trial(体验版) / release(正式版)
-const getBaseUrl = () => {
-  try {
-    const accountInfo = Taro.getAccountInfoSync?.();
-    const envVersion = accountInfo?.miniProgram?.envVersion;
-    if (envVersion === 'develop') return 'http://localhost:3000/api';
-  } catch {}
-  return 'https://attblqgz.sojoy-api.ekj84738.rgpykbwx.com/api';
-};
-
-const BASE_URL = getBaseUrl();
+// dev:weapp 用本地接口，build:weapp 用云托管接口
+const BASE_URL = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:3000/api'
+  : 'https://attblqgz.sojoy-api.ekj84738.rgpykbwx.com/api';
 
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
