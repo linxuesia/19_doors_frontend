@@ -1,21 +1,25 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView } from '@tarojs/components';
+import { View, Text, ScrollView, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import Icon from '../../components/Icon';
 import api from '../../utils/api';
 import './index.scss';
 
-const cities = ['长沙', '北京', '苏州', '杭州'];
+const cities = ['全部', '长沙', '北京', '苏州', '杭州'];
 
 export default function Stores() {
   const [stores, setStores] = useState<any[]>([]);
-  const [activeCity, setActiveCity] = useState('长沙');
+  const [activeCity, setActiveCity] = useState('全部');
 
   useEffect(() => {
     api.get('/stores')
       .then((res: any) => setStores(res || []))
       .catch(() => setStores([]));
   }, []);
+
+  const filteredStores = activeCity === '全部'
+    ? stores
+    : stores.filter((s: any) => s.city === activeCity || s.address?.includes(activeCity));
 
   return (
     <ScrollView className='stores-page' scrollY>
@@ -40,7 +44,7 @@ export default function Stores() {
         </ScrollView>
 
         {/* 门店列表 */}
-        {stores.map((item: any) => (
+        {filteredStores.map((item: any) => (
           <View
             key={item.id}
             className='store-full-card'
@@ -49,7 +53,11 @@ export default function Stores() {
             }
           >
             <View className='store-full-img'>
-              <Icon name='building' size={80} color='#b0c4d8' />
+              {item.coverImage ? (
+                <Image className='store-full-cover' src={item.coverImage} mode='aspectFill' />
+              ) : (
+                <Icon name='building' size={80} color='#b0c4d8' />
+              )}
             </View>
             <View className='store-full-info'>
               <View className='store-full-header'>
@@ -76,7 +84,7 @@ export default function Stores() {
             </View>
           </View>
         ))}
-        {stores.length === 0 && (
+        {filteredStores.length === 0 && (
           <View className='empty-state'>
             <Text className='empty-text'>暂无门店</Text>
           </View>

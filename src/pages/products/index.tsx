@@ -41,6 +41,9 @@ export default function Products() {
       const productSpaces = typeof p.space === 'string' ? p.space.split(',') : [];
       if (!activeSpaces.some((s) => productSpaces.includes(s))) return false;
     }
+    if (activeStyles.length > 0 && p.style) {
+      if (!activeStyles.includes(p.style)) return false;
+    }
     if (activeColors.length > 0 && p.color) {
       if (!activeColors.includes(p.color)) return false;
     }
