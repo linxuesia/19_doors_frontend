@@ -112,9 +112,9 @@ export default function About() {
         </View>
         <ScrollView className='qualification-scroll' scrollX showScrollbar={false}>
           {[
-            { id: 'r1', title: '门窗隔音检测报告', desc: '国家检测中心认证 · 隔音性能达19分贝', image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=400&q=80' },
-            { id: 'r2', title: '抗风压性能报告', desc: '最高等级特级认证 · 抗风压性能优异', image: 'https://images.unsplash.com/photo-1581092335871-4c7c80f83b8e?auto=format&fit=crop&w=400&q=80' },
-            { id: 'r3', title: '保温性能检测报告', desc: '节能保温 · 符合国家建筑节能标准', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80' },
+            { id: 'r1', title: '门窗隔音检测报告', desc: '国家检测中心认证 · 隔音性能达19分贝', image: 'cloud://prod-d7g81p837f1219e28.7072-prod-d7g81p837f1219e28-1436604435/common/banner.jpeg' },
+            { id: 'r2', title: '抗风压性能报告', desc: '最高等级特级认证 · 抗风压性能优异', image: 'cloud://prod-d7g81p837f1219e28.7072-prod-d7g81p837f1219e28-1436604435/common/banner.jpeg' },
+            { id: 'r3', title: '保温性能检测报告', desc: '节能保温 · 符合国家建筑节能标准', image: 'cloud://prod-d7g81p837f1219e28.7072-prod-d7g81p837f1219e28-1436604435/common/banner.jpeg' },
           ].map((item) => (
             <View
               key={item.id}

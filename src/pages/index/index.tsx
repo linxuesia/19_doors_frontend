@@ -86,7 +86,7 @@ export default function Home() {
       <View className='manager-card'>
         <Image
           className='manager-avatar'
-          src={storeInfo?.coverImage || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80'}
+          src={storeInfo?.coverImage || 'cloud://prod-d7g81p837f1219e28.7072-prod-d7g81p837f1219e28-1436604435/common/banner.jpeg'}
         />
         <View className='manager-info'>
           <Text className='manager-name'>{storeInfo?.owner?.name || '门店负责人'}</Text>
@@ -211,8 +211,8 @@ export default function Home() {
         </View>
         <ScrollView className='qualification-scroll' scrollX showScrollbar={false}>
           {[
-            { id: 'q1', title: '行业发展标杆', store: '上海19分贝门窗直营店', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=400&q=80' },
-            { id: 'q2', title: '大商资质', store: '上海19分贝门窗直营店', image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=400&q=80' },
+            { id: 'q1', title: '行业发展标杆', store: '上海19分贝门窗直营店', image: 'cloud://prod-d7g81p837f1219e28.7072-prod-d7g81p837f1219e28-1436604435/common/banner.jpeg' },
+            { id: 'q2', title: '大商资质', store: '上海19分贝门窗直营店', image: 'cloud://prod-d7g81p837f1219e28.7072-prod-d7g81p837f1219e28-1436604435/common/banner.jpeg' },
           ].map((item) => (
             <View
               key={item.id}
