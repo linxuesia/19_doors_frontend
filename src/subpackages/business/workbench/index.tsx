@@ -128,7 +128,7 @@ export default function Workbench() {
             <View
               key={fn.label}
               className='wb-fn-card'
-              onClick={() => fn.url ? Taro.navigateTo({ url: fn.url }) : {}}
+              onClick={() => fn.url ? Taro.navigateTo({ url: fn.url }) : Taro.showToast({ title: '功能开发中', icon: 'none' })}
             >
               <View className='wb-fn-icon-wrap'>
                 <Icon name={fn.icon as any} size={40} color='#122b4d' />

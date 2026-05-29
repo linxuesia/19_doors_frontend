@@ -68,7 +68,7 @@ export default function Admin() {
 
   const handleApprove = async (id: string) => {
     try {
-      await api.put(`/stores/applications/${id}/approve`);
+      await api.put(`/stores/applications/${id}/review`, { status: 'APPROVED' });
       Taro.showToast({ title: '已通过', icon: 'success' });
       setApplications(applications.filter((a) => a.id !== id));
     } catch {
@@ -78,7 +78,7 @@ export default function Admin() {
 
   const handleReject = async (id: string) => {
     try {
-      await api.put(`/stores/applications/${id}/reject`);
+      await api.put(`/stores/applications/${id}/review`, { status: 'REJECTED' });
       Taro.showToast({ title: '已驳回', icon: 'success' });
       setApplications(applications.filter((a) => a.id !== id));
     } catch {
@@ -277,8 +277,8 @@ export default function Admin() {
                     <Text className='admin-case-meta'>{item.city || '-'}</Text>
                   </View>
                   <View className='admin-case-footer'>
-                    <Text className={`admin-case-publish-status ${item.published ? 'published' : ''}`}>
-                      {item.published ? '已发布' : '草稿'}
+                    <Text className={`admin-case-publish-status ${item.isPublished ? 'published' : ''}`}>
+                      {item.isPublished ? '已发布' : '草稿'}
                     </Text>
                     <Text className='admin-case-views'>👁 {item.views || 0}</Text>
                   </View>

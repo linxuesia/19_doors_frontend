@@ -153,3 +153,27 @@
 .safe-bottom {
   height: 120rpx;
 }
+
+// ====== 加载/空状态 ======
+.product-loading {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400rpx;
+}
+
+.product-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  height: 400rpx;
+}
+
+.loading-text, .empty-text {
+  font-size: 26rpx;
+  color: #9ca3af;
+}

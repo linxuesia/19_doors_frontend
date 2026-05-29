@@ -240,13 +240,33 @@
   }
 }
 
+// 发布者头部（包含作者和时间）
+.cs-update-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
 // 发布者
 .cs-update-author {
-  display: block;
   font-size: 26rpx;
   font-weight: 600;
   color: #1f2937;
-  margin-bottom: 10rpx;
+}
+
+// 发布时间
+.cs-update-time {
+  font-size: 22rpx;
+  color: #9ca3af;
+}
+
+// 更新计数标签
+.cs-update-count {
+  margin-left: auto;
+  font-size: 22rpx;
+  color: #9ca3af;
+  font-weight: normal;
 }
 
 // 动态内容文字

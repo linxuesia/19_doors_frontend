@@ -5,6 +5,7 @@ export default defineAppConfig({
     'pages/cases/index',         // 案例·服务
     'pages/about/index',         // 公司简介
     'pages/profile/index',       // 个人中心
+    'pages/stores/index',        // 门店列表
   ],
   subPackages: [
     {

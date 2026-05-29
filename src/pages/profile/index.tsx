@@ -90,7 +90,7 @@ export default function Profile() {
             <Icon name='home' size={44} color='#4b5563' />
             <Text className='service-label'>我的新家</Text>
           </View>
-          <View className='service-item' onClick={() => {}}>
+          <View className='service-item' onClick={() => Taro.showToast({ title: '功能开发中', icon: 'none' })}>
             <Icon name='file-text' size={44} color='#4b5563' />
             <Text className='service-label'>质保卡</Text>
           </View>

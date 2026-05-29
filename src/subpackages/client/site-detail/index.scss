@@ -5,8 +5,18 @@
 
 .site-header {
   background: linear-gradient(135deg, #122b4d 0%, #1b3e6c 100%);
-  padding: 40rpx 32rpx;
   border-radius: 0 0 32rpx 32rpx;
+  overflow: hidden;
+}
+
+.site-hero-img {
+  width: 100%;
+  height: 360rpx;
+  background: #0f2240;
+}
+
+.site-header-info {
+  padding: 32rpx;
 }
 
 .site-name {
@@ -14,18 +24,27 @@
   font-size: 36rpx;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 16rpx;
+  margin-bottom: 12rpx;
 }
 
-.site-status-row {
+.site-header-meta {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8rpx;
 }
 
-.site-distance {
+.site-header-location {
   font-size: 24rpx;
   color: rgba(255, 255, 255, 0.85);
+}
+
+.site-header-type {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.65);
+  margin-left: 12rpx;
+  padding: 2rpx 12rpx;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8rpx;
 }
 
 .site-section {
@@ -130,42 +149,6 @@
   line-height: 1.6;
 }
 
-.tag {
-  display: inline-block;
-  padding: 4rpx 16rpx;
-  border-radius: 9999px;
-  font-size: 20rpx;
-}
-
-.tag-amber {
-  background-color: #fff7ed;
-  color: #f59e0b;
-}
-
-.tag-blue {
-  background-color: #eff6ff;
-  color: #3b82f6;
-}
-
-.tag-green {
-  background-color: #f0fdf4;
-  color: #22c55e;
-}
-
-.dynamic-stage-tag {
-  display: inline-block;
-  background: #eff6ff;
-  border-radius: 8rpx;
-  padding: 4rpx 16rpx;
-  margin-bottom: 12rpx;
-
-  .stage-tag-text {
-    font-size: 22rpx;
-    color: #3b82f6;
-    font-weight: 500;
-  }
-}
-
 .dynamic-images {
   display: flex;
   flex-wrap: wrap;
@@ -187,4 +170,103 @@
   height: 100vh;
   font-size: 28rpx;
   color: #9ca3af;
+}
+
+// 施工进度时间线
+.progress-timeline {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 28rpx;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.progress-item {
+  display: flex;
+  gap: 20rpx;
+  min-height: 64rpx;
+
+  &:last-child {
+    min-height: auto;
+  }
+}
+
+.progress-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 48rpx;
+  flex-shrink: 0;
+}
+
+.progress-dot {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.progress-dot-done {
+  background: #22c55e;
+}
+
+.progress-dot-active {
+  background: #3b82f6;
+  border: 4rpx solid #bfdbfe;
+}
+
+.progress-dot-pending {
+  background: #e5e7eb;
+}
+
+.progress-line {
+  width: 4rpx;
+  flex: 1;
+  min-height: 32rpx;
+  background: #e5e7eb;
+  margin: 6rpx 0;
+}
+
+.progress-line-done {
+  background: #22c55e;
+}
+
+.progress-content {
+  padding-bottom: 16rpx;
+}
+
+.progress-name {
+  font-size: 28rpx;
+  color: #1f2937;
+
+  &.completed {
+    color: #22c55e;
+  }
+
+  &.in_progress {
+    color: #3b82f6;
+    font-weight: 600;
+  }
+
+  &.pending {
+    color: #9ca3af;
+  }
+}
+
+// 工地动态分组
+.update-group {
+  margin-bottom: 24rpx;
+}
+
+.update-step-tag {
+  display: inline-block;
+  background: #eff6ff;
+  color: #3b82f6;
+  font-size: 22rpx;
+  font-weight: 500;
+  border-radius: 8rpx;
+  padding: 6rpx 20rpx;
+  margin-bottom: 16rpx;
 }

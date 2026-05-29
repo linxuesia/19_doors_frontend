@@ -1,17 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import Icon from '../../components/Icon';
+import api from '../../utils/api';
 import './index.scss';
 
-const mockProducts = [
-  { id: 1, name: 'S100内开窗纱一体', series: 'S100', coverImage: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=modern%20aluminum%20window%20in%20luxury%20living%20room%20with%20city%20view%20daylight&image_size=landscape_4_3', features: ['纱网一体', '隔音隔热'] },
-  { id: 2, name: 'S97内开窗纱一体', series: 'S97', coverImage: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=modern%20aluminum%20casement%20window%20in%20home%20office%20with%20bookshelf&image_size=landscape_4_3', features: ['静音设计', '安全防护'] },
-  { id: 3, name: 'S88断桥平开窗', series: 'S88', coverImage: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=minimalist%20aluminum%20window%20with%20curved%20design%20in%20modern%20apartment&image_size=landscape_4_3', features: ['断桥隔热', '节能保温'] },
-  { id: 4, name: 'S110推拉门', series: 'S110', coverImage: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=large%20sliding%20glass%20door%20in%20modern%20living%20room%20with%20panoramic%20view&image_size=landscape_4_3', features: ['超大视野', '推拉顺畅'] },
-];
-
 export default function Products() {
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeSpaces, setActiveSpaces] = useState<string[]>([]);
   const [activeStyles, setActiveStyles] = useState<string[]>([]);
   const [activeColors, setActiveColors] = useState<string[]>([]);
@@ -20,6 +16,17 @@ export default function Products() {
   const styles = ['现代简约', '奶油风', '中古风'];
   const colors = ['宝马灰', '珐琅白', '金属咖', '星空黑', '黑晶石'];
 
+  useEffect(() => {
+    api.get('/products').then((res: any) => {
+      const list = Array.isArray(res) ? res : [];
+      setProducts(list);
+    }).catch(() => {
+      Taro.showToast({ title: '加载产品失败', icon: 'none' });
+    }).finally(() => {
+      setLoading(false);
+    });
+  }, []);
+
   const toggleFilter = (value: string, active: string[], setter: (v: string[]) => void) => {
     if (active.includes(value)) {
       setter(active.filter((v) => v !== value));
@@ -27,6 +34,18 @@ export default function Products() {
       setter([...active, value]);
     }
   };
+
+  // 按筛选条件过滤产品
+  const filteredProducts = products.filter((p: any) => {
+    if (activeSpaces.length > 0 && p.space) {
+      const productSpaces = typeof p.space === 'string' ? p.space.split(',') : [];
+      if (!activeSpaces.some((s) => productSpaces.includes(s))) return false;
+    }
+    if (activeColors.length > 0 && p.color) {
+      if (!activeColors.includes(p.color)) return false;
+    }
+    return true;
+  });
 
   return (
     <ScrollView className='products-page' scrollY>
@@ -92,36 +111,47 @@ export default function Products() {
 
       {/* 产品网格 */}
       <View className='product-grid'>
-        {mockProducts.map((item: any) => (
-          <View
-            key={item.id}
-            className='product-card'
-            onClick={() =>
-              Taro.navigateTo({ url: `/subpackages/client/product-detail/index?id=${item.id}` })
-            }
-          >
-            <View className='product-card-img'>
-              {item.coverImage ? (
-                <Image className='product-card-image' src={item.coverImage} mode='aspectFill' />
-              ) : (
-                <View className='product-card-placeholder'>
-                  <Icon name='window' size={72} color='#b0c4d8' />
-                </View>
-              )}
-            </View>
-            <View className='product-card-body'>
-              <Text className='product-card-name'>{item.name}</Text>
-              <Text className='product-card-series'>{item.series}</Text>
-              {item.features?.length > 0 && (
-                <View className='product-card-tags'>
-                  {item.features.slice(0, 3).map((f: string, i: number) => (
-                    <Text key={i} className='feature-tag'>{f}</Text>
-                  ))}
-                </View>
-              )}
-            </View>
+        {loading ? (
+          <View className='product-loading'>
+            <Text className='loading-text'>加载中...</Text>
           </View>
-        ))}
+        ) : filteredProducts.length > 0 ? (
+          filteredProducts.map((item: any) => (
+            <View
+              key={item.id}
+              className='product-card'
+              onClick={() =>
+                Taro.navigateTo({ url: `/subpackages/client/product-detail/index?id=${item.id}` })
+              }
+            >
+              <View className='product-card-img'>
+                {item.coverImage ? (
+                  <Image className='product-card-image' src={item.coverImage} mode='aspectFill' />
+                ) : (
+                  <View className='product-card-placeholder'>
+                    <Icon name='window' size={72} color='#b0c4d8' />
+                  </View>
+                )}
+              </View>
+              <View className='product-card-body'>
+                <Text className='product-card-name'>{item.name}</Text>
+                <Text className='product-card-series'>{item.series}</Text>
+                {item.features && (
+                  <View className='product-card-tags'>
+                    {(typeof item.features === 'string' ? JSON.parse(item.features) : item.features).slice(0, 3).map((f: string, i: number) => (
+                      <Text key={i} className='feature-tag'>{f}</Text>
+                    ))}
+                  </View>
+                )}
+              </View>
+            </View>
+          ))
+        ) : (
+          <View className='product-empty'>
+            <Icon name='window' size={64} color='#d1d5db' />
+            <Text className='empty-text'>暂无产品</Text>
+          </View>
+        )}
       </View>
 
       <View className='safe-bottom' />
