@@ -5,6 +5,12 @@ import { useAuth } from '../../../contexts/AuthContext';
 import Icon from '../../../components/Icon';
 import './index.scss';
 
+const isDevtools = (() => {
+  try {
+    return Taro.getAccountInfoSync?.()?.miniProgram?.envVersion === 'develop';
+  } catch { return false; }
+})();
+
 export default function Login() {
   const { user, phoneLogin } = useAuth();
   const [phone, setPhone] = useState('');
@@ -156,27 +162,31 @@ export default function Login() {
             <Text className='login-btn-text'>微信授权一键登录</Text>
           </Button>
 
-          {/* 手动输入手机号 */}
-          <View className='login-divider'>
-            <View className='login-divider-line' />
-            <Text className='login-divider-text'>或手动输入</Text>
-            <View className='login-divider-line' />
-          </View>
-          <Input
-            className='login-input'
-            type='number'
-            placeholder='请输入手机号'
-            value={phone}
-            onInput={(e) => setPhone(e.detail.value)}
-            maxlength={11}
-          />
-          <Button
-            className={`btn-outline login-submit ${loading ? 'opacity-50' : ''}`}
-            onClick={handlePhoneSubmit}
-            disabled={loading}
-          >
-            {loading ? '登录中...' : '手机号登录'}
-          </Button>
+          {/* 手动输入手机号（仅DevTools可见） */}
+          {isDevtools && (
+            <>
+              <View className='login-divider'>
+                <View className='login-divider-line' />
+                <Text className='login-divider-text'>或手动输入</Text>
+                <View className='login-divider-line' />
+              </View>
+              <Input
+                className='login-input'
+                type='number'
+                placeholder='请输入手机号'
+                value={phone}
+                onInput={(e) => setPhone(e.detail.value)}
+                maxlength={11}
+              />
+              <Button
+                className={`btn-outline login-submit ${loading ? 'opacity-50' : ''}`}
+                onClick={handlePhoneSubmit}
+                disabled={loading}
+              >
+                {loading ? '登录中...' : '手机号登录'}
+              </Button>
+            </>
+          )}
         </View>
       </View>
     </View>
