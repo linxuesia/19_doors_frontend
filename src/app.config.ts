@@ -1,5 +1,4 @@
 export default defineAppConfig({
-  lazyCodeLoading: 'requiredComponents',
   pages: [
     'pages/index/index',         // 首页
     'pages/products/index',      // 产品中心
