@@ -58,7 +58,7 @@ export default function Home() {
       api.get(`/cases/store/${storeId}`).catch(() => []),
       api.get('/sites').catch(() => []),
     ]).then(([p, c, s]) => {
-      setProducts((p as any)?.slice?.(0, 4) || []);
+      setProducts((p as any) || []);
       setCases((c as any)?.slice?.(0, 6) || []);
       setSites((s as any)?.slice?.(0, 6) || []);
     });
