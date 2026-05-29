@@ -1,17 +1,15 @@
 import Taro from '@tarojs/taro';
 
-// 云托管内网域名只能在微信客户端中访问，DevTools 中走本地
-const getBaseUrl = () => {
-  try {
-    const accountInfo = Taro.getAccountInfoSync?.();
-    const env = accountInfo?.miniProgram?.envVersion;
-    // develop(开发版/DevTools) → 本地后端；trial/release → 云托管内网域名
-    if (env === 'develop') return 'http://localhost:3000/api';
-  } catch {}
-  return 'https://attblqgz.sojoy-api.ekj84738.rgpykbwx.com/api';
-};
+// 云托管配置（生产环境走 callContainer，无需域名/备案/白名单）
+const CLOUD_ENV = 'attblqgz';
+const SERVICE_NAME = 'sojoy-api';
 
-const BASE_URL = getBaseUrl();
+// develop(DevTools) → 本地后端；trial/release → 云托管 callContainer
+const getEnv = () => {
+  try {
+    return Taro.getAccountInfoSync?.()?.miniProgram?.envVersion;
+  } catch { return 'develop'; }
+};
 
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -19,41 +17,73 @@ interface RequestOptions {
   header?: any;
 }
 
-async function request(url: string, options: RequestOptions = {}) {
-  const { method = 'GET', data } = options;
-  const token = Taro.getStorageSync('token');
-
-  const header: any = { 'Content-Type': 'application/json' };
-  if (token) {
-    header['Authorization'] = `Bearer ${token}`;
+function handleResponse(res: { statusCode: number; data: any }) {
+  if (res.statusCode >= 200 && res.statusCode < 300) {
+    return res.data;
   }
+  if (res.statusCode === 401) {
+    Taro.removeStorageSync('token');
+    Taro.removeStorageSync('user');
+    Taro.navigateTo({ url: '/subpackages/client/login/index' });
+    throw new Error('未授权');
+  }
+  throw new Error((res.data as any)?.message || '请求失败');
+}
 
+async function devRequest(url: string, options: RequestOptions = {}) {
+  const { method = 'GET', data, header: extraHeader } = options;
   try {
     const res = await Taro.request({
-      url: `${BASE_URL}${url}`,
+      url: `http://localhost:3000/api${url}`,
       method,
       data,
-      header,
+      header: { 'Content-Type': 'application/json', ...extraHeader },
     });
-
-    if (res.statusCode >= 200 && res.statusCode < 300) {
-      return res.data;
-    }
-
-    if (res.statusCode === 401) {
-      Taro.removeStorageSync('token');
-      Taro.removeStorageSync('user');
-      Taro.navigateTo({ url: '/subpackages/client/login/index' });
-      throw new Error('未授权');
-    }
-
-    throw new Error((res.data as any)?.message || '请求失败');
+    return handleResponse(res);
   } catch (err: any) {
     if (err.errMsg?.includes('request:fail')) {
       throw new Error('网络连接失败');
     }
     throw err;
   }
+}
+
+async function cloudRequest(url: string, options: RequestOptions = {}) {
+  const { method = 'GET', data, header: extraHeader } = options;
+  try {
+    const res = await Taro.cloud.callContainer({
+      config: { env: CLOUD_ENV },
+      path: `/api${url}`,
+      method: method as any,
+      header: {
+        ...extraHeader,
+        'Content-Type': 'application/json',
+        'X-WX-SERVICE': SERVICE_NAME,
+      },
+      data,
+    });
+    return handleResponse(res);
+  } catch (err: any) {
+    if (err.errMsg?.includes('callContainer:fail') || err.errMsg?.includes('container:fail')) {
+      throw new Error('网络连接失败');
+    }
+    throw err;
+  }
+}
+
+async function request(url: string, options: RequestOptions = {}) {
+  const token = Taro.getStorageSync('token');
+
+  const authHeader: any = {};
+  if (token) {
+    authHeader['Authorization'] = `Bearer ${token}`;
+  }
+
+  if (getEnv() === 'develop') {
+    return devRequest(url, { ...options, header: { ...options.header, ...authHeader } });
+  }
+
+  return cloudRequest(url, { ...options, header: { ...options.header, ...authHeader } });
 }
 
 const api = {
