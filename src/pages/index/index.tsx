@@ -6,12 +6,12 @@ import Icon from '../../components/Icon';
 import api from '../../utils/api';
 import './index.scss';
 
-// 上海周边模拟工地坐标（API 无数据时的缺省展示）
+// 长沙周边模拟工地坐标（API 无数据时的缺省展示）
 const defaultMarkers = [
-  { id: 1, longitude: 121.4737, latitude: 31.2304, name: '芯汇花园5-1902', status: '下单备料' },
-  { id: 2, longitude: 121.4200, latitude: 31.2150, name: '泊岸时光印19幢', status: '已完工' },
-  { id: 3, longitude: 121.5100, latitude: 31.2500, name: '金平路555弄', status: '施工中' },
-  { id: 4, longitude: 121.3800, latitude: 31.2000, name: '苏州展厅', status: '已完工' },
+  { id: 1, longitude: 112.9388, latitude: 28.2282, name: '芯汇花园5-1902', status: '下单备料' },
+  { id: 2, longitude: 112.9200, latitude: 28.2150, name: '泊岸时光印19幢', status: '已完工' },
+  { id: 3, longitude: 112.9500, latitude: 28.2400, name: '金平路555弄', status: '施工中' },
+  { id: 4, longitude: 112.9100, latitude: 28.2000, name: '梅溪湖展厅', status: '已完工' },
 ];
 
 export default function Home() {

@@ -33,28 +33,22 @@ export default function CaseDetail() {
     if (!id) return;
 
     api.get(`/cases/${id}`)
-      .then(async (res: any) => {
+      .then((res: any) => {
         setDetail(res);
 
         const isLocal = res.type === 'LOCAL' || !!res.storeId;
 
         if (isLocal) {
-          const [stepsResult, updatesResult] = await Promise.allSettled([
-            api.get(`/cases/${id}/construction-steps`),
-            api.get(`/cases/${id}/site-updates`),
-          ]);
+          api.get(`/cases/${id}/construction-steps`)
+            .then((steps: any) => setConstructionSteps(Array.isArray(steps) ? steps : []))
+            .catch(() => setConstructionSteps([]));
 
-          if (stepsResult.status === 'fulfilled') {
-            setConstructionSteps(Array.isArray(stepsResult.value) ? stepsResult.value : []);
-          }
-          if (updatesResult.status === 'fulfilled') {
-            setSiteUpdates(Array.isArray(updatesResult.value) ? updatesResult.value : []);
-          }
+          api.get(`/cases/${id}/site-updates`)
+            .then((updates: any) => setSiteUpdates(Array.isArray(updates) ? updates : []))
+            .catch(() => setSiteUpdates([]));
         }
       })
-      .catch(() => {
-        setDetail(null);
-      });
+      .catch(() => setDetail(null));
   }, [id]);
 
   const images = useMemo(() => {

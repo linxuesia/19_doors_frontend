@@ -141,3 +141,50 @@
   background-color: #fff7ed;
   color: #f59e0b;
 }
+
+.tag-blue {
+  background-color: #eff6ff;
+  color: #3b82f6;
+}
+
+.tag-green {
+  background-color: #f0fdf4;
+  color: #22c55e;
+}
+
+.dynamic-stage-tag {
+  display: inline-block;
+  background: #eff6ff;
+  border-radius: 8rpx;
+  padding: 4rpx 16rpx;
+  margin-bottom: 12rpx;
+
+  .stage-tag-text {
+    font-size: 22rpx;
+    color: #3b82f6;
+    font-weight: 500;
+  }
+}
+
+.dynamic-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.dynamic-image {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 12rpx;
+  background: #f3f4f6;
+}
+
+.cs-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 28rpx;
+  color: #9ca3af;
+}
