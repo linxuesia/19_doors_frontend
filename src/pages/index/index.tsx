@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView, Map, Button } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useRouter } from '@tarojs/taro';
 import Icon from '../../components/Icon';
 
 import api from '../../utils/api';
@@ -15,11 +15,12 @@ const defaultMarkers = [
 ];
 
 export default function Home() {
+  const router = useRouter();
   const [products, setProducts] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
   const [sites, setSites] = useState<any[]>([]);
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
-  const [storeId] = useState('S001');
+  const storeId = (router.params.storeId as string) || 'S001';
   const [storeInfo, setStoreInfo] = useState<any>(null);
 
   // 统一数据源：优先 API 数据，无数据时使用缺省点位
