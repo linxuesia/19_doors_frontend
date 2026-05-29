@@ -29,167 +29,32 @@ export default function CaseDetail() {
   const [constructionSteps, setConstructionSteps] = useState<ConstructionStep[]>([]);
   const [siteUpdates, setSiteUpdates] = useState<SiteUpdate[]>([]);
 
-  // ====== 开发调试：Mock 数据开关（设为 true 启用） ======
-  const USE_MOCK_DATA = false;
-  // =====================================================
-
   useEffect(() => {
-    if (id) {
-      // 如果启用 Mock 模式，直接使用模拟数据
-      if (USE_MOCK_DATA) {
-        console.log('[CaseDetail] 🎭 使用 Mock 数据模式');
+    if (!id) return;
 
-        // 模拟案例详情（包含 type: 'LOCAL' 和 storeId）
-        const mockDetail = {
-          id: id,
-          title: '上海市松江区涞亭南路S88',
-          communityName: '上海',
-          houseType: '住宅',
-          description: '全屋采用极简主义窄边系统窗，型材边缘仅如笔触般纤细。',
-          type: 'LOCAL',          // 关键：本地案例
-          storeId: 'S001',         // 关键：有门店ID
-          coverImage: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=800&q=80',
-        };
-        setDetail(mockDetail);
+    api.get(`/cases/${id}`)
+      .then(async (res: any) => {
+        setDetail(res);
 
-        // 模拟施工进度数据
-        const mockConstructionSteps: ConstructionStep[] = [
-          { id: 's1', name: '施工准备与防护', status: 'completed' },
-          { id: 's2', name: '洞口复核与基层处理', status: 'completed' },
-          { id: 's3', name: '窗框定位与固定', status: 'completed' },
-          { id: 's4', name: '发泡与防水密封', status: 'in_progress' },
-          { id: 's5', name: '中空玻璃安装', status: 'pending' },
-          { id: 's6', name: '完工保护与验收', status: 'pending' },
-          { id: 's7', name: '质保服务', status: 'pending' },
-        ];
-        setConstructionSteps(mockConstructionSteps);
-        console.log('[CaseDetail] 📋 Mock 施工进度:', mockConstructionSteps.length, '条');
+        const isLocal = res.type === 'LOCAL' || !!res.storeId;
 
-        // 模拟工地动态数据（完全按照你的截图格式）
-        const mockSiteUpdates: SiteUpdate[] = [
-          {
-            id: 'u11',
-            caseId: id,
-            stepId: 's11',
-            stepName: '现场勘测',
-            author: '李师傅',
-            content: '现场勘测完成，窗户尺寸已精准测量。客厅面宽6.3米，窗洞高度2.4米，确认采用S100系列全景落地窗方案',
-            images: [
-              'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=400&q=80',
-              'https://images.unsplash.com/photo-1581092335871-4c7c80f83b8e?auto=format&fit=crop&w=400&q=80',
-            ],
-            videos: null,
-            createdAt: '2026-05-29T13:10:03.690Z',
-          },
-          {
-            id: 'u12',
-            caseId: id,
-            stepId: 's12',
-            stepName: '旧窗拆除',
-            author: '王工头',
-            content: '施工辅材全系德国伍尔特\n安全防护措施已准备\n门窗主材配置核对',
-            images: [
-              'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80',
-              'https://images.unsplash.com/photo-1503387762-592fa551a946?auto=format&fit=crop&w=400&q=80',
-              'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=400&q=80',
-            ],
-            videos: null,
-            createdAt: '2026-05-28T15:30:00.000Z',
-          },
-          {
-            id: 'u13',
-            caseId: id,
-            stepId: 's13',
-            stepName: '窗框安装',
-            author: '张店长',
-            content: '窗框安装进行中，已安装完成60%，预计明天全部完工',
-            images: [
-              'https://images.unsplash.com/photo-1504307651254-35680f3560fd?auto=format&fit=crop&w=400&q=80',
-            ],
-            videos: null,
-            createdAt: '2026-05-30T09:20:00.000Z',
-          },
-          {
-            id: 'u14',
-            caseId: id,
-            stepId: 's14',
-            stepName: '玻璃安装',
-            author: '李师傅',
-            content: '中空钢化玻璃已到货，开始安装...',
-            images: [],
-            videos: null,
-            createdAt: '2026-05-31T10:00:00.000Z',
-          },
-        ];
-        setSiteUpdates(mockSiteUpdates);
-        console.log('[CaseDetail] 🖼️ Mock 工地动态:', mockSiteUpdates.length, '条');
-        console.log('[CaseDetail] 第一条:', JSON.stringify(mockSiteUpdates[0], null, 2));
-        return;
-      }
+        if (isLocal) {
+          const [stepsResult, updatesResult] = await Promise.allSettled([
+            api.get(`/cases/${id}/construction-steps`),
+            api.get(`/cases/${id}/site-updates`),
+          ]);
 
-      // 真实接口调用
-      api.get(`/cases/${id}`)
-        .then(async (res: any) => {
-          setDetail(res);
-
-          // 详细输出案例信息用于调试
-          console.log('[CaseDetail] ========== 案例详情开始加载 ==========');
-          console.log('[CaseDetail] 完整响应:', JSON.stringify(res, null, 2));
-          console.log('[CaseDetail] 关键字段:', {
-            type: res.type,
-            typeTypeof: typeof res.type,
-            storeId: res.storeId,
-            storeIdTypeof: typeof res.storeId,
-            storeIdIsEmpty: res.storeId === '' || res.storeId === null || res.storeId === undefined,
-          });
-
-          // 判断是否为本地案例
-          const isLocal = res.type === 'LOCAL' || !!res.storeId;
-          console.log('[CaseDetail] isLocalCase 判断结果:', isLocal);
-          console.log('[CaseDetail]   - type === "LOCAL":', res.type === 'LOCAL');
-          console.log('[CaseDetail]   - !!storeId:', !!res.storeId, '(值:', res.storeId, ')');
-
-          // 只有本地案例才加载工地动态
-          if (isLocal) {
-            console.log('[CaseDetail] ✅ 是本地案例，开始加载工地动态...');
-
-            // 并行加载施工进度和工地动态
-            const loadConstructionSteps = api.get(`/cases/${id}/construction-steps`)
-              .then((stepsRes: any) => {
-                console.log('[CaseDetail] ✅ 施工进度接口返回:', stepsRes);
-                setConstructionSteps(Array.isArray(stepsRes) ? stepsRes : []);
-              })
-              .catch((e) => {
-                console.warn('[CaseDetail] ⚠️ 施工进度接口失败:', e);
-                setConstructionSteps([]);
-              });
-
-            const loadSiteUpdates = api.get(`/cases/${id}/site-updates`)
-              .then((updatesRes: any) => {
-                console.log('[CaseDetail] ✅ 工地动态接口返回:', updatesRes);
-                console.log('[CaseDetail] 工地动态数量:', Array.isArray(updatesRes) ? updatesRes.length : 0);
-                if (Array.isArray(updatesRes) && updatesRes.length > 0) {
-                  console.log('[CaseDetail] 第一条数据示例:', JSON.stringify(updatesRes[0], null, 2));
-                }
-                setSiteUpdates(Array.isArray(updatesRes) ? updatesRes : []);
-              })
-              .catch((e) => {
-                console.error('[CaseDetail] ❌ 工地动态接口失败:', e);
-                setSiteUpdates([]);
-              });
-
-            await Promise.allSettled([loadConstructionSteps, loadSiteUpdates]);
-          } else {
-            console.log('[CaseDetail] ❌ 不是本地案例，跳过工地动态加载');
+          if (stepsResult.status === 'fulfilled') {
+            setConstructionSteps(Array.isArray(stepsResult.value) ? stepsResult.value : []);
           }
-
-          console.log('[CaseDetail] ========== 加载完成 ==========');
-        })
-        .catch((e) => {
-          console.error('[CaseDetail] ❌ 加载案例详情失败:', e);
-          setDetail(null);
-        });
-    }
+          if (updatesResult.status === 'fulfilled') {
+            setSiteUpdates(Array.isArray(updatesResult.value) ? updatesResult.value : []);
+          }
+        }
+      })
+      .catch(() => {
+        setDetail(null);
+      });
   }, [id]);
 
   const images = useMemo(() => {
