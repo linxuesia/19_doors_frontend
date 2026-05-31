@@ -211,15 +211,56 @@
   margin-bottom: 20rpx;
 }
 
+.app-header-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-right: 16rpx;
+}
+
 .app-company-name {
-  font-size: 30rpx; font-weight: 600;
+  font-size: 30rpx; 
+  font-weight: 600;
   color: #1f2937;
+}
+
+/* 角色标签 */
+.app-role-tag {
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.tag-owner {
+  background: #dbeafe;
+}
+
+.tag-manager {
+  background: #f3e8ff;
+}
+
+.role-tag-text {
+  font-size: 20rpx;
+  font-weight: 500;
+}
+
+.text-owner {
+  color: #1e40af;
+}
+
+.text-manager {
+  color: #6b21a8;
 }
 
 .app-pending-tag {
   padding: 6rpx 16rpx;
   background: #fef3c7;
   border-radius: 8px;
+  flex-shrink: 0;
 }
 
 .pending-tag-text {
@@ -252,6 +293,75 @@
   word-break: break-all;
 }
 
+/* 电话行 - 支持拨号 */
+.app-phone-row {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.app-phone-call {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: #e1ecf4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &:active { 
+    background: #d1e3f0; 
+    transform: scale(0.95); 
+  }
+}
+
+.app-store-name {
+  color: #122b4d !important;
+  font-weight: 500;
+}
+
+/* 资质图片展示区 */
+.app-images-section {
+  margin-bottom: 20rpx;
+  padding: 16rpx;
+  background: #f9fafb;
+  border-radius: 12rpx;
+  border: 1px solid #f3f4f6;
+}
+
+.app-section-label {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #374151;
+}
+
+.app-section-label-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 12rpx;
+}
+
+.app-images-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.app-images-list {
+  display: inline-flex;
+  gap: 12rpx;
+}
+
+.app-license-img {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 10rpx;
+  border: 1px solid #e5e7eb;
+}
+
 .app-actions {
   display: flex;
   gap: 16rpx;
@@ -263,7 +373,11 @@
   flex: 1;
   text-align: center;
   padding: 18rpx 0;
-  border-radius: 14px;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
 
   &:active { opacity: 0.85; }
 }
@@ -355,6 +469,9 @@
 .published { color: #059669; }
 
 .admin-case-views {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
   font-size: 22rpx;
   color: #9ca3af;
 }

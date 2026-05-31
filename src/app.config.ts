@@ -21,6 +21,7 @@ export default defineAppConfig({
         'store-apply/index',      // 门店入驻申请
         'staff-apply/index',      // 员工认证申请
         'warranty/index',         // 质保卡
+        'my-orders/index',        // 我的订单列表
       ],
     },
     {
@@ -35,6 +36,12 @@ export default defineAppConfig({
         'client-detail/index',    // 客户详情
         'admin/index',            // 管理员后台
         'admin-login/index',      // 管理员登录（扫码）
+        'installer-login/index',  // 安装工登录
+        'installer-orders/index', // 安装工-我的工单
+        'installer-order-detail/index', // 安装工-工单详情
+        'installer-profile/index', // 工人个人中心
+        'staff-manage/index',     // 人员管理（老板）
+        'case-manage/index',      // 案例库管理
       ],
     },
   ],

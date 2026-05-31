@@ -1,0 +1,250 @@
+.cm-page {
+  min-height: 100vh;
+  background: #f0f5fa;
+  padding-bottom: 140rpx;
+}
+
+// ====== 统计横幅 ======
+.cm-stats-banner {
+  display: flex;
+  gap: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.cm-stat-card {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 28rpx 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(18, 43, 77, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.cm-stat-number {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #122b4d;
+  line-height: 1.2;
+}
+
+.cm-stat-label {
+  font-size: 24rpx;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+// ====== 案例列表 ======
+.cm-list {
+  padding: 0 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.cm-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(18, 43, 77, 0.06);
+}
+
+// 封面图
+.cm-card-cover {
+  width: 100%;
+  height: 360rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.cm-card-image {
+  width: 100%;
+  height: 100%;
+}
+
+.cm-card-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// 内容区
+.cm-card-content {
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+// 标题行（标题 + 状态标签）
+.cm-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.cm-card-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1f2937;
+  flex: 1;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 状态标签
+.cm-status-tag {
+  font-size: 22rpx;
+  font-weight: 600;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+}
+
+.cm-status-published {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.cm-status-draft {
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+
+// 标签组
+.cm-tags {
+  display: flex;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.cm-tag {
+  font-size: 22rpx;
+  color: #122b4d;
+  background: #e1ecf4;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-weight: 500;
+}
+
+// 元信息行（浏览量）
+.cm-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.cm-view-icon {
+  font-size: 26rpx;
+}
+
+.cm-view-count {
+  font-weight: 500;
+}
+
+// 操作按钮组
+.cm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24rpx;
+  padding-top: 16rpx;
+  border-top: 1px solid #f3f4f6;
+}
+
+.cm-action-btn {
+  font-size: 26rpx;
+  font-weight: 500;
+  padding: 8rpx 0;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.cm-action-edit {
+  color: #122b4d;
+}
+
+.cm-action-publish {
+  color: #059669;
+}
+
+.cm-action-unpublish {
+  color: #d97706;
+}
+
+.cm-action-delete {
+  color: #ef4444;
+}
+
+// ====== 悬浮新增按钮 ======
+.cm-fab {
+  position: fixed;
+  right: 32rpx;
+  bottom: calc(140rpx + env(safe-area-inset-bottom));
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #122b4d 0%, #1a3a5c 100%);
+  box-shadow: 0 8rpx 24rpx rgba(18, 43, 77, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99;
+
+  &:active {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+}
+
+.cm-fab-icon {
+  font-size: 56rpx;
+  color: #ffffff;
+  font-weight: 300;
+  line-height: 1;
+}
+
+// ====== 空状态 ======
+.cm-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 40rpx;
+  gap: 20rpx;
+}
+
+.cm-empty-icon {
+  font-size: 80rpx;
+  color: #d1d5db;
+}
+
+.cm-empty-text {
+  font-size: 28rpx;
+  color: #9ca3af;
+}
+
+// ====== 加载状态 ======
+.cm-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400rpx;
+}
+
+.cm-loading-text {
+  font-size: 28rpx;
+  color: #9ca3af;
+}

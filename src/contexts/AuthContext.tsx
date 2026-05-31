@@ -27,8 +27,8 @@ interface AuthContextType {
   token: string | null;
   isBusiness: boolean;
   canManageStaff: boolean;
-  requireBusinessLogin: () => boolean;
-  requireLogin: () => boolean;
+  requireBusinessLogin: (loginPage?: string) => boolean;
+  requireLogin: (loginPage?: string) => boolean;
   phoneLogin: (params: { phoneCode?: string; wxCode?: string; phone?: string; avatarUrl?: string; nickname?: string }) => Promise<void>;
   wechatLogin: (role: string) => Promise<void>;
   adminLogin: (username: string, password: string) => Promise<void>;
@@ -96,16 +96,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [logout]);
 
-  const requireLogin = useCallback(() => {
+  const requireLogin = useCallback((loginPage?: string) => {
     if (!user || !token) {
-      Taro.navigateTo({ url: '/subpackages/client/login/index' });
+      Taro.navigateTo({ url: loginPage || '/subpackages/client/login/index' });
       return false;
     }
     return true;
   }, [user, token]);
 
-  const requireBusinessLogin = useCallback(() => {
-    if (!requireLogin()) return false;
+  const requireBusinessLogin = useCallback((loginPage?: string) => {
+    if (!requireLogin(loginPage)) return false;
     if (!BUSINESS_ROLES.includes(user!.role)) {
       Taro.showToast({ title: '无权限访问', icon: 'none' });
       setTimeout(() => Taro.switchTab({ url: '/pages/index/index' }), 1500);

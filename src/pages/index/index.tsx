@@ -55,7 +55,7 @@ export default function Home() {
     api.get(`/stores/${storeId}`).then((store: any) => setStoreInfo(store)).catch(() => {});
     // 获取产品、门店案例、工地
     Promise.all([
-      api.get('/products').catch(() => []),
+      api.get('/products?pageSize=100').then((r: any) => r?.list || r).catch(() => []),
       api.get(`/cases/store/${storeId}`).catch(() => []),
       api.get('/sites').catch(() => []),
     ]).then(([p, c, s]) => {

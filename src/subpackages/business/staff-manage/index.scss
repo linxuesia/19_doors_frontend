@@ -1,0 +1,403 @@
+.smp-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400rpx;
+}
+
+.smp-loading-text {
+  font-size: 28rpx;
+  color: #9ca3af;
+}
+
+.smp-page {
+  min-height: 100vh;
+  background: #f0f5fa;
+  box-sizing: border-box;
+  padding-bottom: 140rpx;
+}
+
+// Tab 栏
+.smp-tabs {
+  display: flex;
+  padding: 24rpx 32rpx;
+  gap: 16rpx;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.smp-tab-item {
+  flex: 1;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: #4e5969;
+  background: #f2f3f5;
+  border-radius: 36rpx;
+  transition: all 0.3s ease;
+
+  &.smp-tab-active {
+    color: #ffffff;
+    background: #122b4d;
+    font-weight: 600;
+  }
+}
+
+// 成员列表
+.smp-list {
+  padding: 24rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+// 成员卡片
+.smp-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 28rpx 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.smp-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.smp-avatar-text {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.smp-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  min-width: 0;
+}
+
+.smp-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.smp-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1d2129;
+}
+
+// 角色标签
+.smp-role-tag {
+  padding: 4rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.smp-role-manager {
+  background: rgba(22, 119, 255, 0.1);
+  color: #1677ff;
+}
+
+.smp-role-installer {
+  background: rgba(0, 180, 42, 0.1);
+  color: #00b42a;
+}
+
+.smp-phone {
+  font-size: 26rpx;
+  color: #86909c;
+}
+
+.smp-status-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.smp-status-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+}
+
+.smp-status-normal {
+  background: #00b42a;
+}
+
+.smp-status-disabled {
+  background: #c9cdd4;
+}
+
+.smp-status-text {
+  font-size: 24rpx;
+  color: #86909c;
+}
+
+// 操作按钮区
+.smp-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  flex-shrink: 0;
+}
+
+.smp-action-btn {
+  width: 120rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 28rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+
+  &::after {
+    border: none;
+  }
+
+  &:active {
+    opacity: 0.85;
+    transform: scale(0.95);
+    transition: all 0.15s ease;
+  }
+}
+
+.smp-btn-edit {
+  background: rgba(18, 43, 77, 0.08);
+  color: #122b4d;
+}
+
+.smp-btn-delete {
+  background: rgba(245, 63, 63, 0.08);
+  color: #f53f3f;
+}
+
+// 空状态
+.smp-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 32rpx;
+  gap: 16rpx;
+}
+
+.smp-empty-icon {
+  font-size: 80rpx;
+  opacity: 0.3;
+}
+
+.smp-empty-text {
+  font-size: 28rpx;
+  color: #86909c;
+}
+
+.smp-empty-hint {
+  font-size: 24rpx;
+  color: #c9cdd4;
+}
+
+// 添加按钮 - 固定底部
+.smp-add-btn {
+  position: fixed;
+  bottom: 48rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 64rpx);
+  max-width: 686rpx;
+  height: 96rpx;
+  background: linear-gradient(135deg, #122b4d 0%, #1e3a5f 100%);
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  box-shadow: 0 8rpx 24rpx rgba(18, 43, 77, 0.25);
+
+  &::after {
+    border: none;
+  }
+
+  &:active {
+    opacity: 0.9;
+    transform: translateX(-50%) scale(0.98);
+    transition: all 0.2s ease;
+  }
+}
+
+.smp-add-btn-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.smp-add-btn-icon {
+  font-size: 36rpx;
+  color: #ffffff;
+}
+
+// 弹窗遮罩
+.smp-modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+// 弹窗内容
+.smp-modal-content {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 40rpx 32rpx;
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.smp-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 36rpx;
+}
+
+.smp-modal-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #1d2129;
+}
+
+.smp-modal-close {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  color: #86909c;
+  background: #f2f3f5;
+  border-radius: 50%;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+// 表单字段
+.smp-form-field {
+  margin-bottom: 28rpx;
+}
+
+.smp-form-label {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 12rpx;
+}
+
+.smp-form-input {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  padding: 0 24rpx;
+  background: #f7f8fa;
+  border: 2rpx solid #ebedf0;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #1d2129;
+  box-sizing: border-box;
+}
+
+.smp-form-picker {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  padding: 0 24rpx;
+  background: #f7f8fa;
+  border: 2rpx solid #ebedf0;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #1d2129;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.smp-picker-placeholder {
+  color: #c9cdd4;
+}
+
+.smp-picker-arrow {
+  color: #c9cdd4;
+  font-size: 28rpx;
+}
+
+// 提交按钮
+.smp-submit-btn {
+  width: 100%;
+  height: 92rpx;
+  background: linear-gradient(135deg, #122b4d 0%, #1e3a5f 100%);
+  border-radius: 46rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16rpx;
+
+  &::after {
+    border: none;
+  }
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+    transition: all 0.2s ease;
+  }
+}
+
+.smp-submit-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.safe-bottom {
+  height: env(safe-area-inset-bottom);
+}

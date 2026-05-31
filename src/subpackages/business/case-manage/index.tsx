@@ -196,7 +196,7 @@ export default function CaseManage() {
 
                 {/* 浏览量 */}
                 <View className='cm-meta-row'>
-                  <Text className='cm-view-icon'>👁</Text>
+                  <Icon name='eye' size={24} color='#9ca3af' />
                   <Text className='cm-view-count'>{item.viewCount || 0} 次浏览</Text>
                 </View>
 

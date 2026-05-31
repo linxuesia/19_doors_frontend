@@ -7,8 +7,6 @@ import api from '../../../utils/api';
 import { orderStatusMap } from '../../../constants/status';
 import './index.scss';
 
-const stageSteps = ['材料入场', '拆旧', '安装窗框', '玻璃安装', '打胶密封', '完工清理'];
-
 export default function OrderDetail() {
   const router = useRouter();
   const id = router.params.id;
@@ -80,9 +78,6 @@ export default function OrderDetail() {
     return <View className='loading'><Text className='loading-text'>加载中...</Text></View>;
   }
 
-  const completedStages = order.constructionLogs?.length || 0;
-  const progress = Math.min(Math.round((completedStages / stageSteps.length) * 100), 100);
-
   return (
     <View className='od-page'>
       {/* 订单头部 */}
@@ -118,41 +113,13 @@ export default function OrderDetail() {
         </View>
       </View>
 
-      {/* 施工进度 */}
-      <View className='od-progress-card'>
-        <Text className='od-section-title'>施工进度</Text>
-        <View className='od-progress-bar'>
-          <View className='od-progress-fill' style={{ width: `${progress}%` }} />
-        </View>
-        <Text className='od-progress-text'>{progress}% 完成</Text>
-        <View className='od-stages'>
-          {stageSteps.map((stage, i) => {
-            const log = order.constructionLogs?.find((l: any) => l.stage === stage);
-            return (
-              <View key={stage} className='od-stage-row'>
-                <View className={`od-stage-dot ${log ? 'od-stage-done' : ''}`}>
-                  {log ? (
-                    <Icon name='check' size={26} color='#ffffff' />
-                  ) : (
-                    <Text className='od-stage-dot-text'>{i + 1}</Text>
-                  )}
-                </View>
-                <View className='od-stage-info'>
-                  <Text className={`od-stage-name ${log ? '' : 'od-stage-pending'}`}>{stage}</Text>
-                  {log && <Text className='od-stage-content'>{log.content}</Text>}
-                </View>
-              </View>
-            );
-          })}
-        </View>
-      </View>
-
       {/* 订单信息 */}
       <View className='od-info-card'>
         <Text className='od-section-title'>订单信息</Text>
         <View className='od-info-list'>
           {[
-            { label: '客户', value: `${order.client?.name || '-'} ${order.client?.phone || ''}` },
+            { label: '客户', value: order.client?.name || '-' },
+            { label: '联系电话', value: order.client?.phone || '-', highlight: true, isPhone: true },
             { label: '门店', value: order.store?.name || '-' },
             { label: '安装工', value: order.installer?.name || '-' },
             { label: '施工地址', value: order.installAddress || '-' },
@@ -160,31 +127,24 @@ export default function OrderDetail() {
             order.scheduledInstallDate && { label: '预计安装', value: order.scheduledInstallDate },
             order.remarks && { label: '备注', value: order.remarks },
           ].filter(Boolean).map((item: any) => (
-            <View key={item.label} className='od-info-row'>
+            <View key={item.label} className={`od-info-row ${item.highlight ? 'od-info-row-highlight' : ''}`}>
               <Text className='od-info-label'>{item.label}</Text>
-              <Text className='od-info-value'>{item.value}</Text>
+              {item.isPhone ? (
+                <View className='od-phone-value'>
+                  <Text className='od-info-value od-phone-text'>{item.value}</Text>
+                  {item.value && item.value !== '-' && (
+                    <View className='od-phone-call' onClick={() => Taro.makePhoneCall({ phoneNumber: item.value })}>
+                      <Icon name='phone' size={28} color='#122b4d' />
+                    </View>
+                  )}
+                </View>
+              ) : (
+                <Text className='od-info-value'>{item.value}</Text>
+              )}
             </View>
           ))}
         </View>
       </View>
-
-      {/* 施工日志 */}
-      {order.constructionLogs?.length > 0 && (
-        <View className='od-logs-card'>
-          <Text className='od-section-title'>工地动态</Text>
-          {order.constructionLogs.map((log: any) => (
-            <View key={log.id} className='od-log-item'>
-              <View className='od-log-header'>
-                <Text className='tag tag-brand'>{log.stage}</Text>
-                <Text className='od-log-meta'>
-                  {log.uploader?.name || ''} · {new Date(log.createdAt).toLocaleDateString('zh-CN')}
-                </Text>
-              </View>
-              <Text className='od-log-content'>{log.content}</Text>
-            </View>
-          ))}
-        </View>
-      )}
 
       <View className='safe-bottom' />
     </View>

@@ -11,6 +11,7 @@ export type IconName =
   | 'time'
   | 'phone'
   | 'user'
+  | 'users'
   | 'chart'
   | 'calendar'
   | 'shield-check'
@@ -80,6 +81,7 @@ const iconUnicode: Record<IconName, string> = {
   'time': '\uf20f',
   'tools': '\uf21b',
   'user': '\uf264',
+  'users': '\uf268',
   'window': '\uf2c4',
   'wind': '\uf3c9',
   'thermometer': '\uf0b5',

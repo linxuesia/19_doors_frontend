@@ -39,7 +39,7 @@ export default function Admin() {
   const [cases, setCases] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!requireBusinessLogin()) return;
+    if (!requireBusinessLogin('/subpackages/business/admin-login/index')) return;
 
     Promise.all([
       api.get('/stores?pageSize=100').then((r: any) => r?.list || r).catch(() => []),
@@ -64,7 +64,7 @@ export default function Admin() {
     });
   }, []);
 
-  if (!user || !requireBusinessLogin()) return null;
+  if (!user || !requireBusinessLogin('/subpackages/business/admin-login/index')) return null;
 
   const handleApprove = async (id: string) => {
     try {
@@ -204,37 +204,99 @@ export default function Admin() {
           <View className='admin-list'>
             {applications.map((item: any) => (
               <View key={item.id} className='admin-app-card'>
+                {/* 顶部：门店名称 + 状态 + 角色 */}
                 <View className='app-card-top'>
-                  <Text className='app-company-name'>{item.companyName}</Text>
+                  <View className='app-header-left'>
+                    <Text className='app-company-name'>{item.storeName || item.companyName || '未命名门店'}</Text>
+                    <View className={`app-role-tag ${item.role === 'STORE_OWNER' ? 'tag-owner' : 'tag-manager'}`}>
+                      {item.role === 'STORE_OWNER' ? (
+                        <>
+                          <Icon name='building' size={20} color='#1e40af' />
+                          <Text className={`role-tag-text text-owner`}>门店老板</Text>
+                        </>
+                      ) : (
+                        <>
+                          <Icon name='user' size={20} color='#6b21a8' />
+                          <Text className={`role-tag-text text-manager`}>门店店长</Text>
+                        </>
+                      )}
+                    </View>
+                  </View>
                   <View className='app-pending-tag'>
                     <Text className='pending-tag-text'>待审核</Text>
                   </View>
                 </View>
+
+                {/* 资质图片展示 */}
+                {item.licenseImages && item.licenseImages.length > 0 && (
+                  <View className='app-images-section'>
+                    <View className='app-section-label-row'>
+                      <Icon name='file-text' size={24} color='#374151' />
+                      <Text className='app-section-label'>资质材料</Text>
+                    </View>
+                    <ScrollView className='app-images-scroll' scrollX showScrollbar={false}>
+                      <View className='app-images-list'>
+                        {item.licenseImages.map((img: string, idx: number) => (
+                          <Image
+                            key={idx}
+                            className='app-license-img'
+                            src={img}
+                            mode='aspectFill'
+                            onClick={() => Taro.previewImage({ current: img, urls: item.licenseImages })}
+                          />
+                        ))}
+                      </View>
+                    </ScrollView>
+                  </View>
+                )}
+
+                {/* 详细信息 */}
                 <View className='app-card-body'>
                   <View className='app-info-row'>
                     <Text className='app-info-label'>申请人</Text>
-                    <Text className='app-info-value'>{item.contactName}</Text>
+                    <Text className='app-info-value'>{item.contactName || '-'}</Text>
                   </View>
                   <View className='app-info-row'>
                     <Text className='app-info-label'>联系电话</Text>
-                    <Text className='app-info-value'>{item.phone?.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')}</Text>
+                    <View className='app-phone-row'>
+                      <Text className='app-info-value'>{item.phone?.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') || '-'}</Text>
+                      {item.phone && (
+                        <View className='app-phone-call' onClick={() => Taro.makePhoneCall({ phoneNumber: item.phone })}>
+                          <Icon name='phone' size={24} color='#122b4d' />
+                        </View>
+                      )}
+                    </View>
                   </View>
-                  <View className='app-info-row'>
-                    <Text className='app-info-label'>申请时间</Text>
-                    <Text className='app-info-value'>{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '-'}</Text>
-                  </View>
+
+                  {/* 店长：显示选择的门店 */}
+                  {item.role === 'STORE_MANAGER' && item.storeId && (
+                    <View className='app-info-row'>
+                      <Text className='app-info-label'>申请加入</Text>
+                      <Text className='app-info-value app-store-name'>{item.targetStoreName || `门店ID: ${item.storeId}`}</Text>
+                    </View>
+                  )}
+
                   {item.address && (
                     <View className='app-info-row'>
-                      <Text className='app-info-label'>地址</Text>
+                      <Text className='app-info-label'>门店地址</Text>
                       <Text className='app-info-value app-info-addr'>{item.address}</Text>
                     </View>
                   )}
+
+                  <View className='app-info-row'>
+                    <Text className='app-info-label'>申请时间</Text>
+                    <Text className='app-info-value'>{item.createdAt ? new Date(item.createdAt).toLocaleString('zh-CN') : '-'}</Text>
+                  </View>
                 </View>
+
+                {/* 操作按钮 */}
                 <View className='app-actions'>
                   <View className='app-btn app-btn-reject' onClick={() => handleReject(item.id)}>
+                    <Icon name='close' size={28} color='#6b7280' />
                     <Text className='app-btn-reject-text'>驳回</Text>
                   </View>
                   <View className='app-btn app-btn-approve' onClick={() => handleApprove(item.id)}>
+                    <Icon name='check' size={28} color='#ffffff' />
                     <Text className='app-btn-approve-text'>通过</Text>
                   </View>
                 </View>
@@ -280,7 +342,10 @@ export default function Admin() {
                     <Text className={`admin-case-publish-status ${item.isPublished ? 'published' : ''}`}>
                       {item.isPublished ? '已发布' : '草稿'}
                     </Text>
-                    <Text className='admin-case-views'>👁 {item.views || 0}</Text>
+                    <View className='admin-case-views'>
+                      <Icon name='eye' size={22} color='#9ca3af' />
+                      <Text>{item.views || 0}</Text>
+                    </View>
                   </View>
                 </View>
               </View>

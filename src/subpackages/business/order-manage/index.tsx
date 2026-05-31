@@ -252,7 +252,8 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
               <Textarea className='omf-textarea' placeholder='请输入详细施工地址（省市区+详细地址）' value={form.installAddress} onInput={(e) => update('installAddress', e.detail.value)} />
             </View>
             <View className='omf-location-btn' onClick={chooseLocation}>
-              <Text className='omf-location-btn-text'>📍 从地图选择地址</Text>
+              <Icon name='map-pin' size={28} color='#122b4d' />
+              <Text className='omf-location-btn-text'>从地图选择地址</Text>
             </View>
           </View>
           <View className='omf-field'>
