@@ -52,8 +52,8 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    api.get('/products').then((res: any) => {
-      const list = Array.isArray(res) ? res : [];
+    api.get('/products?pageSize=200').then((res: any) => {
+      const list = res?.list || (Array.isArray(res) ? res : []);
       setProducts(list);
     }).catch(() => {});
   }, []);

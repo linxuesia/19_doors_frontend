@@ -17,8 +17,8 @@ export default function Products() {
   const colors = ['宝马灰', '珐琅白', '金属咖', '星空黑', '黑晶石'];
 
   useEffect(() => {
-    api.get('/products').then((res: any) => {
-      const list = Array.isArray(res) ? res : [];
+    api.get('/products?pageSize=100').then((res: any) => {
+      const list = res?.list || (Array.isArray(res) ? res : []);
       setProducts(list);
     }).catch(() => {
       Taro.showToast({ title: '加载产品失败', icon: 'none' });
@@ -38,14 +38,15 @@ export default function Products() {
   // 按筛选条件过滤产品
   const filteredProducts = products.filter((p: any) => {
     if (activeSpaces.length > 0 && p.space) {
-      const productSpaces = typeof p.space === 'string' ? p.space.split(',') : [];
+      const productSpaces = typeof p.space === 'string' ? p.space.split('/') : [];
       if (!activeSpaces.some((s) => productSpaces.includes(s))) return false;
     }
     if (activeStyles.length > 0 && p.style) {
       if (!activeStyles.includes(p.style)) return false;
     }
     if (activeColors.length > 0 && p.color) {
-      if (!activeColors.includes(p.color)) return false;
+      const productColors = typeof p.color === 'string' ? p.color.split('/') : [];
+      if (!activeColors.some((c) => productColors.includes(c))) return false;
     }
     return true;
   });

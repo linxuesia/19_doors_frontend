@@ -42,7 +42,7 @@ export default function Admin() {
     if (!requireBusinessLogin()) return;
 
     Promise.all([
-      api.get('/stores').catch(() => []),
+      api.get('/stores?pageSize=100').then((r: any) => r?.list || r).catch(() => []),
       api.get('/stores/applications/list?status=PENDING').catch(() => []),
       api.get('/cases?published=true&pageSize=1').then((r: any) => r?.list || r).catch(() => []),
     ]).then(([s, a, c]) => {

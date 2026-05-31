@@ -12,8 +12,8 @@ export default function Stores() {
   const [activeCity, setActiveCity] = useState('全部');
 
   useEffect(() => {
-    api.get('/stores')
-      .then((res: any) => setStores(res || []))
+    api.get('/stores?pageSize=100')
+      .then((res: any) => setStores(res?.list || res || []))
       .catch(() => setStores([]));
   }, []);
 

@@ -28,8 +28,8 @@ export default function Reservations() {
     if (user?.storeId) params.storeId = user.storeId;
     if (activeTab) params.status = activeTab;
 
-    api.get('/measurements', params)
-      .then((res: any) => setList(res || []))
+    api.get('/measurements', { ...params, pageSize: '100' })
+      .then((res: any) => setList(res?.list || res || []))
       .catch(() => setList([]));
   }, [user, activeTab]);
 
