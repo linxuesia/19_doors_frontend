@@ -9,22 +9,29 @@ export default function Cases() {
   const [cases, setCases] = useState<any[]>([]);
   const [viewMode, setViewMode] = useState<'national' | 'local'>('national');
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
-  const fetchCases = useCallback(async (mode: 'national' | 'local') => {
+  const fetchCases = useCallback(async (mode: 'national' | 'local', pg = 1) => {
     setLoading(true);
     try {
-      let url = '/cases?published=true';
+      let url = `/cases?published=true&pageSize=10&page=${pg}`;
       if (mode === 'local') {
         try {
           const loc = await Taro.getLocation({ type: 'gcj02' });
           url += `&lat=${loc.latitude}&lng=${loc.longitude}`;
         } catch {
-          // 定位失败继续请求，仅不传坐标
           Taro.showToast({ title: '定位失败，展示全部案例', icon: 'none' });
         }
       }
       const res: any = await api.get(url);
-      setCases(res || []);
+      const list = res?.list || (Array.isArray(res) ? res : []);
+      if (pg === 1) {
+        setCases(list);
+      } else {
+        setCases(prev => [...prev, ...list]);
+      }
+      setHasMore((res?.page || 0) < (res?.totalPages || 0));
     } catch {
       setCases([]);
     } finally {
@@ -33,12 +40,14 @@ export default function Cases() {
   }, []);
 
   useEffect(() => {
-    fetchCases('national');
+    setPage(1);
+    fetchCases('national', 1);
   }, [fetchCases]);
 
   const switchMode = (mode: 'national' | 'local') => {
     setViewMode(mode);
-    fetchCases(mode);
+    setPage(1);
+    fetchCases(mode, 1);
   };
 
   return (
@@ -134,6 +143,12 @@ export default function Cases() {
             <View className='empty-state'>
               <Icon name='file-text' size={80} color='#d1d5db' />
               <Text className='empty-text'>暂无相关案例</Text>
+            </View>
+          )}
+
+          {hasMore && !loading && (
+            <View className='load-more' onClick={() => { const pg = page + 1; setPage(pg); fetchCases(viewMode, pg); }}>
+              <Text className='load-more-text'>加载更多</Text>
             </View>
           )}
         </View>

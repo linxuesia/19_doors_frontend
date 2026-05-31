@@ -44,7 +44,7 @@ export default function Admin() {
     Promise.all([
       api.get('/stores').catch(() => []),
       api.get('/stores/applications/list?status=PENDING').catch(() => []),
-      api.get('/cases?published=true').catch(() => []),
+      api.get('/cases?published=true&pageSize=1').then((r: any) => r?.list || r).catch(() => []),
     ]).then(([s, a, c]) => {
       const storeList = (s as any) || [];
       const appList = (a as any) || [];
