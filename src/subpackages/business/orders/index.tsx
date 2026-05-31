@@ -37,8 +37,8 @@ export default function Orders() {
     setLoading(true);
 
     const params: any = { page: String(page), pageSize: '20' };
-    if (user?.storeId && user.role !== 'CLIENT') params.storeId = user.storeId;
-    if (user?.role === 'INSTALLER') params.installerId = user.id;
+    if (user?.storeId && !(user.role || '').includes('CLIENT')) params.storeId = user.storeId;
+    if ((user?.role || '').includes('INSTALLER')) params.installerId = user.id;
     if (activeTab) params.status = activeTab;
 
     api.get('/orders', { ...params })
@@ -57,7 +57,7 @@ export default function Orders() {
 
   if (!user || !requireBusinessLogin()) return null;
 
-  const isInstaller = user.role === 'INSTALLER';
+  const isInstaller = (user.role || '').includes('INSTALLER');
 
   return (
     <ScrollView className='bo-page' scrollY>

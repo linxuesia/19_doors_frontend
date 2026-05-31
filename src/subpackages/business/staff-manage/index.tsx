@@ -40,7 +40,7 @@ export default function StaffManage() {
 
   useEffect(() => {
     if (!requireBusinessLogin()) return;
-    if (user?.role !== 'STORE_OWNER') {
+    if (!(user?.role || '').includes('STORE_OWNER')) {
       Taro.showToast({ title: '仅门店老板可访问', icon: 'none' });
       setTimeout(() => Taro.navigateBack(), 1500);
       return;
@@ -55,7 +55,7 @@ export default function StaffManage() {
       const res: any = await api.get(`/stores/${user.storeId}`);
       const users = res.users || [];
       const staffMembers: StaffMember[] = users
-        .filter((u: any) => u.role === 'STORE_MANAGER' || u.role === 'INSTALLER')
+        .filter((u: any) => (u.role || '').includes('STORE_MANAGER') || (u.role || '').includes('INSTALLER'))
         .map((u: any) => ({
           id: u.id,
           name: u.name,
@@ -84,7 +84,7 @@ export default function StaffManage() {
 
   const filteredList = activeTab === 'all'
     ? staffList
-    : staffList.filter(s => s.role === activeTab);
+    : staffList.filter(s => (s.role || '').includes(activeTab));
 
   const openAddModal = () => {
     setForm({ name: '', phone: '', role: 'INSTALLER' });
@@ -204,7 +204,7 @@ export default function StaffManage() {
 
   if (!user || !requireBusinessLogin()) return null;
 
-  if (user.role !== 'STORE_OWNER') {
+  if (!(user.role || '').includes('STORE_OWNER')) {
     return (
       <View className='smp-loading'>
         <Text className='smp-loading-text'>无权限访问</Text>
@@ -261,8 +261,8 @@ export default function StaffManage() {
               <View className='smp-info'>
                 <View className='smp-name-row'>
                   <Text className='smp-name'>{staff.name}</Text>
-                  <Text className={`smp-role-tag ${staff.role === 'STORE_MANAGER' ? 'smp-role-manager' : 'smp-role-installer'}`}>
-                    {staff.role === 'STORE_MANAGER' ? '店长' : '安装工'}
+                  <Text className={`smp-role-tag ${(staff.role || '').includes('STORE_MANAGER') ? 'smp-role-manager' : 'smp-role-installer'}`}>
+                    {(staff.role || '').includes('STORE_MANAGER') ? '店长' : '安装工'}
                   </Text>
                 </View>
                 <Text className='smp-phone'>{maskPhone(staff.phone)}</Text>

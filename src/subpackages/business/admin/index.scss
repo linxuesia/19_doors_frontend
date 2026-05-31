@@ -476,6 +476,55 @@
   color: #9ca3af;
 }
 
+// 状态组容器
+.admin-case-status-group {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+// 案例操作按钮区域
+.admin-case-actions {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1px solid #f3f4f6;
+}
+
+.admin-action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 14rpx 0;
+  border-radius: 12rpx;
+
+  Text {
+    font-size: 24rpx;
+    font-weight: 500;
+    color: #ffffff;
+  }
+
+  &:active {
+    opacity: 0.85;
+    transform: scale(0.98);
+  }
+}
+
+.btn-publish {
+  background: linear-gradient(135deg, #059669, #10b981);
+}
+
+.btn-unpublish {
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+}
+
 // ====== 空状态 ======
 .admin-empty {
   display: flex;

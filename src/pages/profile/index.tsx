@@ -85,7 +85,7 @@ export default function Profile() {
       )}
 
       {/* 工作台入口（仅店长/老板可见） */}
-      {user && (user.role === 'STORE_OWNER' || user.role === 'STORE_MANAGER') && (
+      {user && ((user.role || '').includes('STORE_OWNER') || (user.role || '').includes('STORE_MANAGER')) && (
       <View className='store-entry-card'>
         <View className='store-entry-left'>
           <Text className='store-entry-title'>工作台</Text>

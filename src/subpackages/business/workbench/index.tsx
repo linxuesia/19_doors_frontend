@@ -42,7 +42,7 @@ export default function Workbench() {
 
     const params: any = {};
     if (user?.storeId) params.storeId = user.storeId;
-    if (user?.role === 'INSTALLER') params.installerId = user.id;
+    if ((user?.role || '').includes('INSTALLER')) params.installerId = user.id;
 
     // 统计数据
     api.get('/orders/stats', { ...params })
@@ -57,9 +57,9 @@ export default function Workbench() {
 
   if (!user || !requireBusinessLogin()) return null;
 
-  const isOwner = user.role === 'STORE_OWNER';
-  const isManager = user.role === 'STORE_MANAGER';
-  const isInstaller = user.role === 'INSTALLER';
+  const isOwner = (user.role || '').includes('STORE_OWNER');
+  const isManager = (user.role || '').includes('STORE_MANAGER');
+  const isInstaller = (user.role || '').includes('INSTALLER');
 
   let functions = ownerFunctions;
   if (isInstaller) functions = installerFunctions;

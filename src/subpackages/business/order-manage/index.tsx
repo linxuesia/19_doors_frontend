@@ -312,7 +312,7 @@ function OrderDetailView({ order: initialOrder }: { order: any }) {
     if (user?.storeId) {
       api.get(`/stores/${user.storeId}`)
         .then((res: any) => {
-          const list = (res.users || []).filter((u: any) => u.role === 'INSTALLER');
+          const list = (res.users || []).filter((u: any) => (u.role || '').includes('INSTALLER'));
           setInstallers(list);
         })
         .catch(() => {});
@@ -367,7 +367,7 @@ function OrderDetailView({ order: initialOrder }: { order: any }) {
     }
   };
 
-  const isOwnerOrManager = user?.role === 'STORE_OWNER' || user?.role === 'STORE_MANAGER';
+  const isOwnerOrManager = (user?.role || '').includes('STORE_OWNER') || (user?.role || '').includes('STORE_MANAGER');
   
   // 判断是否有可操作的按钮（只有待分配/施工中状态有操作）
   const hasActions = order.status === 'PENDING' || order.status === 'INSTALLING';

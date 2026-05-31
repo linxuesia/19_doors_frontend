@@ -86,6 +86,42 @@ export default function Admin() {
     }
   };
 
+  // 案例管理 - 发布/下架切换
+  const handleToggleCasePublish = async (caseItem: any) => {
+    try {
+      const newStatus = !caseItem.isPublished;
+      await api.put(`/cases/${caseItem.id}`, { isPublished: newStatus });
+      Taro.showToast({
+        title: newStatus ? '已发布' : '已下架',
+        icon: 'success'
+      });
+      setCases(cases.map((c) =>
+        c.id === caseItem.id ? { ...c, isPublished: newStatus } : c
+      ));
+    } catch {
+      Taro.showToast({ title: '操作失败', icon: 'none' });
+    }
+  };
+
+  // 案例管理 - 删除案例
+  const handleDeleteCase = async (caseItem: any) => {
+    try {
+      await Taro.showModal({
+        title: '确认删除',
+        content: `确定要删除案例"${caseItem.title}"吗？此操作不可恢复。`,
+        confirmColor: '#ef4444'
+      });
+
+      await api.delete(`/cases/${caseItem.id}`);
+      Taro.showToast({ title: '已删除', icon: 'success' });
+      setCases(cases.filter((c) => c.id !== caseItem.id));
+    } catch (err) {
+      if (err?.errMsg !== 'showModal:fail cancel') {
+        Taro.showToast({ title: '删除失败', icon: 'none' });
+      }
+    }
+  };
+
   return (
     <ScrollView className='admin-page' scrollY>
       {/* 头部 */}
@@ -208,8 +244,8 @@ export default function Admin() {
                 <View className='app-card-top'>
                   <View className='app-header-left'>
                     <Text className='app-company-name'>{item.storeName || item.companyName || '未命名门店'}</Text>
-                    <View className={`app-role-tag ${item.role === 'STORE_OWNER' ? 'tag-owner' : 'tag-manager'}`}>
-                      {item.role === 'STORE_OWNER' ? (
+                    <View className={`app-role-tag ${(item.role || '').includes('STORE_OWNER') ? 'tag-owner' : 'tag-manager'}`}>
+                      {(item.role || '').includes('STORE_OWNER') ? (
                         <>
                           <Icon name='building' size={20} color='#1e40af' />
                           <Text className={`role-tag-text text-owner`}>门店老板</Text>
@@ -269,7 +305,7 @@ export default function Admin() {
                   </View>
 
                   {/* 店长：显示选择的门店 */}
-                  {item.role === 'STORE_MANAGER' && item.storeId && (
+                  {(item.role || '').includes('STORE_MANAGER') && item.storeId && (
                     <View className='app-info-row'>
                       <Text className='app-info-label'>申请加入</Text>
                       <Text className='app-info-value app-store-name'>{item.targetStoreName || `门店ID: ${item.storeId}`}</Text>
@@ -339,12 +375,32 @@ export default function Admin() {
                     <Text className='admin-case-meta'>{item.city || '-'}</Text>
                   </View>
                   <View className='admin-case-footer'>
-                    <Text className={`admin-case-publish-status ${item.isPublished ? 'published' : ''}`}>
-                      {item.isPublished ? '已发布' : '草稿'}
-                    </Text>
-                    <View className='admin-case-views'>
-                      <Icon name='eye' size={22} color='#9ca3af' />
-                      <Text>{item.views || 0}</Text>
+                    <View className={`admin-case-status-group`}>
+                      <Text className={`admin-case-publish-status ${item.isPublished ? 'published' : ''}`}>
+                        {item.isPublished ? '已发布' : '草稿'}
+                      </Text>
+                      <View className='admin-case-views'>
+                        <Icon name='eye' size={22} color='#9ca3af' />
+                        <Text>{item.views || 0}</Text>
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* 管理员操作按钮 */}
+                  <View className='admin-case-actions'>
+                    <View 
+                      className={`admin-action-btn ${item.isPublished ? 'btn-unpublish' : 'btn-publish'}`}
+                      onClick={() => handleToggleCasePublish(item)}
+                    >
+                      <Icon name={item.isPublished ? 'close' : 'check'} size={24} color="#ffffff" />
+                      <Text>{item.isPublished ? '下架' : '发布'}</Text>
+                    </View>
+                    <View 
+                      className='admin-action-btn btn-delete'
+                      onClick={() => handleDeleteCase(item)}
+                    >
+                      <Icon name='delete' size={24} color="#ffffff" />
+                      <Text>删除</Text>
                     </View>
                   </View>
                 </View>

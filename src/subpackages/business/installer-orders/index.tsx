@@ -76,7 +76,7 @@ export default function InstallerOrders() {
   }, [user, activeTab]);
 
   useEffect(() => {
-    if (!user || user.role !== 'INSTALLER') return;
+    if (!user || !(user.role || '').includes('INSTALLER')) return;
     setLoading(true);
 
     const params: Record<string, any> = { installerId: user.id, page: String(page), pageSize: '20' };

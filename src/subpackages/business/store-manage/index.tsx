@@ -22,7 +22,7 @@ export default function StoreManage() {
   const [coverUploading, setCoverUploading] = useState(false);
   const [coverPreview, setCoverPreview] = useState(''); // 本地预览用
 
-  const isOwner = user?.role === 'STORE_OWNER';
+  const isOwner = (user?.role || '').includes('STORE_OWNER');
 
   useEffect(() => {
     if (!requireBusinessLogin()) return;

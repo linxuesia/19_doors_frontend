@@ -11,7 +11,7 @@ export default function AdminLogin() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  if (user && user.role === 'ADMIN') {
+  if (user && (user.role || '').includes('ADMIN')) {
     Taro.redirectTo({ url: '/subpackages/business/admin/index' });
     return null;
   }

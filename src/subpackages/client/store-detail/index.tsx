@@ -68,7 +68,7 @@ export default function StoreDetail() {
           <View className='sd-section'>
             <Text className='sd-section-title'>服务团队</Text>
             <View className='sd-team'>
-              {store.users?.filter((u: any) => u.role !== 'STORE_OWNER').map((u: any) => (
+              {store.users?.filter((u: any) => !(u.role || '').includes('STORE_OWNER')).map((u: any) => (
                 <View key={u.id} className='sd-team-row'>
                   <View className='sd-team-left'>
                     <Text className='sd-team-name'>{u.name}</Text>

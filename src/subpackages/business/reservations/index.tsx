@@ -143,7 +143,7 @@ export default function Reservations() {
                     {assigningId === item.id ? (
                       <View className='br-assign-panel'>
                         {storeStaff
-                          .filter((s: any) => s.role === 'STORE_MANAGER' || s.role === 'INSTALLER')
+                          .filter((s: any) => (s.role || '').includes('STORE_MANAGER') || (s.role || '').includes('INSTALLER'))
                           .map((staff: any) => (
                             <View
                               key={staff.id}
@@ -151,10 +151,10 @@ export default function Reservations() {
                               onClick={() => handleAssign(item.id, staff.id)}
                             >
                               <Text className='br-assign-name'>{staff.name}</Text>
-                              <Text className='br-assign-role'>{staff.role === 'STORE_MANAGER' ? '店长' : '安装工'}</Text>
+                              <Text className='br-assign-role'>{(staff.role || '').includes('STORE_MANAGER') ? '店长' : '安装工'}</Text>
                             </View>
                           ))}
-                        {storeStaff.filter((s: any) => s.role === 'STORE_MANAGER' || s.role === 'INSTALLER').length === 0 && (
+                        {storeStaff.filter((s: any) => (s.role || '').includes('STORE_MANAGER') || (s.role || '').includes('INSTALLER')).length === 0 && (
                           <Text className='br-assign-empty'>暂无可用员工</Text>
                         )}
                         <View className='br-assign-cancel' onClick={() => setAssigningId(null)}>

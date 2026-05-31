@@ -106,7 +106,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const requireBusinessLogin = useCallback((loginPage?: string) => {
     if (!requireLogin(loginPage)) return false;
-    if (!BUSINESS_ROLES.includes(user!.role)) {
+    const roles = (user!.role || '').split(',').filter(Boolean);
+    if (!roles.some(r => BUSINESS_ROLES.includes(r))) {
       Taro.showToast({ title: '无权限访问', icon: 'none' });
       setTimeout(() => Taro.switchTab({ url: '/pages/index/index' }), 1500);
       return false;
@@ -114,8 +115,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return true;
   }, [user, requireLogin]);
 
-  const isBusiness = !!user && BUSINESS_ROLES.includes(user.role);
-  const canManageStaff = user?.role === 'STORE_OWNER' || user?.role === 'ADMIN';
+  const isBusiness = !!user && (user.role || '').split(',').some(r => BUSINESS_ROLES.includes(r));
+  const canManageStaff = !!(user && ((user.role || '').includes('STORE_OWNER') || (user.role || '').includes('ADMIN')));
 
   return (
     <AuthContext.Provider value={{ user, token, isBusiness, canManageStaff, requireBusinessLogin, requireLogin, phoneLogin, wechatLogin, adminLogin, refreshUser, logout }}>

@@ -24,7 +24,7 @@ export default function Clients() {
   useEffect(() => {
     const params: any = { pageSize: '500' };
     if (user?.storeId) params.storeId = user.storeId;
-    if (user?.role === 'INSTALLER') params.installerId = user.id;
+    if ((user?.role || '').includes('INSTALLER')) params.installerId = user.id;
 
     api.get('/orders', { ...params })
       .then((res: any) => {
