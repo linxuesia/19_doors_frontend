@@ -36,7 +36,7 @@ export default function Profile() {
     }
     try {
       const res: any = await api.get('/orders?status=WARRANTY_ACTIVE');
-      const orders = Array.isArray(res) ? res : [];
+      const orders = res?.list || (Array.isArray(res) ? res : []);
       if (orders.length === 0) {
         Taro.showToast({ title: '您当前没有在质保中的订单', icon: 'none' });
       } else {
@@ -112,7 +112,7 @@ export default function Profile() {
             <Icon name='file-text' size={44} color='#4b5563' />
             <Text className='service-label'>质保卡</Text>
           </View>
-          <View className='service-item' onClick={() => Taro.navigateTo({ url: '/subpackages/client/order-detail/index?list=1' })}>
+          <View className='service-item' onClick={() => Taro.navigateTo({ url: '/subpackages/client/my-orders/index' })}>
             <Icon name='time' size={44} color='#4b5563' />
             <Text className='service-label'>我的订单</Text>
           </View>

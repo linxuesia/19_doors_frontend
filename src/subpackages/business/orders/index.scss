@@ -124,3 +124,19 @@
 }
 
 .bo-empty-text { font-size: 28rpx; color: #9ca3af; }
+
+.bo-loading, .bo-load-more {
+  display: flex;
+  justify-content: center;
+  padding: 30rpx 0;
+}
+
+.bo-loading-text { font-size: 24rpx; color: #9ca3af; }
+
+.bo-load-more-text {
+  font-size: 26rpx; color: #3b82f6; font-weight: 500;
+  padding: 16rpx 60rpx;
+  border-radius: 9999px;
+  border: 1px solid #bfdbfe;
+  &:active { background: #eff6ff; }
+}

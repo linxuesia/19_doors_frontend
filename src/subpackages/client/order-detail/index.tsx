@@ -21,7 +21,7 @@ export default function OrderDetail() {
   useEffect(() => {
     if (isListMode && user) {
       api.get('/orders', { clientId: user.id })
-        .then((res: any) => setOrders(res || []))
+        .then((res: any) => setOrders(res?.list || res || []))
         .catch(() => setOrders([]));
     } else if (id) {
       api.get(`/orders/${id}`)

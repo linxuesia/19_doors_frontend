@@ -28,7 +28,7 @@ export default function Clients() {
 
     api.get('/orders', { ...params })
       .then((res: any) => {
-        const list = Array.isArray(res) ? res : [];
+        const list = res?.list || (Array.isArray(res) ? res : []);
         // 按客户姓名+电话聚合
         const map = new Map<string, ClientInfo>();
         list.forEach((order: any) => {

@@ -23,19 +23,37 @@ export default function Orders() {
   const { user, requireBusinessLogin } = useAuth();
   const [orders, setOrders] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState('');
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!requireBusinessLogin()) return;
+    setPage(1);
+  }, [user, activeTab]);
 
-    const params: any = {};
+  useEffect(() => {
+    if (!user) return;
+    setLoading(true);
+
+    const params: any = { page: String(page), pageSize: '20' };
     if (user?.storeId && user.role !== 'CLIENT') params.storeId = user.storeId;
     if (user?.role === 'INSTALLER') params.installerId = user.id;
     if (activeTab) params.status = activeTab;
 
     api.get('/orders', { ...params })
-      .then((res: any) => setOrders(res || []))
-      .catch(() => setOrders([]));
-  }, [user, activeTab]);
+      .then((res: any) => {
+        const list = res?.list || [];
+        if (page === 1) {
+          setOrders(list);
+        } else {
+          setOrders(prev => [...prev, ...list]);
+        }
+        setHasMore(res?.page < res?.totalPages);
+      })
+      .catch(() => setOrders([]))
+      .finally(() => setLoading(false));
+  }, [user, activeTab, page]);
 
   if (!user || !requireBusinessLogin()) return null;
 
@@ -100,10 +118,22 @@ export default function Orders() {
             </View>
           );
         })}
-        {orders.length === 0 && (
+        {orders.length === 0 && !loading && (
           <View className='bo-empty'>
             <Icon name='file-text' size={72} color='#d1d5db' />
             <Text className='bo-empty-text'>{isInstaller ? '暂无工单' : '暂无订单'}</Text>
+          </View>
+        )}
+
+        {loading && (
+          <View className='bo-loading'>
+            <Text className='bo-loading-text'>加载中...</Text>
+          </View>
+        )}
+
+        {hasMore && !loading && (
+          <View className='bo-load-more' onClick={() => setPage(p => p + 1)}>
+            <Text className='bo-load-more-text'>加载更多</Text>
           </View>
         )}
       </View>

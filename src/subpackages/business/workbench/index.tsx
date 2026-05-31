@@ -11,7 +11,8 @@ const ownerFunctions = [
   { icon: 'calendar', label: '预约管理', url: '/subpackages/business/reservations/index' },
   { icon: 'add', label: '录入订单', url: '/subpackages/business/order-manage/index' },
   { icon: 'user', label: '客户档案', url: '/subpackages/business/clients/index' },
-  { icon: 'image', label: '案例库', url: '/pages/cases/index' },
+  { icon: 'image', label: '案例库', url: '/subpackages/business/case-manage/index' },
+  { icon: 'users', label: '人员管理', url: '/subpackages/business/staff-manage/index' },
   { icon: 'settings', label: '门店设置', url: '/subpackages/business/store-manage/index' },
 ];
 
@@ -20,11 +21,12 @@ const managerFunctions = [
   { icon: 'calendar', label: '预约管理', url: '/subpackages/business/reservations/index' },
   { icon: 'add', label: '录入订单', url: '/subpackages/business/order-manage/index' },
   { icon: 'user', label: '客户档案', url: '/subpackages/business/clients/index' },
-  { icon: 'image', label: '案例库', url: '/pages/cases/index' },
+  { icon: 'image', label: '案例库', url: '/subpackages/business/case-manage/index' },
+  { icon: 'settings', label: '门店设置', url: '/subpackages/business/store-manage/index' },
 ];
 
 const installerFunctions = [
-  { icon: 'clipboard', label: '我的工单', url: '/subpackages/business/orders/index' },
+  { icon: 'clipboard', label: '我的工单', url: '/subpackages/business/installer-orders/index' },
 ];
 
 export default function Workbench() {
@@ -42,17 +44,14 @@ export default function Workbench() {
     if (user?.storeId) params.storeId = user.storeId;
     if (user?.role === 'INSTALLER') params.installerId = user.id;
 
-    api.get('/orders', { ...params })
-      .then((res: any) => {
-        const list = res || [];
-        setOrders(list);
-        setStats({
-          total: list.length,
-          pending: list.filter((o: any) => o.status === 'PENDING').length,
-          installing: list.filter((o: any) => o.status === 'INSTALLING').length,
-          completed: list.filter((o: any) => o.status === 'COMPLETED').length,
-        });
-      })
+    // 统计数据
+    api.get('/orders/stats', { ...params })
+      .then((res: any) => setStats(res || { total: 0, pending: 0, installing: 0, completed: 0 }))
+      .catch(() => {});
+
+    // 最近订单（仅显示前5条）
+    api.get('/orders', { ...params, page: '1', pageSize: '5' })
+      .then((res: any) => setOrders(res?.list || []))
       .catch(() => {});
   }, [user]);
 

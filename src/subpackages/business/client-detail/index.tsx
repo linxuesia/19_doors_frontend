@@ -26,7 +26,7 @@ export default function ClientDetail() {
 
     api.get('/orders', params)
       .then((res: any) => {
-        const list = Array.isArray(res) ? res : (res?.data || []);
+        const list = res?.list || (Array.isArray(res) ? res : (res?.data || []));
         setOrders(list);
       })
       .catch(() => Taro.showToast({ title: '加载失败', icon: 'none' }))
