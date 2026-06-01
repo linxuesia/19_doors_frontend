@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { View, Text, Picker, Input, Textarea, Image } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
+import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
 import { orderStatusMap } from '../../../constants/status';
 import './index.scss';

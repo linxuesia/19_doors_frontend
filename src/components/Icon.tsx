@@ -18,6 +18,7 @@ export type IconName =
   | 'settings'
   | 'chat'
   | 'arrow-right'
+  | 'arrow-left'
   | 'check-circle'
   | 'home'
   | 'ruler'
@@ -42,12 +43,16 @@ export type IconName =
   | 'wind'
   | 'thermometer'
   | 'award'
-  | 'play-circle';
+  | 'play-circle'
+  | 'package'
+  | 'clipboard-list'
+  | 'clock';
 
 // Unicode code points from Remix Icon v4.6.0 (subset)
 const iconUnicode: Record<IconName, string> = {
   'add': '\uea13',
   'arrow-down': '\uea4e',
+  'arrow-left': '\uea6c',
   'arrow-right': '\uea6e',
   'chart': '\uea9e',
   'building': '\ueb0f',
@@ -87,6 +92,9 @@ const iconUnicode: Record<IconName, string> = {
   'thermometer': '\uf0b5',
   'award': '\uf1cd',
   'play-circle': '\uf0ae',
+  'package': '\uefd6',
+  'clipboard-list': '\ueb93',
+  'clock': '\uf20d',
 };
 
 interface IconProps {

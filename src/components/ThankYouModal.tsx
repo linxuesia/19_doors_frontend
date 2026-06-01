@@ -1,4 +1,5 @@
 import { View, Text } from '@tarojs/components';
+import Icon from './Icon';
 import './ThankYouModal.scss';
 
 interface ThankYouModalProps {
