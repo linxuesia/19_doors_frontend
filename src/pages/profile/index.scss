@@ -1,6 +1,7 @@
 .profile-page {
   min-height: 100vh;
   background: #f5f5f5;
+  padding-bottom: 120rpx;
 }
 
 // ====== 用户信息卡片 ======
@@ -151,4 +152,30 @@
 .service-label {
   font-size: 24rpx;
   color: #666666;
+}
+
+// ====== 退出登录 - 固定底部 ======
+.logout-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  padding: 24rpx 48rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+
+  &:active {
+    background: #fef2f2;
+  }
+}
+
+.logout-text {
+  font-size: 28rpx;
+  color: #ef4444;
+  font-weight: 500;
 }

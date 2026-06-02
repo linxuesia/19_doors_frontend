@@ -157,3 +157,130 @@
   font-size: 22rpx;
   color: #9ca3af;
 }
+
+// ====== 门店资质 ======
+.sm-quali-loading {
+  font-size: 24rpx;
+  color: #9ca3af;
+  padding: 16rpx 0;
+}
+
+.sm-quali-empty {
+  font-size: 26rpx;
+  color: #9ca3af;
+  padding: 24rpx 0;
+}
+
+.sm-quali-card {
+  background: #ffffff;
+  border: 1px solid #ebedf0;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 16rpx;
+}
+
+.sm-quali-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 20rpx;
+}
+
+.sm-quali-card-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2937;
+  flex: 1;
+}
+
+.sm-quali-delete {
+  padding: 8rpx;
+  display: flex;
+  align-items: center;
+}
+
+.sm-quali-card-img {
+  width: 100%;
+  height: 320rpx;
+  display: block;
+}
+
+.sm-quali-card-noimg {
+  width: 100%;
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+}
+
+.sm-quali-card-noimg-text {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.sm-quali-add {
+  margin-top: 24rpx;
+  padding: 24rpx;
+  background: #ffffff;
+  border: 1px solid #ebedf0;
+  border-radius: 16rpx;
+}
+
+.sm-quali-add-title {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 16rpx;
+}
+
+.sm-quali-add-btn {
+  width: 100%;
+  height: 72rpx;
+  margin-top: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #122b4d;
+  color: #ffffff;
+  border-radius: 36rpx;
+  font-size: 26rpx;
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+.sm-quali-upload {
+  width: 100%;
+  height: 360rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-top: 16rpx;
+}
+
+.sm-quali-preview-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.sm-quali-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.sm-quali-placeholder {
+  width: 100%;
+  height: 360rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  background: #f8fafc;
+  border: 2rpx dashed #d1d5db;
+  border-radius: 16rpx;
+}

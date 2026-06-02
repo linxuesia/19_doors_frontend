@@ -1,107 +1,234 @@
-.admin-page { min-height: 100vh; background: #f5f7fa; }
+.admin-page { min-height: 100vh; background: #f8fafc; }
 
-// ====== 头部 ======
+// ====== 头部 - 专业设计 ======
 .admin-header {
   position: relative;
-  padding: 48rpx 24rpx 36rpx;
+  padding: 52rpx 28rpx 44rpx;
   overflow: hidden;
 }
 
 .admin-header-bg {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(135deg, #122b4d 0%, #1b3e6c 50%, #2b5a8e 100%);
-  border-radius: 0 0 40rpx 40rpx;
+  background: linear-gradient(135deg, #1e293b 0%, #283550 50%, #1b3e6c 100%);
+  border-radius: 0 0 48rpx 48rpx;
+}
+
+/* 装饰几何图形 */
+.admin-header-decor {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+  border-radius: 0 0 48rpx 48rpx;
+  pointer-events: none;
+}
+
+.decor-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.decor-circle-1 {
+  width: 300rpx;
+  height: 300rpx;
+  top: -100rpx;
+  right: -80rpx;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+}
+
+.decor-circle-2 {
+  width: 200rpx;
+  height: 200rpx;
+  bottom: -60rpx;
+  left: -40rpx;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%);
+}
+
+.decor-line {
+  position: absolute;
+  background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+}
+
+.decor-line-1 {
+  width: 1px;
+  height: 100%;
+  right: 120rpx;
+  top: 0;
 }
 
 .admin-header-content {
   position: relative;
   z-index: 1;
   display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+/* 第一行：品牌 + 徽章 */
+.ah-row-top {
+  display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.admin-title {
-  font-size: 38rpx; font-weight: 700;
+.ah-brand {
+  font-size: 34rpx;
+  font-weight: 800;
   color: #ffffff;
+  letter-spacing: 2rpx;
+}
+
+.ah-brand-sep {
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 300;
+  margin: 0 8rpx;
+}
+
+/* 第二行：副标题 */
+.ah-row-sub {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.ah-subtitle {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 1rpx;
 }
 
 .admin-badge {
   display: flex;
   align-items: center;
   gap: 8rpx;
-  padding: 10rpx 20rpx;
-  background: rgba(255,255,255,0.18);
-  border-radius: 9999px;
+  padding: 14rpx 22rpx;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 99rpx;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+
+  &:active { 
+    background: rgba(255, 255, 255, 0.15); 
+    transform: scale(0.97);
+    transition: all 0.2s;
+  }
 }
 
 .admin-badge-text {
-  font-size: 22rpx; font-weight: 600;
-  color: #ffffff;
-}
-
-// ====== 统计卡片 ======
-.admin-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12rpx;
-  padding: 24rpx;
-}
-
-.admin-stat-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 24rpx 12rpx;
-  text-align: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.admin-stat-highlight { border-left: 6rpx solid #122b4d; }
-.admin-stat-warn { border-left: 6rpx solid #f59e0b; }
-.admin-stat-info { border-left: 6rpx solid #3b82f6; }
-
-.admin-stat-num {
-  display: block;
-  font-size: 36rpx; font-weight: 700;
-  color: #1f2937;
-}
-
-.admin-stat-label {
-  display: block;
   font-size: 21rpx;
-  color: #9ca3af;
-  margin-top: 6rpx;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
 }
 
-// ====== 功能模块 ======
-.admin-modules-section { padding: 32rpx 24rpx 0; }
+// ====== 统计数据条 - 内嵌式设计（Linear/Vercel风格）=====
+.admin-stats-bar {
+  display: flex;
+  align-items: center;
+  margin-top: 28rpx;
+  padding: 20rpx 8rpx 0;
+}
 
-.admin-section-title {
-  display: block;
-  font-size: 30rpx; font-weight: 700;
-  color: #1f2937;
+.as-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+  padding: 0 4rpx;
+}
+
+.as-num {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+  letter-spacing: -0.5rpx;
+}
+
+.as-label {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 400;
+}
+
+.as-item-accent .as-num { color: #4ade80; }
+.as-item-warn .as-num { color: #fbbf24; }
+
+.as-divider {
+  width: 1px;
+  height: 40rpx;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+// ====== 功能模块 - 增强设计 ======
+.admin-modules-section {
+  padding: 32rpx 24rpx 40rpx;
+}
+
+.admin-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
   margin-bottom: 20rpx;
 }
 
-.admin-module-list { display: flex; flex-direction: column; gap: 12rpx; }
+.admin-section-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.admin-section-desc {
+  font-size: 23rpx;
+  color: #9ca3af;
+}
+
+.admin-module-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
 
 .admin-module-card {
   display: flex;
   align-items: center;
-  gap: 20rpx;
+  gap: 22rpx;
   background: #ffffff;
-  border-radius: 18px;
+  border-radius: 20rpx;
   padding: 28rpx 24rpx;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: 0 4rpx 16rpx rgba(18, 43, 77, 0.06);
+  position: relative;
+  overflow: hidden;
 
-  &:active { opacity: 0.9; }
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6rpx;
+    background: linear-gradient(180deg, #122b4d 0%, #2b5a8e 100%);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  &:active {
+    transform: scale(0.98);
+    &::before { opacity: 1; }
+  }
 }
 
 .admin-module-icon-wrap {
-  width: 80rpx; height: 80rpx;
-  border-radius: 20px;
-  display: flex; align-items: center; justify-content: center;
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
@@ -109,15 +236,43 @@
 
 .admin-module-title {
   display: block;
-  font-size: 29rpx; font-weight: 600;
+  font-size: 30rpx;
+  font-weight: 600;
   color: #1f2937;
+  line-height: 1.3;
 }
 
 .admin-module-desc {
   display: block;
   font-size: 23rpx;
   color: #9ca3af;
-  margin-top: 4rpx;
+  margin-top: 6rpx;
+}
+
+.module-arrow {
+  flex-shrink: 0;
+  opacity: 0.6;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.admin-module-card:active .module-arrow {
+  opacity: 1;
+  transform: translateX(-4rpx);
+}
+
+.module-badge {
+  position: absolute;
+  top: 16rpx;
+  right: 60rpx;
+  padding: 4rpx 14rpx;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 99rpx;
+}
+
+.module-badge-text {
+  font-size: 19rpx;
+  font-weight: 600;
+  color: #b45309;
 }
 
 // ====== 子页面通用 ======
@@ -127,12 +282,38 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24rpx;
+  margin-bottom: 28rpx;
+  padding-top: 8rpx;
+}
+
+.admin-back-btn {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+
+  &:active {
+    background: #f1f5f9;
+    transform: scale(0.95);
+  }
+}
+
+.back-arrow {
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #122b4d;
+  line-height: 1;
 }
 
 .admin-subpage-title {
-  font-size: 34rpx; font-weight: 700;
+  font-size: 34rpx;
+  font-weight: 700;
   color: #1f2937;
+  letter-spacing: 1rpx;
 }
 
 .admin-list { display: flex; flex-direction: column; gap: 16rpx; }
@@ -140,57 +321,45 @@
 // ====== 门店账号卡片 ======
 .admin-store-card {
   background: #ffffff;
-  border-radius: 18px;
-  padding: 26rpx;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border-radius: 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(18, 43, 77, 0.05);
 }
 
 .admin-store-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16rpx;
+  margin-bottom: 18rpx;
 }
 
 .admin-store-name {
-  font-size: 30rpx; font-weight: 600;
+  font-size: 31rpx;
+  font-weight: 600;
   color: #1f2937;
 }
-
-.admin-store-type {
-  padding: 6rpx 16rpx;
-  border-radius: 8px;
-}
-
-.type-direct { background: #dbeafe; }
-.type-partner { background: #fef3c7; }
-
-.type-text {
-  font-size: 21rpx; font-weight: 500;
-  color: #1e40af;
-}
-.type-partner .type-text { color: #b45309; }
 
 .admin-store-row {
   display: flex;
   align-items: center;
-  gap: 10rpx;
-  margin-bottom: 10rpx;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
 }
 
 .admin-store-info {
-  font-size: 25rpx;
+  font-size: 26rpx;
   color: #6b7280;
 }
 
 .admin-store-status-row {
-  margin-top: 12rpx;
-  padding-top: 16rpx;
+  margin-top: 14rpx;
+  padding-top: 18rpx;
   border-top: 1px solid #f3f4f6;
 }
 
 .admin-store-status {
-  font-size: 24rpx; font-weight: 500;
+  font-size: 25rpx;
+  font-weight: 500;
   color: #9ca3af;
 }
 
@@ -199,99 +368,88 @@
 // ====== 审核申请卡片 ======
 .admin-app-card {
   background: #ffffff;
-  border-radius: 18px;
-  padding: 26rpx;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border-radius: 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(18, 43, 77, 0.05);
 }
 
 .app-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20rpx;
+  margin-bottom: 22rpx;
 }
 
 .app-header-left {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 12rpx;
-  margin-right: 16rpx;
+  gap: 14rpx;
+  margin-right: 18rpx;
 }
 
 .app-company-name {
-  font-size: 30rpx; 
+  font-size: 31rpx;
   font-weight: 600;
   color: #1f2937;
 }
 
 /* 角色标签 */
 .app-role-tag {
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 10rpx;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 6rpx;
 }
 
-.tag-owner {
-  background: #dbeafe;
-}
-
-.tag-manager {
-  background: #f3e8ff;
-}
+.tag-owner { background: #dbeafe; }
+.tag-manager { background: #f3e8ff; }
 
 .role-tag-text {
-  font-size: 20rpx;
+  font-size: 21rpx;
   font-weight: 500;
 }
 
-.text-owner {
-  color: #1e40af;
-}
-
-.text-manager {
-  color: #6b21a8;
-}
+.text-owner { color: #1e40af; }
+.text-manager { color: #6b21a8; }
 
 .app-pending-tag {
-  padding: 6rpx 16rpx;
+  padding: 8rpx 18rpx;
   background: #fef3c7;
-  border-radius: 8px;
+  border-radius: 10rpx;
   flex-shrink: 0;
 }
 
 .pending-tag-text {
-  font-size: 21rpx; font-weight: 500;
+  font-size: 22rpx;
+  font-weight: 500;
   color: #d97706;
 }
 
-.app-card-body { margin-bottom: 20rpx; }
+.app-card-body { margin-bottom: 22rpx; }
 
 .app-info-row {
   display: flex;
   align-items: baseline;
-  gap: 16rpx;
-  margin-bottom: 10rpx;
+  gap: 18rpx;
+  margin-bottom: 12rpx;
 }
 
 .app-info-label {
-  font-size: 24rpx;
+  font-size: 25rpx;
   color: #9ca3af;
-  width: 120rpx;
+  width: 130rpx;
   flex-shrink: 0;
 }
 
 .app-info-value {
-  font-size: 25rpx;
+  font-size: 26rpx;
   color: #374151;
 }
 
-.app-info-addr {
-  word-break: break-all;
-}
+.app-info-addr { word-break: break-all; }
 
 /* 电话行 - 支持拨号 */
 .app-phone-row {
@@ -299,12 +457,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12rpx;
+  gap: 14rpx;
 }
 
 .app-phone-call {
-  width: 56rpx;
-  height: 56rpx;
+  width: 58rpx;
+  height: 58rpx;
   border-radius: 50%;
   background: #e1ecf4;
   display: flex;
@@ -312,9 +470,9 @@
   justify-content: center;
   flex-shrink: 0;
 
-  &:active { 
-    background: #d1e3f0; 
-    transform: scale(0.95); 
+  &:active {
+    background: #d1e3f0;
+    transform: scale(0.95);
   }
 }
 
@@ -325,15 +483,15 @@
 
 /* 资质图片展示区 */
 .app-images-section {
-  margin-bottom: 20rpx;
-  padding: 16rpx;
+  margin-bottom: 22rpx;
+  padding: 18rpx;
   background: #f9fafb;
-  border-radius: 12rpx;
+  border-radius: 14rpx;
   border: 1px solid #f3f4f6;
 }
 
 .app-section-label {
-  font-size: 24rpx;
+  font-size: 25rpx;
   font-weight: 600;
   color: #374151;
 }
@@ -341,8 +499,8 @@
 .app-section-label-row {
   display: flex;
   align-items: center;
-  gap: 8rpx;
-  margin-bottom: 12rpx;
+  gap: 10rpx;
+  margin-bottom: 14rpx;
 }
 
 .app-images-scroll {
@@ -352,32 +510,32 @@
 
 .app-images-list {
   display: inline-flex;
-  gap: 12rpx;
+  gap: 14rpx;
 }
 
 .app-license-img {
-  width: 180rpx;
-  height: 180rpx;
-  border-radius: 10rpx;
+  width: 190rpx;
+  height: 190rpx;
+  border-radius: 12rpx;
   border: 1px solid #e5e7eb;
 }
 
 .app-actions {
   display: flex;
-  gap: 16rpx;
-  padding-top: 20rpx;
+  gap: 18rpx;
+  padding-top: 22rpx;
   border-top: 1px solid #f3f4f6;
 }
 
 .app-btn {
   flex: 1;
   text-align: center;
-  padding: 18rpx 0;
-  border-radius: 14rpx;
+  padding: 20rpx 0;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8rpx;
+  gap: 10rpx;
 
   &:active { opacity: 0.85; }
 }
@@ -388,7 +546,8 @@
 }
 
 .app-btn-reject-text {
-  font-size: 26rpx; font-weight: 500;
+  font-size: 27rpx;
+  font-weight: 500;
   color: #6b7280;
 }
 
@@ -397,44 +556,56 @@
 }
 
 .app-btn-approve-text {
-  font-size: 26rpx; font-weight: 500;
+  font-size: 27rpx;
+  font-weight: 500;
   color: #ffffff;
 }
 
 // ====== 案例管理卡片 ======
 .admin-case-card {
   display: flex;
-  gap: 20rpx;
+  gap: 22rpx;
   background: #ffffff;
-  border-radius: 18px;
-  padding: 20rpx;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border-radius: 20rpx;
+  padding: 22rpx;
+  box-shadow: 0 4rpx 16rpx rgba(18, 43, 77, 0.05);
 
   &:active { opacity: 0.95; }
 }
 
 .admin-case-img-wrap {
-  width: 160rpx; height: 160rpx;
-  border-radius: 14px;
+  width: 170rpx;
+  height: 170rpx;
+  border-radius: 16rpx;
   overflow: hidden;
   flex-shrink: 0;
   background: linear-gradient(180deg, #e1ecf4 0%, #f0f5fa 100%);
 }
 
 .admin-case-img {
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
 .admin-case-placeholder {
-  width: 100%; height: 100%;
-  display: flex; align-items: center; justify-content: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.admin-case-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.admin-case-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
 .admin-case-title {
-  font-size: 27rpx; font-weight: 600;
+  font-size: 28rpx;
+  font-weight: 600;
   color: #1f2937;
   line-height: 1.4;
   display: -webkit-box;
@@ -444,13 +615,14 @@
 }
 
 .admin-case-meta-row {
-  display: flex; align-items: center;
-  gap: 8rpx;
-  margin-top: 6rpx;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-top: 8rpx;
 }
 
 .admin-case-meta {
-  font-size: 23rpx;
+  font-size: 24rpx;
   color: #9ca3af;
 }
 
@@ -458,11 +630,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 10rpx;
+  margin-top: 12rpx;
 }
 
 .admin-case-publish-status {
-  font-size: 22rpx; font-weight: 500;
+  font-size: 23rpx;
+  font-weight: 500;
   color: #9ca3af;
 }
 
@@ -471,8 +644,8 @@
 .admin-case-views {
   display: flex;
   align-items: center;
-  gap: 6rpx;
-  font-size: 22rpx;
+  gap: 8rpx;
+  font-size: 23rpx;
   color: #9ca3af;
 }
 
@@ -480,15 +653,15 @@
 .admin-case-status-group {
   display: flex;
   align-items: center;
-  gap: 16rpx;
+  gap: 18rpx;
 }
 
 // 案例操作按钮区域
 .admin-case-actions {
   display: flex;
-  gap: 12rpx;
-  margin-top: 16rpx;
-  padding-top: 16rpx;
+  gap: 14rpx;
+  margin-top: 18rpx;
+  padding-top: 18rpx;
   border-top: 1px solid #f3f4f6;
 }
 
@@ -497,12 +670,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8rpx;
-  padding: 14rpx 0;
-  border-radius: 12rpx;
+  gap: 10rpx;
+  padding: 16rpx 0;
+  border-radius: 14rpx;
 
   Text {
-    font-size: 24rpx;
+    font-size: 25rpx;
     font-weight: 500;
     color: #ffffff;
   }
@@ -530,11 +703,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 80rpx 0;
-  gap: 16rpx;
+  padding: 100rpx 0;
+  gap: 20rpx;
 }
 
 .admin-empty-text {
-  font-size: 27rpx;
+  font-size: 28rpx;
   color: #9ca3af;
+}
+
+.safe-bottom {
+  height: constant(safe-area-inset-bottom);
+  height: env(safe-area-inset-bottom);
 }

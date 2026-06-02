@@ -70,7 +70,9 @@ export default function Reservations() {
     }
   };
 
-  if (!user || !requireBusinessLogin()) return null;
+  if (!user || !requireBusinessLogin()) {
+    return <View className='cl-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
+  }
 
   return (
     <ScrollView className='br-page' scrollY>
@@ -142,6 +144,7 @@ export default function Reservations() {
                   <>
                     {assigningId === item.id ? (
                       <View className='br-assign-panel'>
+                        <Text className='br-assign-hint'>选择量尺人员</Text>
                         {storeStaff
                           .filter((s: any) => (s.role || '').includes('STORE_MANAGER') || (s.role || '').includes('INSTALLER'))
                           .map((staff: any) => (
@@ -162,23 +165,49 @@ export default function Reservations() {
                         </View>
                       </View>
                     ) : (
-                      <View className='btn-outline br-action-btn' onClick={() => setAssigningId(item.id)}>
-                        <Text>分配人员</Text>
-                      </View>
+                      <>
+                        <View className='btn-primary br-action-btn' onClick={() => setAssigningId(item.id)}>
+                          <Icon name='ruler' size={26} color='#ffffff' />
+                          <Text>安排量尺</Text>
+                        </View>
+                        <View
+                          className='btn-secondary br-action-btn'
+                          onClick={() => Taro.navigateTo({ url: `/subpackages/business/order-manage/index?reservationId=${item.id}` })}
+                        >
+                          <Icon name='add' size={26} color='#122b4d' />
+                          <Text>转订单</Text>
+                        </View>
+                      </>
                     )}
                   </>
                 )}
                 {item.status === 'ASSIGNED' && (
-                  <View className='btn-outline br-action-btn' onClick={() => handleMeasured(item.id)}>
-                    <Text>标记已量尺</Text>
-                  </View>
+                  <>
+                    <View className='btn-success br-action-btn' onClick={() => handleMeasured(item.id)}>
+                      <Icon name='check' size={26} color='#ffffff' />
+                      <Text>已量尺</Text>
+                    </View>
+                    <View
+                      className='btn-secondary br-action-btn'
+                      onClick={() => Taro.navigateTo({ url: `/subpackages/business/order-manage/index?reservationId=${item.id}` })}
+                    >
+                      <Icon name='add' size={26} color='#122b4d' />
+                      <Text>转订单</Text>
+                    </View>
+                  </>
                 )}
-                {item.status !== 'CANCELED' && (
+                {item.status === 'MEASURED' && (
                   <View
-                    className='btn-ghost br-action-btn'
+                    className='btn-primary br-action-btn btn-full'
                     onClick={() => Taro.navigateTo({ url: `/subpackages/business/order-manage/index?reservationId=${item.id}` })}
                   >
+                    <Icon name='clipboard' size={28} color='#ffffff' />
                     <Text>转为订单</Text>
+                  </View>
+                )}
+                {item.status === 'CANCELED' && (
+                  <View className='br-card-canceled-tag'>
+                    <Text className='canceled-text'>已取消</Text>
                   </View>
                 )}
               </View>

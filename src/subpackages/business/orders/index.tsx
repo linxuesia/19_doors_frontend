@@ -26,6 +26,8 @@ export default function Orders() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [storeStaff, setStoreStaff] = useState<any[]>([]);
+  const [assigningId, setAssigningId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!requireBusinessLogin()) return;
@@ -55,7 +57,49 @@ export default function Orders() {
       .finally(() => setLoading(false));
   }, [user, activeTab, page]);
 
-  if (!user || !requireBusinessLogin()) return null;
+  useEffect(() => {
+    if (user?.storeId && !isInstaller) {
+      api.get(`/stores/${user.storeId}`)
+        .then((res: any) => setStoreStaff(res.users || []))
+        .catch(() => {});
+    }
+  }, [user?.storeId, isInstaller]);
+
+  /** 分配安装工 */
+  const handleAssign = async (orderId: string, assigneeId: string) => {
+    try {
+      await api.post(`/orders/${orderId}/assign`, { installerId: assigneeId });
+      setOrders((prev) =>
+        prev.map((item) =>
+          item.id === orderId ? { ...item, installer: storeStaff.find((s) => s.id === assigneeId), status: 'INSTALLING' } : item,
+        ),
+      );
+      setAssigningId(null);
+      Taro.showToast({ title: '已分配安装工', icon: 'success' });
+    } catch (e: any) {
+      Taro.showToast({ title: e.message || '操作失败', icon: 'none' });
+    }
+  };
+
+  /** 标记完工 */
+  const handleComplete = async (orderId: string) => {
+    try {
+      await Taro.showModal({ title: '确认完工', content: '确定该订单已施工完成？' });
+      await api.put(`/orders/${orderId}`, { status: 'COMPLETED' });
+      setOrders((prev) =>
+        prev.map((item) => (item.id === orderId ? { ...item, status: 'COMPLETED' } : item)),
+      );
+      Taro.showToast({ title: '已标记完工', icon: 'success' });
+    } catch (e: any) {
+      if (e?.errMsg !== 'showModal:fail cancel') {
+        Taro.showToast({ title: e.message || '操作失败', icon: 'none' });
+      }
+    }
+  };
+
+  if (!user || !requireBusinessLogin()) {
+    return <View className='cl-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
+  }
 
   const isInstaller = (user.role || '').includes('INSTALLER');
 
@@ -88,9 +132,6 @@ export default function Orders() {
             <View
               key={item.id}
               className='bo-card'
-              onClick={() =>
-                Taro.navigateTo({ url: `/subpackages/business/order-manage/index?id=${item.id}` })
-              }
             >
               <View className='bo-card-top'>
                 <Text className='bo-card-no'>{item.orderNo || `#${item.id}`}</Text>
@@ -115,6 +156,71 @@ export default function Orders() {
                 </View>
                 <Text className='bo-card-amount'>¥{item.totalAmount?.toLocaleString() || 0}</Text>
               </View>
+
+              {/* 操作按钮 - 仅门店端显示 */}
+              {!isInstaller && (
+              <View className='bo-card-actions'>
+                {item.status === 'PENDING' && (
+                  <>
+                    {assigningId === item.id ? (
+                      <View className='bo-assign-panel'>
+                        <Text className='bo-assign-hint'>选择安装工</Text>
+                        {storeStaff
+                          .filter((s: any) => (s.role || '').includes('INSTALLER'))
+                          .map((staff: any) => (
+                            <View
+                              key={staff.id}
+                              className='bo-assign-item'
+                              onClick={() => handleAssign(item.id, staff.id)}
+                            >
+                              <Text className='bo-assign-name'>{staff.name}</Text>
+                              <Text className='bo-assign-role'>安装工</Text>
+                            </View>
+                          ))}
+                        {storeStaff.filter((s: any) => (s.role || '').includes('INSTALLER')).length === 0 && (
+                          <Text className='bo-assign-empty'>暂无安装工</Text>
+                        )}
+                        <View className='bo-assign-cancel' onClick={() => setAssigningId(null)}>
+                          <Text>取消</Text>
+                        </View>
+                      </View>
+                    ) : (
+                      <>
+                        <View className='btn-primary bo-action-btn' onClick={() => setAssigningId(item.id)}>
+                          <Icon name='user' size={26} color='#ffffff' />
+                          <Text>分配工人</Text>
+                        </View>
+                        <View className='bo-action-btn btn-disabled' onClick={() => Taro.showToast({ title: '请先分配安装工', icon: 'none' })}>
+                          <Icon name='tools' size={26} color='#9ca3af' />
+                          <Text>开工</Text>
+                        </View>
+                      </>
+                    )}
+                  </>
+                )}
+                {item.status === 'INSTALLING' && (
+                  <>
+                    <View className='btn-success bo-action-btn' onClick={() => handleComplete(item.id)}>
+                      <Icon name='check' size={26} color='#ffffff' />
+                      <Text>确认完工</Text>
+                    </View>
+                    <View
+                      className='btn-secondary bo-action-btn'
+                      onClick={() => Taro.navigateTo({ url: `/subpackages/business/order-manage/index?id=${item.id}` })}
+                    >
+                      <Icon name='edit' size={26} color='#122b4d' />
+                      <Text>编辑</Text>
+                    </View>
+                  </>
+                )}
+                {item.status === 'COMPLETED' && (
+                  <View className='bo-card-done-tag'>
+                    <Icon name='check-circle' size={28} color='#059669' />
+                    <Text className='done-text'>订单已完成</Text>
+                  </View>
+                )}
+              </View>
+              )}
             </View>
           );
         })}

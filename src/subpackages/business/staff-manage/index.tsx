@@ -3,6 +3,7 @@ import { View, Text, Input, Image, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import api from '../../../utils/api';
+import Icon from '../../../components/Icon';
 import './index.scss';
 
 interface StaffMember {
@@ -10,7 +11,6 @@ interface StaffMember {
   name: string;
   phone: string;
   role: 'STORE_MANAGER' | 'INSTALLER';
-  status: 'ACTIVE' | 'DISABLED';
   avatarUrl?: string;
 }
 
@@ -53,7 +53,7 @@ export default function StaffManage() {
     try {
       if (!user?.storeId) return;
       const res: any = await api.get(`/stores/${user.storeId}`);
-      const users = res.users || [];
+      const users = res?.users || [];
       const staffMembers: StaffMember[] = users
         .filter((u: any) => (u.role || '').includes('STORE_MANAGER') || (u.role || '').includes('INSTALLER'))
         .map((u: any) => ({
@@ -61,7 +61,6 @@ export default function StaffManage() {
           name: u.name,
           phone: u.phone || '',
           role: u.role,
-          status: u.status || 'ACTIVE',
           avatarUrl: u.avatarUrl,
         }));
       setStaffList(staffMembers);
@@ -87,13 +86,13 @@ export default function StaffManage() {
     : staffList.filter(s => (s.role || '').includes(activeTab));
 
   const openAddModal = () => {
-    setForm({ name: '', phone: '', role: 'INSTALLER' });
+    setForm({ phone: '', role: 'INSTALLER' });
     setShowAddModal(true);
   };
 
   const closeAddModal = () => {
     setShowAddModal(false);
-    setForm({ name: '', phone: '', role: 'INSTALLER' });
+    setForm({ phone: '', role: 'INSTALLER' });
   };
 
   const openEditModal = (staff: StaffMember) => {
@@ -113,24 +112,17 @@ export default function StaffManage() {
   };
 
   const handleAddSubmit = async () => {
-    if (!form.name.trim()) {
-      Taro.showToast({ title: '请输入姓名', icon: 'none' });
-      return;
-    }
     if (!form.phone.trim() || form.phone.length < 11) {
       Taro.showToast({ title: '请输入正确的手机号', icon: 'none' });
       return;
     }
     setSubmitting(true);
     try {
-      await api.post('/users', {
-        name: form.name.trim(),
+      const res = await api.post(`/stores/${user?.storeId}/staff`, {
         phone: form.phone.trim(),
         role: form.role,
-        storeId: user?.storeId,
-        status: 'ACTIVE',
       });
-      Taro.showToast({ title: '添加成功', icon: 'success' });
+      Taro.showToast({ title: `已添加: ${res.name || res.phone}`, icon: 'success' });
       closeAddModal();
       fetchStaffList();
     } catch (e: any) {
@@ -149,10 +141,9 @@ export default function StaffManage() {
     }
     setSubmitting(true);
     try {
-      await api.put(`/users/${editingStaff.id}`, {
+      await api.put(`/stores/${user?.storeId}/staff/${editingStaff.id}`, {
         name: form.name.trim(),
         role: form.role,
-        status: editingStaff.status,
       });
       Taro.showToast({ title: '修改成功', icon: 'success' });
       closeEditModal();
@@ -165,33 +156,20 @@ export default function StaffManage() {
     }
   };
 
-  const handleToggleStatus = async (staff: StaffMember) => {
-    const newStatus = staff.status === 'ACTIVE' ? 'DISABLED' : 'ACTIVE';
-    const action = newStatus === 'ACTIVE' ? '启用' : '停用';
-    try {
-      await api.put(`/users/${staff.id}`, { status: newStatus });
-      Taro.showToast({ title: `${action}成功`, icon: 'success' });
-      fetchStaffList();
-    } catch (e: any) {
-      console.error('[StaffManage] 切换状态失败', e);
-      Taro.showToast({ title: e.message || `${action}失败`, icon: 'none' });
-    }
-  };
-
-  const handleDelete = (staff: StaffMember) => {
+  const handleRemove = (staff: StaffMember) => {
     Taro.showModal({
-      title: '确认删除',
-      content: `确定要删除「${staff.name}」吗？此操作不可恢复`,
+      title: '确认移除',
+      content: `确定要将「${staff.name}」从门店移除吗？`,
       confirmColor: '#f53f3f',
       success: async (res) => {
         if (res.confirm) {
           try {
-            await api.del(`/users/${staff.id}`);
-            Taro.showToast({ title: '删除成功', icon: 'success' });
+            await api.del(`/stores/${user?.storeId}/staff/${staff.id}`);
+            Taro.showToast({ title: '已移除', icon: 'success' });
             fetchStaffList();
           } catch (e: any) {
-            console.error('[StaffManage] 删除员工失败', e);
-            Taro.showToast({ title: e.message || '删除失败', icon: 'none' });
+            console.error('[StaffManage] 移除员工失败', e);
+            Taro.showToast({ title: e.message || '移除失败', icon: 'none' });
           }
         }
       },
@@ -202,7 +180,9 @@ export default function StaffManage() {
     setForm(prev => ({ ...prev, [key]: value }));
   };
 
-  if (!user || !requireBusinessLogin()) return null;
+  if (!user || !requireBusinessLogin()) {
+    return <View className='cl-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
+  }
 
   if (!(user.role || '').includes('STORE_OWNER')) {
     return (
@@ -266,10 +246,6 @@ export default function StaffManage() {
                   </Text>
                 </View>
                 <Text className='smp-phone'>{maskPhone(staff.phone)}</Text>
-                <View className='smp-status-row'>
-                  <View className={`smp-status-dot ${staff.status === 'ACTIVE' ? 'smp-status-normal' : 'smp-status-disabled'}`} />
-                  <Text className='smp-status-text'>{staff.status === 'ACTIVE' ? '正常' : '停用'}</Text>
-                </View>
               </View>
 
               {/* 操作按钮 */}
@@ -277,8 +253,8 @@ export default function StaffManage() {
                 <View className='smp-action-btn smp-btn-edit' onClick={() => openEditModal(staff)}>
                   <Text>编辑</Text>
                 </View>
-                <View className='smp-action-btn smp-btn-delete' onClick={() => handleDelete(staff)}>
-                  <Text>删除</Text>
+                <View className='smp-action-btn smp-btn-delete' onClick={() => handleRemove(staff)}>
+                  <Text>移除</Text>
                 </View>
               </View>
             </View>
@@ -310,26 +286,16 @@ export default function StaffManage() {
             </View>
 
             <View className='smp-form-field'>
-              <Text className='smp-form-label'>姓名 *</Text>
-              <Input
-                className='smp-form-input'
-                placeholder='请输入姓名'
-                value={form.name}
-                onInput={(e) => updateForm('name', e.detail.value)}
-                maxlength={20}
-              />
-            </View>
-
-            <View className='smp-form-field'>
               <Text className='smp-form-label'>手机号 *</Text>
               <Input
                 className='smp-form-input'
                 type='number'
-                placeholder='请输入手机号'
+                placeholder='请输入已登录用户的手机号'
                 value={form.phone}
                 onInput={(e) => updateForm('phone', e.detail.value)}
                 maxlength={11}
               />
+              <Text className='smp-form-hint'>该用户需先登录过小程序才能被添加</Text>
             </View>
 
             <View className='smp-form-field'>
@@ -398,18 +364,6 @@ export default function StaffManage() {
                   {ROLE_OPTIONS.find(r => r.value === form.role)?.label || '请选择角色'}
                 </Text>
                 <Text className='smp-picker-arrow'>▼</Text>
-              </View>
-            </View>
-
-            <View className='smp-form-field'>
-              <Text className='smp-form-label'>状态</Text>
-              <View
-                className='smp-form-picker'
-                onClick={() => handleToggleStatus(editingStaff)}
-              >
-                <Text style={{ color: editingStaff.status === 'ACTIVE' ? '#00b42a' : '#c9cdd4' }}>
-                  {editingStaff.status === 'ACTIVE' ? '正常' : '停用'}（点击切换）
-                </Text>
               </View>
             </View>
 

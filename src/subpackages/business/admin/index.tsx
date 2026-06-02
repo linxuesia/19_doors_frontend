@@ -64,7 +64,9 @@ export default function Admin() {
     });
   }, []);
 
-  if (!user || !requireBusinessLogin('/subpackages/business/admin-login/index')) return null;
+  if (!user || !requireBusinessLogin('/subpackages/business/admin-login/index')) {
+    return <View className='admin-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
+  }
 
   const handleApprove = async (id: string) => {
     try {
@@ -124,59 +126,94 @@ export default function Admin() {
 
   return (
     <ScrollView className='admin-page' scrollY>
-      {/* 头部 */}
+      {/* 头部 - 专业设计 */}
       <View className='admin-header'>
+        {/* 背景层 */}
         <View className='admin-header-bg' />
+
+        {/* 装饰几何图形 */}
+        <View className='admin-header-decor'>
+          <View className='decor-circle decor-circle-1' />
+          <View className='decor-circle decor-circle-2' />
+          <View className='decor-line decor-line-1' />
+        </View>
+
+        {/* 内容区 */}
         <View className='admin-header-content'>
-          <Text className='admin-title'>系统管理后台</Text>
-          <View className='admin-badge'>
-            <Icon name='shield-check' size={24} color='#ffffff' />
-            <Text className='admin-badge-text'>超级管理员</Text>
+
+          {/* 第一行：品牌 + 徽章 */}
+          <View className='ah-row-top'>
+            <Text className='ah-brand'>SOJOY <Text className='ah-brand-sep'>|</Text> 管理中心</Text>
+            <View className='admin-badge'>
+              <Icon name='shield-check' size={20} color='#ffffff' />
+              <Text className='admin-badge-text'>超级管理员</Text>
+            </View>
           </View>
+
+          {/* 第二行：副标题 */}
+          <View className='ah-row-sub'>
+            <Icon name='window' size={18} color='rgba(255,255,255,0.5)' />
+            <Text className='ah-subtitle'>19分贝系统门窗 · 总部数据大盘</Text>
+          </View>
+
+          {/* 第三行：统计数据条（内嵌） */}
+          {activeTab === 'dashboard' && (
+            <View className='admin-stats-bar'>
+              <View className='as-item'>
+                <Text className='as-num'>{stats.stores}</Text>
+                <Text className='as-label'>门店</Text>
+              </View>
+              <View className='as-divider' />
+              <View className='as-item as-item-accent'>
+                <Text className='as-num'>+{stats.todayNew}</Text>
+                <Text className='as-label'>今日新增</Text>
+              </View>
+              <View className='as-divider' />
+              <View className='as-item as-item-warn'>
+                <Text className='as-num'>{stats.pendingApps}</Text>
+                <Text className='as-label'>待审核</Text>
+              </View>
+              <View className='as-divider' />
+              <View className='as-item'>
+                <Text className='as-num'>{stats.activeCases}</Text>
+                <Text className='as-label'>案例</Text>
+              </View>
+            </View>
+          )}
         </View>
       </View>
 
-      {/* 数据看板 */}
+      {/* 数据看板内容区 */}
       {activeTab === 'dashboard' && (
         <>
-          {/* 统计卡片 */}
-          <View className='admin-stats-grid'>
-            <View className='admin-stat-card'>
-              <Text className='admin-stat-num'>{stats.stores}</Text>
-              <Text className='admin-stat-label'>门店总数</Text>
-            </View>
-            <View className='admin-stat-card admin-stat-highlight'>
-              <Text className='admin-stat-num'>+{stats.todayNew}</Text>
-              <Text className='admin-stat-label'>今日新增</Text>
-            </View>
-            <View className='admin-stat-card admin-stat-warn'>
-              <Text className='admin-stat-num'>{stats.pendingApps}</Text>
-              <Text className='admin-stat-label'>待审核</Text>
-            </View>
-            <View className='admin-stat-card admin-stat-info'>
-              <Text className='admin-stat-num'>{stats.activeCases}</Text>
-              <Text className='admin-stat-label'>活跃案例</Text>
-            </View>
-          </View>
-
           {/* 三大功能入口 */}
           <View className='admin-modules-section'>
-            <Text className='admin-section-title'>功能模块</Text>
+            <View className='admin-section-header'>
+              <Text className='admin-section-title'>功能模块</Text>
+              <Text className='admin-section-desc'>点击进入管理</Text>
+            </View>
             <View className='admin-module-list'>
-              {mainModules.map((mod) => (
+              {mainModules.map((mod, index) => (
                 <View
                   key={mod.key}
                   className='admin-module-card'
                   onClick={() => setActiveTab(mod.key)}
                 >
-                  <View className='admin-module-icon-wrap' style={{ background: `${mod.color}12` }}>
+                  <View className='admin-module-icon-wrap' style={{ background: `linear-gradient(135deg, ${mod.color}15 0%, ${mod.color}08 100%)` }}>
                     <Icon name={mod.icon as any} size={40} color={mod.color} />
                   </View>
                   <View className='admin-module-body'>
                     <Text className='admin-module-title'>{mod.title}</Text>
                     <Text className='admin-module-desc'>{mod.desc}</Text>
                   </View>
-                  <Icon name='arrow-right' size={28} color='#d1d5db' />
+                  <View className='module-arrow'>
+                    <Icon name='arrow-right' size={26} color='#c4ccd8' />
+                  </View>
+                  {index === 1 && stats.pendingApps > 0 && (
+                    <View className='module-badge'>
+                      <Text className='module-badge-text'>{stats.pendingApps}条待审</Text>
+                    </View>
+                  )}
                 </View>
               ))}
             </View>
@@ -188,9 +225,11 @@ export default function Admin() {
       {activeTab === 'stores' && (
         <View className='admin-subpage'>
           <View className='admin-subpage-header'>
-            <Icon name='close' size={32} color='#374151' onClick={() => setActiveTab('dashboard')} />
+            <View className='admin-back-btn' onClick={() => setActiveTab('dashboard')}>
+              <Text className='back-arrow'>←</Text>
+            </View>
             <Text className='admin-subpage-title'>门店账号管理</Text>
-            <View style={{ width: 32 }} />
+            <View style={{ width: 40 }} />
           </View>
 
           <View className='admin-list'>
@@ -198,9 +237,6 @@ export default function Admin() {
               <View key={item.id} className='admin-store-card'>
                 <View className='admin-store-top'>
                   <Text className='admin-store-name'>{item.name}</Text>
-                  <View className={`admin-store-type ${item.type === 'DIRECT' ? 'type-direct' : 'type-partner'}`}>
-                    <Text className='type-text'>{item.type === 'DIRECT' ? '直营' : '加盟'}</Text>
-                  </View>
                 </View>
                 <View className='admin-store-row'>
                   <Icon name='user' size={24} color='#9ca3af' />
@@ -232,9 +268,11 @@ export default function Admin() {
       {activeTab === 'applications' && (
         <View className='admin-subpage'>
           <View className='admin-subpage-header'>
-            <Icon name='close' size={32} color='#374151' onClick={() => setActiveTab('dashboard')} />
+            <View className='admin-back-btn' onClick={() => setActiveTab('dashboard')}>
+              <Text className='back-arrow'>←</Text>
+            </View>
             <Text className='admin-subpage-title'>门店开通审核</Text>
-            <View style={{ width: 32 }} />
+            <View style={{ width: 40 }} />
           </View>
 
           <View className='admin-list'>
@@ -297,7 +335,9 @@ export default function Admin() {
                     <View className='app-phone-row'>
                       <Text className='app-info-value'>{item.phone?.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') || '-'}</Text>
                       {item.phone && (
-                        <View className='app-phone-call' onClick={() => Taro.makePhoneCall({ phoneNumber: item.phone })}>
+                        <View className='app-phone-call' onClick={() => {
+                          Taro.showModal({ title: '拨打电话', content: item.phone, confirmText: '拨打', success: (r) => { if (r.confirm) Taro.makePhoneCall({ phoneNumber: item.phone }); } });
+                        }}>
                           <Icon name='phone' size={24} color='#122b4d' />
                         </View>
                       )}
@@ -349,9 +389,11 @@ export default function Admin() {
       {activeTab === 'cases' && (
         <View className='admin-subpage'>
           <View className='admin-subpage-header'>
-            <Icon name='close' size={32} color='#374151' onClick={() => setActiveTab('dashboard')} />
+            <View className='admin-back-btn' onClick={() => setActiveTab('dashboard')}>
+              <Text className='back-arrow'>←</Text>
+            </View>
             <Text className='admin-subpage-title'>全国案例管理</Text>
-            <View style={{ width: 32 }} />
+            <View style={{ width: 40 }} />
           </View>
 
           <View className='admin-list'>

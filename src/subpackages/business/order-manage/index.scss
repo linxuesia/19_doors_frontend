@@ -238,6 +238,7 @@
 .omf-submit-btn {
   @include btn-base();
   width: 100%;
+  box-sizing: border-box;
   padding: 28rpx;
   background: #122b4d;
   color: #ffffff;

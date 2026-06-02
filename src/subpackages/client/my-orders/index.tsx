@@ -3,6 +3,7 @@ import { View, Text, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import Icon from '../../../components/Icon';
+import ThankYouModal from '../../../components/ThankYouModal';
 import api from '../../../utils/api';
 import './index.scss';
 
@@ -34,6 +35,8 @@ export default function MyOrders() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
+  const [showThanks, setShowThanks] = useState(false);
+  const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -95,7 +98,8 @@ export default function MyOrders() {
         if (res.confirm) {
           api.put(`/orders/${order.id}/complete`)
             .then(() => {
-              Taro.showToast({ title: '已确认完工', icon: 'success' });
+              setCompletedOrder(order);
+              setShowThanks(true);
               fetchOrders();
             })
             .catch(() => {
@@ -104,6 +108,11 @@ export default function MyOrders() {
         }
       }
     });
+  };
+
+  const handleCloseThanks = () => {
+    setShowThanks(false);
+    setCompletedOrder(null);
   };
 
   const handleViewDetail = (order: Order) => {
@@ -224,6 +233,19 @@ export default function MyOrders() {
       </View>
 
       <View className='safe-bottom' />
+
+      {completedOrder && (
+        <ThankYouModal
+          visible={showThanks}
+          onClose={handleCloseThanks}
+          orderInfo={{
+            orderId: completedOrder.id,
+            orderNo: completedOrder.orderNo,
+            address: completedOrder.installAddress || completedOrder.communityName || '',
+            productName: completedOrder.productName || '',
+          }}
+        />
+      )}
     </View>
   );
 }

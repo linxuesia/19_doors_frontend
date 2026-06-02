@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, Input, Button, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
@@ -18,10 +18,41 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState('');
   const [nickname, setNickname] = useState('');
+  const [privacyChecked, setPrivacyChecked] = useState(false);
+
+  // 已登录用户自动跳转个人中心
+  useEffect(() => {
+    if (user) {
+      Taro.switchTab({ url: '/pages/profile/index' });
+    }
+  }, []);
+
+  // 检查微信隐私授权状态
+  useEffect(() => {
+    try {
+      // @ts-ignore - 微信基础库 2.32.3+ 支持
+      if (typeof Taro.getPrivacySetting === 'function') {
+        // @ts-ignore
+        Taro.getPrivacySetting({
+          success: (res: any) => {
+            if (res.needAuthorization) {
+              // 用户需要同意隐私协议才能使用隐私相关功能
+              // 微信会自动弹出隐私协议弹窗
+              console.log('[Login] 需要隐私授权');
+            }
+          },
+          fail: () => {},
+        });
+      }
+    } catch {}
+  }, []);
 
   if (user) {
-    Taro.switchTab({ url: '/pages/profile/index' });
-    return null;
+    return (
+      <View className='login-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'>
+        <Text style='color:#9ca3af;font-size:14px'>已登录，跳转中...</Text>
+      </View>
+    );
   }
 
   /** 选择头像 */
@@ -54,6 +85,10 @@ export default function Login() {
       setError('请选择头像');
       return;
     }
+    if (!privacyChecked) {
+      setError('请阅读并同意隐私政策');
+      return;
+    }
 
     setError('');
     setLoading(true);
@@ -79,13 +114,8 @@ export default function Login() {
       setError('请输入正确的手机号');
       return;
     }
-
-    if (!nickname.trim()) {
-      setError('请输入您的昵称');
-      return;
-    }
-    if (!avatarUrl) {
-      setError('请选择头像');
+    if (!privacyChecked) {
+      setError('请阅读并同意隐私政策');
       return;
     }
 
@@ -96,8 +126,8 @@ export default function Login() {
       await phoneLogin({
         phone,
         wxCode: loginRes.code,
-        avatarUrl,
-        nickname: nickname.trim(),
+        ...(avatarUrl && { avatarUrl }),
+        ...(nickname.trim() && { nickname: nickname.trim() }),
       });
       Taro.switchTab({ url: '/pages/profile/index' });
     } catch (err: any) {
@@ -149,6 +179,25 @@ export default function Login() {
         </View>
 
         <View className='login-form'>
+          {/* 隐私协议勾选 */}
+          <View className='privacy-consent' onClick={() => setPrivacyChecked(!privacyChecked)}>
+            <View className={`privacy-checkbox ${privacyChecked ? 'checked' : ''}`}>
+              {privacyChecked && <Icon name='check' size={20} color='#ffffff' />}
+            </View>
+            <Text className='privacy-consent-text'>
+              我已阅读并同意
+              <Text
+                className='privacy-link'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  Taro.navigateTo({ url: '/subpackages/client/privacy/index' });
+                }}
+              >
+                《隐私政策》
+              </Text>
+            </Text>
+          </View>
+
           {error && <Text className='login-error'>{error}</Text>}
 
           {/* 微信授权手机号（真机一键登录） */}
@@ -159,7 +208,7 @@ export default function Login() {
             disabled={loading}
           >
             <Icon name='chat' size={36} color='#ffffff' />
-            <Text className='login-btn-text'>微信授权一键登录</Text>
+            <Text className='login-btn-text'>手机号一键登录</Text>
           </Button>
 
           {/* 手动输入手机号（仅DevTools可见） */}

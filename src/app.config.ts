@@ -22,6 +22,9 @@ export default defineAppConfig({
         'staff-apply/index',      // 员工认证申请
         'warranty/index',         // 质保卡
         'my-orders/index',        // 我的订单列表
+        'site-map/index',         // 全国工地地图全屏
+        'inspection/index',       // 安装验收单
+        'privacy/index',         // 隐私政策
       ],
     },
     {
@@ -42,6 +45,7 @@ export default defineAppConfig({
         'installer-profile/index', // 工人个人中心
         'staff-manage/index',     // 人员管理（老板）
         'case-manage/index',      // 案例库管理
+        'case-edit/index',        // 案例编辑/新增
       ],
     },
   ],
@@ -71,4 +75,5 @@ export default defineAppConfig({
       { pagePath: 'pages/profile/index', text: '我的' },
     ],
   },
+  __usePrivacyCheck__: true,
 });

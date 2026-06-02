@@ -64,7 +64,9 @@ export default function InstallerProfile() {
     }
   }, [user]);
 
-  if (!user || !requireBusinessLogin()) return null;
+  if (!user || !requireBusinessLogin()) {
+    return <View className='cl-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
+  }
 
   const handleMenuClick = (action: string) => {
     switch (action) {

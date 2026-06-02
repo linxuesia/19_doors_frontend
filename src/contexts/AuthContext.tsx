@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const wechatLogin = useCallback(async (role: string) => {
     const loginRes = await Taro.login();
-    if (!loginRes.code) throw new Error('微信登录失败');
+    if (!loginRes.code) throw new Error('登录失败');
     const res: any = await api.post('/auth/wechat-login', { code: loginRes.code, role });
     saveAuth(res.accessToken, res.user);
   }, [saveAuth]);

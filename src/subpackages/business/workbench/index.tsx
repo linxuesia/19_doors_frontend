@@ -55,7 +55,9 @@ export default function Workbench() {
       .catch(() => {});
   }, [user]);
 
-  if (!user || !requireBusinessLogin()) return null;
+  if (!user || !requireBusinessLogin()) {
+    return <View className='wb-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
+  }
 
   const isOwner = (user.role || '').includes('STORE_OWNER');
   const isManager = (user.role || '').includes('STORE_MANAGER');
@@ -67,28 +69,48 @@ export default function Workbench() {
 
   return (
     <ScrollView className='wb-page' scrollY>
-      {/* 头部 */}
+      {/* 头部 - 专业设计 */}
       <View className='wb-header'>
+        {/* 背景层 */}
         <View className='wb-header-bg' />
+
+        {/* 装饰几何图形 */}
+        <View className='wb-header-decor'>
+          <View className='wb-decor-circle wb-decor-circle-1' />
+          <View className='wb-decor-circle wb-decor-circle-2' />
+          <View className='wb-decor-line wb-decor-line-1' />
+        </View>
+
+        {/* 内容区 */}
         <View className='wb-header-content'>
+          {/* 品牌行 */}
+          <View className='wb-brand-row'>
+            <View className='wb-brand-section'>
+              <Text className='wb-brand-name'>SOJOY</Text>
+              <Text className='wb-brand-divider'>|</Text>
+              <Text className='wb-brand-role'>{isOwner ? '门店老板' : isManager ? '门店店长' : '安装工'}</Text>
+            </View>
+            <View className='wb-workbench-tag'>
+              <Icon name='clipboard' size={18} color='#ffffff' />
+              <Text className='wb-workbench-text'>工作台</Text>
+            </View>
+          </View>
+
+          {/* 用户信息行 */}
           <View className='wb-user-row'>
             <View className='wb-avatar'>
-              <Icon name='user' size={44} color='#ffffff' />
+              <Text className='wb-avatar-text'>{user.name?.charAt(0) || 'U'}</Text>
             </View>
             <View className='wb-user-info'>
               <Text className='wb-user-name'>{user.name}</Text>
               <View className='wb-user-meta-row'>
-                <Text className='wb-user-role'>{roleLabels[user.role] || user.role}</Text>
                 {user.storeName && (
                   <>
-                    <Text className='wb-user-sep'>·</Text>
+                    <Icon name='building' size={16} color='rgba(255,255,255,0.5)' />
                     <Text className='wb-user-store'>{user.storeName}</Text>
                   </>
                 )}
               </View>
-            </View>
-            <View className='wb-store-tag'>
-              <Text className='wb-store-tag-text'>工作台</Text>
             </View>
           </View>
 
@@ -96,7 +118,7 @@ export default function Workbench() {
           <View className='wb-stats'>
             <View className='wb-stat-item'>
               <Text className='wb-stat-num'>{stats.total}</Text>
-              <Text className='wb-stat-label'>{isInstaller ? '全部' : '全部'}</Text>
+              <Text className='wb-stat-label'>{isInstaller ? '全部' : '全部订单'}</Text>
             </View>
             <View className='wb-stat-divider' />
             <View className='wb-stat-item'>

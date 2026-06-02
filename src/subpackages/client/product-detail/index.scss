@@ -79,6 +79,27 @@
   min-height: 400rpx;
 }
 
+// 质量检测报告
+.pd-report-section {
+  margin: 0 24rpx 32rpx;
+}
+
+.pd-report-btn {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 28rpx 24rpx;
+  background: #f0f5fa;
+  border-radius: 16rpx;
+  border: 1px solid #dce5f0;
+
+  &:active { opacity: 0.8; }
+}
+
+.pd-report-text { flex: 1; display: flex; flex-direction: column; gap: 4rpx; }
+.pd-report-title { font-size: 28rpx; font-weight: 600; color: #122b4d; }
+.pd-report-desc { font-size: 22rpx; color: #6b7280; }
+
 // 相关案例
 .pd-cases-section { margin-bottom: 140rpx; }
 

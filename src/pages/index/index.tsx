@@ -93,7 +93,12 @@ export default function Home() {
           <Text className='manager-store'>{storeInfo?.name || '加载中...'}</Text>
         </View>
         <View className='manager-actions'>
-          <View className='action-icon' onClick={() => storeInfo?.owner?.phone && Taro.makePhoneCall({ phoneNumber: storeInfo.owner.phone })}>
+          <View className='action-icon' onClick={() => {
+            const phone = storeInfo?.owner?.phone;
+            if (phone) {
+              Taro.showModal({ title: '联系店长', content: phone, confirmText: '拨打', success: (r) => { if (r.confirm) Taro.makePhoneCall({ phoneNumber: phone }); } });
+            }
+          }}>
             <Icon name='phone' size={36} color='#122b4d' />
           </View>
           <View className='action-icon' onClick={() => storeInfo?.address && Taro.openLocation({ latitude: storeInfo.latitude || 0, longitude: storeInfo.longitude || 0, name: storeInfo.name, address: storeInfo.address })}>
@@ -164,8 +169,8 @@ export default function Home() {
               </View>
             </View>
           )}
-          <View className='view-all-btn' onClick={() => Taro.switchTab({ url: '/pages/cases/index' })}>
-            <Text className='view-all-text'>查看全部</Text>
+          <View className='view-all-btn' onClick={() => Taro.navigateTo({ url: '/subpackages/client/site-map/index' })}>
+            <Text className='view-all-text'>查看全部工地</Text>
           </View>
         </View>
       </View>
@@ -204,33 +209,27 @@ export default function Home() {
       </View>
 
       {/* 门店资质 */}
+      {(storeInfo?.qualifications?.length > 0) && (
       <View className='index-section'>
         <View className='index-section-badge'>
           <Text className='badge-text'>门店资质</Text>
           <Text className='badge-en'>STORE QUALIFICATION</Text>
         </View>
         <ScrollView className='qualification-scroll' scrollX showScrollbar={false}>
-          {[
-            { id: 'q1', title: '行业发展标杆', store: '上海19分贝门窗直营店', image: 'cloud://prod-d7g81p837f1219e28.7072-prod-d7g81p837f1219e28-1436604435/common/banner.jpeg' },
-            { id: 'q2', title: '大商资质', store: '上海19分贝门窗直营店', image: 'cloud://prod-d7g81p837f1219e28.7072-prod-d7g81p837f1219e28-1436604435/common/banner.jpeg' },
-          ].map((item) => (
+          {storeInfo.qualifications.map((item: any) => (
             <View
               key={item.id}
               className='qualification-card'
-              onClick={() => Taro.previewImage({ current: item.image, urls: [item.image] })}
+              onClick={() => item.image ? Taro.previewImage({ current: item.image, urls: [item.image] }) : {}}
             >
               <Image className='qualification-img' src={item.image} mode='aspectFill' />
               <Text className='qualification-title'>{item.title}</Text>
-              <Text className='qualification-store'>{item.store}</Text>
+              <Text className='qualification-store'>{storeInfo.name}</Text>
             </View>
           ))}
         </ScrollView>
-        <View className='pagination-dots'>
-          <View className='dot dot-active' />
-          <View className='dot' />
-          <View className='dot' />
-        </View>
       </View>
+      )}
 
       {/* 实景案例 */}
       <View className='index-section'>

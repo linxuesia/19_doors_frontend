@@ -1,4 +1,5 @@
 import { View, Text } from '@tarojs/components';
+import Taro from '@tarojs/taro';
 import Icon from './Icon';
 import './ThankYouModal.scss';
 
@@ -6,13 +7,14 @@ interface ThankYouModalProps {
   visible: boolean;
   onClose: () => void;
   orderInfo?: {
+    orderId?: string;
     orderNo: string;
     address: string;
     productName: string;
   };
 }
 
-export default function ThankYouModal({ visible, onClose }: ThankYouModalProps) {
+export default function ThankYouModal({ visible, onClose, orderInfo }: ThankYouModalProps) {
   if (!visible) return null;
 
   const handleMaskClick = () => {
@@ -21,6 +23,13 @@ export default function ThankYouModal({ visible, onClose }: ThankYouModalProps) 
 
   const handleCloseClick = () => {
     onClose();
+  };
+
+  const handleInspection = () => {
+    const orderId = orderInfo?.orderId;
+    if (orderId) {
+      Taro.navigateTo({ url: `/subpackages/client/inspection/index?orderId=${orderId}` });
+    }
   };
 
   return (
@@ -44,6 +53,12 @@ export default function ThankYouModal({ visible, onClose }: ThankYouModalProps) 
         </View>
 
         <View className="footer-section">
+          {orderInfo?.orderId && (
+            <View className="inspection-button" onClick={handleInspection}>
+              <Icon name="clipboard" size={32} color="#122b4d" />
+              <Text className="inspection-button-text">填写验收单</Text>
+            </View>
+          )}
           <View className="close-button" onClick={handleCloseClick}>
             <Text className="close-button-text">关闭</Text>
           </View>

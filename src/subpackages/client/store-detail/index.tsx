@@ -37,9 +37,6 @@ export default function StoreDetail() {
       <View className='sd-body'>
         <View className='sd-header'>
           <Text className='sd-name'>{store.name}</Text>
-          <Text className={`tag ${store.type === 'DIRECT' ? 'tag-brand' : 'tag-amber'}`}>
-            {store.type === 'DIRECT' ? '直营店' : '加盟店'}
-          </Text>
         </View>
         <Text className='sd-desc'>{store.description}</Text>
 

@@ -140,3 +140,130 @@
   border: 1px solid #bfdbfe;
   &:active { background: #eff6ff; }
 }
+
+// ====== 操作按钮区 ======
+.bo-card-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 20rpx;
+}
+
+.bo-action-btn {
+  flex: 1;
+  padding: 20rpx 0;
+  text-align: center;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+
+  Text { font-size: 25rpx; font-weight: 500; }
+
+  &:active { opacity: 0.85; transform: scale(0.98); transition: all 0.15s; }
+}
+
+// 主色按钮 - 分配工人、主要操作
+.btn-primary {
+  background: linear-gradient(135deg, #122b4d, #1b3e6c);
+  
+  Text { color: #ffffff; }
+}
+
+// 成功/完成按钮 - 确认完工
+.btn-success {
+  background: linear-gradient(135deg, #059669, #10b981);
+  
+  Text { color: #ffffff; }
+}
+
+// 次要按钮 - 编辑
+.btn-secondary {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1px solid #bfdbfe;
+
+  Text { color: #122b4d; }
+}
+
+// 禁用按钮 - 未分配时不可开工
+.btn-disabled {
+  background: #f3f4f6;
+
+  Text { color: #9ca3af; }
+  
+  &:active { opacity: 1; transform: none; }
+}
+
+// ====== 分配安装工面板 ======
+.bo-assign-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.bo-assign-hint {
+  font-size: 23rpx;
+  color: #6b7280;
+  text-align: center;
+  padding: 8rpx 0;
+}
+
+.bo-assign-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  border: 1px solid #ebedf0;
+  border-radius: 16rpx;
+}
+
+.bo-assign-item:active {
+  background: #e1ecf4;
+  border-color: #122b4d;
+}
+
+.bo-assign-name {
+  font-size: 26rpx;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.bo-assign-role {
+  font-size: 22rpx;
+  color: #9ca3af;
+}
+
+.bo-assign-empty {
+  font-size: 24rpx;
+  color: #9ca3af;
+  text-align: center;
+  padding: 16rpx;
+}
+
+.bo-assign-cancel {
+  text-align: center;
+  padding: 16rpx;
+}
+.bo-assign-cancel Text {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+// ====== 已完工标签 ======
+.bo-card-done-tag {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18rpx;
+  background: #ecfdf5;
+  border-radius: 14rpx;
+  border: 1px solid #a7f3d0;
+}
+
+.done-text {
+  font-size: 25rpx;
+  color: #059669;
+  font-weight: 500;
+}

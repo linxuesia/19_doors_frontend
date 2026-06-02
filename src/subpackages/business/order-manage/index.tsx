@@ -33,7 +33,7 @@ export default function OrderManage() {
 }
 
 // 质保选项
-const WARRANTY_OPTIONS = ['1', '2', '3', '5', '10', '终身'];
+const WARRANTY_OPTIONS = ['1', '2', '3', '5', '10', '15', '终身'];
 
 // 创建订单表单
 function CreateOrderForm({ onDone }: { onDone: () => void }) {

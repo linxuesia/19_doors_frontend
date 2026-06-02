@@ -140,13 +140,6 @@ export default function Products() {
               <View className='product-card-body'>
                 <Text className='product-card-name'>{item.name}</Text>
                 <Text className='product-card-series'>{item.series}</Text>
-                {item.features && (
-                  <View className='product-card-tags'>
-                    {(typeof item.features === 'string' ? JSON.parse(item.features) : item.features).slice(0, 3).map((f: string, i: number) => (
-                      <Text key={i} className='feature-tag'>{f}</Text>
-                    ))}
-                  </View>
-                )}
               </View>
             </View>
           ))

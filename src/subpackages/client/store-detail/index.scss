@@ -30,4 +30,4 @@
 .sd-case-title { display: block; font-size: 24rpx; font-weight: 500; color: #1f2937; padding: 12rpx 16rpx 4rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sd-case-views { display: flex; align-items: center; font-size: 20rpx; color: #9ca3af; padding: 0 16rpx; }
 
-.sd-reserve-btn { width: 100%; padding: 28rpx; margin-top: 40rpx; }
+.sd-reserve-btn { width: 100%; padding: 28rpx; margin-top: 40rpx; box-sizing: border-box; }

@@ -67,6 +67,11 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
+.io-tabs-sm {
+  .io-tab { padding: 14rpx 0; }
+  .io-tab-text { font-size: 23rpx; }
+}
+
 .io-tab {
   flex: 1;
   text-align: center;
@@ -161,6 +166,42 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+// 类型图标 - 替代原来的 no-icon
+.io-card-type-icon {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.io-type-measure {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+}
+
+.io-type-order {
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+}
+
+// 类型标签
+.io-type-tag {
+  padding: 4rpx 14rpx;
+  border-radius: 9999px;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+.io-type-tag-measure {
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+  color: #7c3aed;
+}
+
+.io-type-tag-order {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #2563eb;
 }
 
 .io-card-no {

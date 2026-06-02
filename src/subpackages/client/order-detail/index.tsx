@@ -91,20 +91,6 @@ export default function OrderDetail() {
             </Text>
           </View>
           <Text className='od-product'>{order.productName || '未指定产品'}</Text>
-          <View className='od-amount-row'>
-            <View className='od-amount-item'>
-              <Text className='od-amount-label'>订单金额</Text>
-              <Text className='od-amount-value'>¥{order.totalAmount?.toLocaleString() || 0}</Text>
-            </View>
-            <View className='od-amount-item'>
-              <Text className='od-amount-label'>已付金额</Text>
-              <Text className='od-amount-sub'>¥{order.paidAmount?.toLocaleString() || 0}</Text>
-            </View>
-            <View className='od-amount-item'>
-              <Text className='od-amount-label'>质保年限</Text>
-              <Text className='od-amount-sub'>{order.warrantyYears}年</Text>
-            </View>
-          </View>
           {order.status === 'COMPLETED' && (
             <View className='od-warranty-btn' onClick={() => Taro.navigateTo({ url: `/subpackages/client/warranty/index?orderId=${order.id}` })}>
               <Text className='od-warranty-btn-text'>查看质保卡 ›</Text>
@@ -118,14 +104,17 @@ export default function OrderDetail() {
         <Text className='od-section-title'>订单信息</Text>
         <View className='od-info-list'>
           {[
-            { label: '客户', value: order.client?.name || '-' },
-            { label: '联系电话', value: order.client?.phone || '-', highlight: true, isPhone: true },
-            { label: '门店', value: order.store?.name || '-' },
-            { label: '安装工', value: order.installer?.name || '-' },
-            { label: '施工地址', value: order.installAddress || '-' },
-            { label: '小区', value: order.communityName || '-' },
-            order.scheduledInstallDate && { label: '预计安装', value: order.scheduledInstallDate },
-            order.remarks && { label: '备注', value: order.remarks },
+            { label: '收货人', value: order.client?.name || '-' },
+            { label: '联系手机', value: order.client?.phone || '-', highlight: true, isPhone: true },
+            { label: '服务门店', value: order.store?.name || '-' },
+            { label: '安装师傅', value: order.installer?.name || '待分配' },
+            { label: '安装地址', value: order.installAddress || '-' },
+            { label: '所在小区', value: order.communityName || '-' },
+            { label: '订单金额', value: `¥${order.totalAmount?.toLocaleString() || 0}` },
+            order.paidAmount > 0 && { label: '已付金额', value: `¥${order.paidAmount?.toLocaleString() || 0}` },
+            { label: '质保时长', value: `${order.warrantyYears}年` },
+            order.scheduledInstallDate && { label: '预约安装日期', value: order.scheduledInstallDate },
+            order.remarks && { label: '订单备注', value: order.remarks },
           ].filter(Boolean).map((item: any) => (
             <View key={item.label} className={`od-info-row ${item.highlight ? 'od-info-row-highlight' : ''}`}>
               <Text className='od-info-label'>{item.label}</Text>
@@ -133,7 +122,9 @@ export default function OrderDetail() {
                 <View className='od-phone-value'>
                   <Text className='od-info-value od-phone-text'>{item.value}</Text>
                   {item.value && item.value !== '-' && (
-                    <View className='od-phone-call' onClick={() => Taro.makePhoneCall({ phoneNumber: item.value })}>
+                    <View className='od-phone-call' onClick={() => {
+                      Taro.showModal({ title: '拨打电话', content: item.value, confirmText: '拨打', success: (r) => { if (r.confirm) Taro.makePhoneCall({ phoneNumber: item.value }); } });
+                    }}>
                       <Icon name='phone' size={28} color='#122b4d' />
                     </View>
                   )}

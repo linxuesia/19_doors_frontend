@@ -62,9 +62,6 @@ export default function Stores() {
             <View className='store-full-info'>
               <View className='store-full-header'>
                 <Text className='store-full-name'>{item.name}</Text>
-                <Text className={`tag ${item.type === 'DIRECT' ? 'tag-brand' : 'tag-amber'}`}>
-                  {item.type === 'DIRECT' ? '直营店' : '加盟店'}
-                </Text>
               </View>
               <View className='store-full-row'>
                 <Icon name='map-pin' size={28} color='#6b7280' />

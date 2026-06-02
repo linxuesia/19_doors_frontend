@@ -27,11 +27,59 @@
 .br-card-remark { font-size: 24rpx; color: #9ca3af; padding: 12rpx 0 0; border-top: 1px solid #f3f4f6; }
 
 // 操作区
-.br-card-actions { display: flex; gap: 16rpx; margin-top: 16rpx; }
-.br-action-btn { flex: 1; padding: 20rpx; text-align: center; font-size: 26rpx; }
+.br-card-actions { display: flex; gap: 16rpx; margin-top: 20rpx; }
+.br-action-btn {
+  flex: 1;
+  padding: 20rpx 0;
+  text-align: center;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+
+  Text { font-size: 25rpx; font-weight: 500; }
+
+  &:active { opacity: 0.85; transform: scale(0.98); transition: all 0.15s; }
+}
+
+.btn-full { width: 100%; }
+
+// 主色按钮 - 主要操作（安排量尺、转为订单）
+.btn-primary {
+  background: linear-gradient(135deg, #122b4d, #1b3e6c);
+  
+  Text { color: #ffffff; }
+}
+
+// 成功/完成按钮 - 标记已量尺
+.btn-success {
+  background: linear-gradient(135deg, #059669, #10b981);
+  
+  Text { color: #ffffff; }
+}
+
+// 次要按钮 - 转订单
+.btn-secondary {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1px solid #bfdbfe;
+
+  Text { color: #122b4d; }
+}
+
+// 描边按钮 - 指定安装工
+.btn-outline {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+
+  Text { color: #4b5563; }
+
+  &:active { background: #f9fafb; }
+}
 
 // 分配面板
 .br-assign-panel { flex: 1; display: flex; flex-direction: column; gap: 12rpx; }
+.br-assign-hint { font-size: 23rpx; color: #6b7280; text-align: center; padding: 8rpx 0; }
 .br-assign-item { display: flex; justify-content: space-between; align-items: center; padding: 16rpx 20rpx; border: 1px solid #ebedf0; border-radius: 16px; }
 .br-assign-item:active { background: #e1ecf4; border-color: #122b4d; }
 .br-assign-name { font-size: 26rpx; color: #1f2937; font-weight: 500; }
@@ -39,6 +87,18 @@
 .br-assign-empty { font-size: 24rpx; color: #9ca3af; text-align: center; padding: 16rpx; }
 .br-assign-cancel { text-align: center; padding: 16rpx; }
 .br-assign-cancel Text { font-size: 24rpx; color: #9ca3af; }
+
+// 取消状态标签
+.br-card-canceled-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18rpx;
+  background: #f3f4f6;
+  border-radius: 14rpx;
+}
+
+.canceled-text { font-size: 25rpx; color: #9ca3af; }
 
 // 空态
 .br-empty { display: flex; flex-direction: column; align-items: center; padding: 80rpx 0; }

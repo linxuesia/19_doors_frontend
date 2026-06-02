@@ -7,7 +7,7 @@ import api from '../../utils/api';
 import './index.scss';
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [hasPendingApply, setHasPendingApply] = useState(false);
 
   useEffect(() => {
@@ -29,18 +29,39 @@ export default function Profile() {
     }
   };
 
+  const handleLogout = () => {
+    Taro.showModal({
+      title: '退出登录',
+      content: '确定要退出登录吗？',
+      success: (res) => {
+        if (res.confirm) {
+          logout();
+          Taro.showToast({ title: '已退出', icon: 'success' });
+        }
+      },
+    });
+  };
+
   const handleWarrantyClick = async () => {
     if (!user) {
       Taro.navigateTo({ url: '/subpackages/client/login/index' });
       return;
     }
     try {
-      const res: any = await api.get('/orders?status=WARRANTY_ACTIVE');
-      const orders = res?.list || (Array.isArray(res) ? res : []);
-      if (orders.length === 0) {
+      const res: any = await api.get('/orders?status=COMPLETED');
+      const orders = (res?.list || (Array.isArray(res) ? res : [])) as any[];
+      // 筛选质保期内的订单：completedAt + warrantyYears > 当前时间
+      const now = new Date();
+      const activeOrders = orders.filter((o: any) => {
+        if (!o.completedAt) return false;
+        const endDate = new Date(o.completedAt);
+        endDate.setFullYear(endDate.getFullYear() + (o.warrantyYears || 0));
+        return endDate > now;
+      });
+      if (activeOrders.length === 0) {
         Taro.showToast({ title: '您当前没有在质保中的订单', icon: 'none' });
       } else {
-        Taro.navigateTo({ url: `/subpackages/client/warranty/index?orderId=${orders[0].id}` });
+        Taro.navigateTo({ url: `/subpackages/client/warranty/index?orderId=${activeOrders[0].id}` });
       }
     } catch {
       Taro.showToast({ title: '获取订单信息失败', icon: 'none' });
@@ -52,8 +73,8 @@ export default function Profile() {
       {/* 用户信息卡片 */}
       <View className='user-card'>
         <View className='user-card-main' onClick={() => user ? null : Taro.navigateTo({ url: '/subpackages/client/login/index' })}>
-          {user?.avatar ? (
-            <Image className='user-avatar-img' src={user.avatar} mode='aspectFill' />
+          {user?.avatarUrl ? (
+            <Image className='user-avatar-img' src={user.avatarUrl} mode='aspectFill' />
           ) : (
             <View className='user-avatar-placeholder'>
               <Icon name='user' size={48} color='#9ca3af' />
@@ -100,6 +121,22 @@ export default function Profile() {
       </View>
       )}
 
+      {/* 安装工工作台入口（仅安装工可见） */}
+      {user && (user.role || '').includes('INSTALLER') && (
+      <View className='store-entry-card'>
+        <View className='store-entry-left'>
+          <Text className='store-entry-title'>安装工工作台</Text>
+          <Text className='store-entry-desc'>查看待安装订单与施工任务</Text>
+        </View>
+        <View
+          className='store-entry-btn'
+          onClick={() => Taro.navigateTo({ url: '/subpackages/business/installer-orders/index' })}
+        >
+          <Text className='store-entry-btn-text'>进入</Text>
+        </View>
+      </View>
+      )}
+
       {/* 常用服务 */}
       <View className='service-section'>
         <Text className='service-title'>常用服务</Text>
@@ -122,6 +159,14 @@ export default function Profile() {
           </Button>
         </View>
       </View>
+
+      {/* 退出登录 */}
+      {user && (
+        <View className='logout-section' onClick={handleLogout}>
+          <Icon name='logout' size={36} color='#ef4444' />
+          <Text className='logout-text'>退出登录</Text>
+        </View>
+      )}
 
       <View className='safe-bottom' />
     </ScrollView>

@@ -81,6 +81,44 @@
   box-sizing: border-box;
 }
 
+/* 隐私协议勾选 */
+.privacy-consent {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 8rpx 0;
+  cursor: pointer;
+}
+
+.privacy-checkbox {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  border: 2rpx solid #d1d5db;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+
+  &.checked {
+    background: #122b4d;
+    border-color: #122b4d;
+  }
+}
+
+.privacy-consent-text {
+  font-size: 24rpx;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.privacy-link {
+  color: #122b4d;
+  font-weight: 500;
+}
+
 .login-form { display: flex; flex-direction: column; gap: 20rpx; }
 .login-btn-text { margin-left: 12rpx; }
 

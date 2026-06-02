@@ -59,7 +59,7 @@ export default function CaseManage() {
   }, [fetchCases]);
 
   const handleEdit = (caseId: string) => {
-    Taro.navigateTo({ url: `/subpackages/business/case-manage/index?id=${caseId}` });
+    Taro.navigateTo({ url: `/subpackages/business/case-edit/index?id=${caseId}` });
   };
 
   const handleTogglePublish = async (caseItem: CaseItem) => {
@@ -101,7 +101,7 @@ export default function CaseManage() {
   };
 
   const handleAddCase = () => {
-    Taro.navigateTo({ url: '/subpackages/business/case-manage/index?mode=create' });
+    Taro.navigateTo({ url: '/subpackages/business/case-edit/index?mode=create' });
   };
 
   const getStyleLabel = (style?: string) => {

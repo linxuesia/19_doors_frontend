@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { View, Text, Input, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import { useAuth } from '../../../contexts/AuthContext';
 import Icon from '../../../components/Icon';
 import './index.scss';
 
 const QR_SCENES = [1011, 1012, 1013, 1047, 1048, 1049];
 
 export default function InstallerLogin() {
+  const { user } = useAuth();
   const [allowed, setAllowed] = useState(false);
   const [checked, setChecked] = useState(false);
   const [account, setAccount] = useState('');
@@ -22,7 +24,20 @@ export default function InstallerLogin() {
     setChecked(true);
   }, []);
 
-  if (!checked) return null;
+  if (!checked) {
+    return <View className='installer-login-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
+  }
+
+  // 已登录的安装工直接跳转工单列表
+  useEffect(() => {
+    if (user && (user.role || '').includes('INSTALLER')) {
+      Taro.redirectTo({ url: '/subpackages/business/installer-orders/index' });
+    }
+  }, []);
+
+  if (user && (user.role || '').includes('INSTALLER')) {
+    return <View className='installer-login-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>已登录，跳转中...</Text></View>;
+  }
 
   if (!allowed) {
     return (
@@ -51,7 +66,7 @@ export default function InstallerLogin() {
       Taro.hideLoading();
       Taro.showToast({ title: '登录成功', icon: 'success' });
       setTimeout(() => {
-        Taro.switchTab({ url: '/pages/workbench/index' });
+        Taro.redirectTo({ url: '/subpackages/business/installer-orders/index' });
       }, 1500);
     } catch (e: any) {
       setError(e.message || '登录失败，请重试');

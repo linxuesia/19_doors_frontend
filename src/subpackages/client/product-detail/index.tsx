@@ -9,6 +9,34 @@ export default function ProductDetail() {
   const router = useRouter();
   const id = router.params.id;
   const [product, setProduct] = useState<any>(null);
+  const [openingReport, setOpeningReport] = useState(false);
+
+  /** 打开质量检测报告 PDF */
+  const handleOpenReport = async () => {
+    if (!product?.inspectionReportUrl) return;
+    setOpeningReport(true);
+    Taro.showLoading({ title: '加载报告中...' });
+    try {
+      let tempUrl: string;
+      if (product.inspectionReportUrl.startsWith('cloud://')) {
+        const { fileList } = await Taro.cloud.getTempFileURL({ fileList: [product.inspectionReportUrl] });
+        if (!fileList?.[0]?.tempFileURL) throw new Error('文件不存在');
+        tempUrl = fileList[0].tempFileURL;
+      } else {
+        tempUrl = product.inspectionReportUrl;
+      }
+      const downloadRes = await Taro.downloadFile({ url: tempUrl });
+      if (downloadRes.statusCode !== 200) throw new Error('下载失败');
+      await Taro.openDocument({ filePath: downloadRes.tempFilePath, fileType: 'pdf', showMenu: true });
+      Taro.hideLoading();
+    } catch (e: any) {
+      console.error('打开检测报告失败:', e);
+      Taro.hideLoading();
+      Taro.showToast({ title: '报告加载失败，请重试', icon: 'none' });
+    } finally {
+      setOpeningReport(false);
+    }
+  };
 
   useEffect(() => {
     if (id) {
@@ -95,6 +123,20 @@ export default function ProductDetail() {
               mode='widthFix'
               lazyLoad
             />
+          </View>
+        )}
+
+        {/* 质量检测报告 */}
+        {product.inspectionReportUrl && (
+          <View className='pd-report-section'>
+            <View className='pd-report-btn' onClick={openingReport ? undefined : handleOpenReport}>
+              <Icon name='shield-check' size={36} color='#122b4d' />
+              <View className='pd-report-text'>
+                <Text className='pd-report-title'>质量检测报告</Text>
+                <Text className='pd-report-desc'>国家权威机构认证</Text>
+              </View>
+              <Icon name='arrow-right' size={28} color='#9ca3af' />
+            </View>
           </View>
         )}
 

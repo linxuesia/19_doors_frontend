@@ -1,0 +1,178 @@
+.ce-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+// ====== 区块 ======
+.ce-section {
+  background: #ffffff;
+  margin-bottom: 16rpx;
+  padding: 28rpx 24rpx;
+}
+
+.ce-section-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8rpx;
+}
+
+.ce-section-hint {
+  display: block;
+  font-size: 24rpx;
+  color: #9ca3af;
+  margin-bottom: 20rpx;
+}
+
+// ====== 封面图 ======
+.ce-cover-preview {
+  position: relative;
+  width: 100%;
+  height: 400rpx;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.ce-cover-image {
+  width: 100%;
+  height: 100%;
+}
+
+.ce-cover-remove {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ce-cover-upload {
+  width: 100%;
+  height: 400rpx;
+  border-radius: 16px;
+  border: 2px dashed #d1d5db;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+
+  &:active {
+    border-color: #122b4d;
+    background: #f8fafc;
+  }
+}
+
+.ce-uploading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.ce-upload-text {
+  font-size: 26rpx;
+  color: #9ca3af;
+}
+
+// ====== 表单项 ======
+.ce-form-item {
+  margin-top: 24rpx;
+}
+
+.ce-form-label {
+  display: block;
+  font-size: 26rpx;
+  color: #374151;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+
+.ce-form-input {
+  width: 100%;
+  height: 88rpx;
+  padding: 0 24rpx;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 28rpx;
+  color: #1f2937;
+  background: #f9fafb;
+  box-sizing: border-box;
+}
+
+.ce-form-textarea {
+  width: 100%;
+  min-height: 200rpx;
+  padding: 20rpx 24rpx;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 28rpx;
+  color: #1f2937;
+  background: #f9fafb;
+  box-sizing: border-box;
+}
+
+// ====== 选择器 ======
+.ce-picker-row {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f9fafb;
+}
+
+.ce-picker-value {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24rpx;
+  height: 88rpx;
+
+  Text {
+    font-size: 28rpx;
+    color: #1f2937;
+  }
+}
+
+// ====== 操作按钮 ======
+.ce-actions {
+  display: flex;
+  gap: 20rpx;
+  padding: 32rpx 24rpx;
+}
+
+.ce-btn {
+  flex: 1;
+  height: 92rpx;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active { opacity: 0.85; }
+}
+
+.ce-btn-draft {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+
+  .ce-btn-text { color: #6b7280; font-size: 30rpx; font-weight: 500; }
+}
+
+.ce-btn-publish {
+  background: linear-gradient(135deg, #122b4d, #1b3e6c);
+
+  .ce-btn-text { color: #ffffff; font-size: 30rpx; font-weight: 500; }
+}
+
+// ====== 加载状态 ======
+.ce-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400rpx;
+
+  Text { font-size: 28rpx; color: #9ca3af; }
+}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, Input, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
@@ -11,9 +11,14 @@ export default function AdminLogin() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (user && (user.role || '').includes('ADMIN')) {
+      Taro.redirectTo({ url: '/subpackages/business/admin/index' });
+    }
+  }, []);
+
   if (user && (user.role || '').includes('ADMIN')) {
-    Taro.redirectTo({ url: '/subpackages/business/admin/index' });
-    return null;
+    return <View className='admin-login-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>已登录，跳转中...</Text></View>;
   }
 
   const handleSubmit = async () => {
