@@ -48,7 +48,7 @@ export default function Profile() {
       return;
     }
     try {
-      const res: any = await api.get('/orders?status=COMPLETED');
+      const res: any = await api.get('/orders', { clientId: user.id, status: 'COMPLETED' });
       const orders = (res?.list || (Array.isArray(res) ? res : [])) as any[];
       // 筛选质保期内的订单：completedAt + warrantyYears > 当前时间
       const now = new Date();
@@ -142,7 +142,7 @@ export default function Profile() {
       <View className='service-section'>
         <Text className='service-title'>常用服务</Text>
         <View className='service-grid'>
-          <View className='service-item' onClick={() => Taro.switchTab({ url: '/pages/products/index' })}>
+          <View className='service-item' onClick={() => Taro.navigateTo({ url: '/subpackages/client/my-orders/index' })}>
             <Icon name='home' size={44} color='#4b5563' />
             <Text className='service-label'>我的新家</Text>
           </View>
