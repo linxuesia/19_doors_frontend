@@ -69,7 +69,8 @@ export default function Profile() {
   };
 
   return (
-    <ScrollView className='profile-page' scrollY>
+    <View className='profile-page'>
+    <ScrollView className='profile-scroll' scrollY>
       {/* 用户信息卡片 */}
       <View className='user-card'>
         <View className='user-card-main' onClick={() => user ? null : Taro.navigateTo({ url: '/subpackages/client/login/index' })}>
@@ -160,15 +161,16 @@ export default function Profile() {
         </View>
       </View>
 
-      {/* 退出登录 */}
-      {user && (
-        <View className='logout-section' onClick={handleLogout}>
-          <Icon name='logout' size={36} color='#ef4444' />
-          <Text className='logout-text'>退出登录</Text>
-        </View>
-      )}
-
       <View className='safe-bottom' />
     </ScrollView>
+
+    {/* 退出登录 */}
+    {user && (
+      <View className='logout-section' onClick={handleLogout}>
+        <Icon name='logout' size={36} color='#ef4444' />
+        <Text className='logout-text'>退出登录</Text>
+      </View>
+    )}
+    </View>
   );
 }

@@ -64,25 +64,18 @@ export default function InstallerOrders() {
     if (!user || !(user.role || '').includes('INSTALLER')) return;
     setLoading(true);
 
-    const params: Record<string, any> = { page: String(page), pageSize: '20' };
+    const baseParams = { page: String(page), pageSize: '20', installerId: user.id };
 
-    if (activeType === 'measurement' || !activeType) {
-      params.installerId = user.id;
-      if (activeStatus && activeStatus !== 'INSTALLING') params.status = activeStatus;
-      if (!activeType) params.includeMeasurements = true;
-    }
-
-    if (activeType === 'order' || !activeType) {
-      params.installerId = user.id;
-      if (activeStatus) params.status = activeStatus;
-    }
+    // 状态映射：前端「已完成」tab 对应订单 COMPLETED / 量尺 MEASURED
+    const orderStatus = activeStatus === 'MEASURED' ? 'COMPLETED' : (activeStatus || undefined);
+    const measureStatus = activeStatus === 'INSTALLING' ? 'ASSIGNED' : (activeStatus || undefined);
 
     Promise.all([
       (!activeType || activeType === 'order')
-        ? api.get('/orders', { ...params, includeMeasurements: undefined }).catch(() => ({ list: [] }))
+        ? api.get('/orders', { ...baseParams, status: orderStatus }).catch(() => ({ list: [] }))
         : Promise.resolve({ list: [] }),
       (!activeType || activeType === 'measurement')
-        ? api.get('/measurements', { ...params, installerId: user.id, status: activeStatus === 'INSTALLING' ? 'ASSIGNED' : activeStatus }).catch(() => ({ list: [] }))
+        ? api.get('/measurements', { ...baseParams, status: measureStatus }).catch(() => ({ list: [] }))
         : Promise.resolve({ list: [] }),
     ])
       .then(([ordersRes, measurementsRes]) => {
@@ -103,13 +96,11 @@ export default function InstallerOrders() {
         if (activeStatus) {
           if (activeStatus === 'INSTALLING') {
             combined = combined.filter((t) =>
-              t.type === 'order'
-                ? t.status === 'INSTALLING' || t.status === 'PENDING'
-                : t.status === 'ASSIGNED' || t.status === 'PENDING',
+              t.type === 'order' ? t.status === 'INSTALLING' : t.status === 'ASSIGNED',
             );
-          } else if (activeStatus === 'COMPLETED' || activeStatus === 'MEASURED') {
-            combined = combined.filter(
-              (t) => t.status === activeStatus || (activeStatus === 'COMPLETED' && t.status === 'MEASURED'),
+          } else if (activeStatus === 'MEASURED') {
+            combined = combined.filter((t) =>
+              t.type === 'order' ? t.status === 'COMPLETED' : t.status === 'MEASURED',
             );
           } else {
             combined = combined.filter((t) => t.status === activeStatus);
@@ -135,7 +126,7 @@ export default function InstallerOrders() {
       const orders = ordersRes || {};
       const measures = (measuresRes?.list || (Array.isArray(measuresRes) ? measuresRes : [])) as any[];
       setStats({
-        total: (orders.total || 0) + measures.length,
+        total: (orders.total || 0) + (measuresRes?.total || measures.length),
         pending: (orders.pending || 0) + measures.filter((m: any) => m.status === 'PENDING').length,
         doing: (orders.installing || 0) + measures.filter((m: any) => m.status === 'ASSIGNED').length,
         completed: (orders.completed || 0) + measures.filter((m: any) => m.status === 'MEASURED').length,
@@ -248,69 +239,62 @@ export default function InstallerOrders() {
       <View className='io-list'>
         {tasks.map((item) => {
           const config = getStatusConfig(item);
+          const isPending = item.status === 'PENDING' || (item.type === 'measurement' && item.status === 'ASSIGNED');
+          const titleText = (() => {
+            const name = item.contactName || item.client?.name || '未知客户';
+            const community = item.communityName || '';
+            return community ? `${name} · ${community}` : name;
+          })();
+
           return (
             <View
               key={`${item.type}-${item.id}`}
-              className={`io-card ${config.class}`}
+              className={`io-card ${config.class} ${isPending ? 'io-card-urgent' : ''}`}
               onClick={() => handleCardClick(item)}
             >
-              {/* 卡片顶部：类型图标 + 编号 + 状态 */}
+              {/* 卡片顶部：标题行（客户+小区）+ 状态标签 */}
               <View className='io-card-top'>
-                <View className='io-card-no-wrapper'>
-                  <View className={`io-card-type-icon ${item.type === 'measurement' ? 'io-type-measure' : 'io-type-order'}`}>
-                    <Icon name={item.type === 'measurement' ? 'ruler' : 'package'} size={22} color='#ffffff' />
-                  </View>
-                  <Text className='io-card-no'>{item.orderNo || String(item.id).padStart(5, '0')}</Text>
-                  {item.type === 'measurement' && (
-                    <View className='io-type-tag io-type-tag-measure'>
-                      <Text>量尺</Text>
-                    </View>
+                <View className='io-title-row'>
+                  {isPending && (
+                    <View className='io-urgent-dot' />
                   )}
-                  {item.type === 'order' && (
-                    <View className='io-type-tag io-type-tag-order'>
-                      <Text>施工</Text>
-                    </View>
-                  )}
+                  <Text className={`io-card-title-text ${isPending ? 'io-title-bold' : ''}`}>{titleText}</Text>
                 </View>
                 <View className={`io-card-status ${config.statusClass}`}>
                   <Text>{config.label}</Text>
                 </View>
               </View>
 
-              {/* 地址信息 */}
-              <View className='io-card-address'>
-                <View className='io-card-addr-icon'>
-                  <Icon name='map-pin' size={28} color='#f59e0b' />
+              {/* 类型标签 + 地址信息（同一行，标签不挤压状态） */}
+              <View className='io-card-sub-row'>
+                <View className={`io-type-badge ${item.type === 'measurement' ? 'io-badge-measure' : 'io-badge-order'}`}>
+                  <Icon name={item.type === 'measurement' ? 'ruler' : 'package'} size={20} color='#ffffff' />
+                  <Text>{item.type === 'measurement' ? '量尺' : '施工'}</Text>
                 </View>
-                <Text className='io-card-addr-text'>{item.installAddress || item.communityName || '未填写地址'}</Text>
+                <View className='io-card-address'>
+                  <Icon name='map-pin' size={24} color='#9ca3af' />
+                  <Text className='io-addr-text'>{item.installAddress || item.communityName || '未填写地址'}</Text>
+                </View>
               </View>
 
-              {/* 量尺特有信息：面积 */}
-              {item.type === 'measurement' && item.houseArea && (
-                <View className='io-card-product-tag'>
-                  <Icon name='home' size={22} color='#7c3aed' />
-                  <Text className='io-product-text'>面积：{item.houseArea}㎡</Text>
+              {/* 附加信息：面积/产品 */}
+              {(item.type === 'measurement' && item.houseArea) && (
+                <View className='io-card-extra'>
+                  <Icon name='home' size={20} color='#7c3aed' />
+                  <Text>{item.houseArea}㎡</Text>
+                </View>
+              )}
+              {(item.type === 'order' && item.productName) && (
+                <View className='io-card-extra'>
+                  <Icon name='package' size={20} color='#15803d' />
+                  <Text>{item.productName}</Text>
                 </View>
               )}
 
-              {/* 施工订单特有信息：产品 */}
-              {item.type === 'order' && item.productName && (
-                <View className='io-card-product-tag'>
-                  <Icon name='package' size={22} color='#15803d' />
-                  <Text className='io-product-text'>{item.productName}</Text>
-                </View>
-              )}
-
-              {/* 客户信息 + 时间 */}
-              <View className='io-card-info-row'>
-                <View className='io-card-client-info'>
-                  <View className='io-client-avatar'>
-                    <Icon name='user' size={20} color='#6366f1' />
-                  </View>
-                  <Text className='io-client-name'>{item.contactName || item.client?.name || '未知客户'}</Text>
-                  <Text className='io-client-phone'>{maskPhone(item.phone || item.client?.phone)}</Text>
-                </View>
-                <Text className='io-card-time'>{item.expectedDate || item.createdAt ? formatShortTime(item.expectedDate || item.createdAt) : '-'}</Text>
+              {/* 底部：客户电话 + 时间 */}
+              <View className='io-card-footer'>
+                <Text className='io-footer-phone'>{maskPhone(item.phone || item.client?.phone)}</Text>
+                <Text className='io-footer-time'>{item.expectedDate || item.createdAt ? formatShortTime(item.expectedDate || item.createdAt) : '-'}</Text>
               </View>
             </View>
           );

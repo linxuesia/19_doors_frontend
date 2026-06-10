@@ -33,6 +33,11 @@ export default function InstallerOrderDetail() {
   const [records, setRecords] = useState<ImageRecord[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
 
+  // 施工订单模式 - 量尺参考（只读）
+  const [measureRef, setMeasureRef] = useState<any[]>([]);       // 量尺照片+说明列表
+  const [measureExpanded, setMeasureExpanded] = useState(false);  // 折叠状态
+  const [measureLoading, setMeasureLoading] = useState(false);
+
   useEffect(() => {
     if (!id) return;
     const apiUrl = isMeasurement ? `/measurements/${id}` : `/orders/${id}`;
@@ -40,6 +45,21 @@ export default function InstallerOrderDetail() {
       .then((res: any) => setData(res))
       .catch(() => Taro.showToast({ title: '加载失败', icon: 'none' }));
   }, [id, isMeasurement]);
+
+  // 施工订单模式：加载关联的量尺记录作为参考（用 data.measurementId，避免重复请求订单详情）
+  useEffect(() => {
+    if (isMeasurement || !id || !data) return;
+    const mId = data.measurementId;
+    if (!mId) { setMeasureRef([]); return; }
+    setMeasureLoading(true);
+    api.get(`/measurements/${mId}`)
+      .then((mData: any) => {
+        const photos = mData?.photos || [];
+        setMeasureRef(Array.isArray(photos) && photos.length > 0 ? photos : []);
+      })
+      .catch(() => setMeasureRef([]))
+      .finally(() => setMeasureLoading(false));
+  }, [id, isMeasurement, data?.measurementId]);
 
   // ====== 量尺模式：拍照/选图 ======
   const handleTakePhoto = () => {
@@ -50,7 +70,7 @@ export default function InstallerOrderDetail() {
     Taro.chooseMedia({
       count: 1,
       mediaType: ['image'],
-      sourceType: ['camera'],
+      sourceType: ['album', 'camera'],
       sizeType: ['compressed'],
       success: (res) => {
         if (res.tempFiles?.[0]) {
@@ -112,6 +132,16 @@ export default function InstallerOrderDetail() {
     });
   };
 
+  /** navigateBack 安全 fallback */
+  const goBack = () => {
+    const pages = Taro.getCurrentPages();
+    if (pages.length > 1) {
+      Taro.navigateBack();
+    } else {
+      Taro.redirectTo({ url: '/subpackages/business/installer-orders/index' });
+    }
+  };
+
   // ====== 量尺模式：提交 ======
   const handleSubmitMeasure = async () => {
     if (records.length === 0) {
@@ -127,6 +157,12 @@ export default function InstallerOrderDetail() {
       return;
     }
 
+    const res = await Taro.showModal({
+      title: '提交量尺记录',
+      content: '提交后将标记为已完成量尺，确认提交？',
+    });
+    if (!res.confirm) return;
+
     setSubmitting(true);
     try {
       const { uploadImages } = await import('../../../utils/cloud');
@@ -135,13 +171,13 @@ export default function InstallerOrderDetail() {
       );
 
       const payload = uploadResults.map((result, idx) => ({
-        imageUrl: result[0]?.cloudUrl || '',
+        imageUrl: result[0]?.fileID || '',
         description: records[idx].description,
       }));
 
-      await api.post(`/measurements/${id}/complete`, { photos: payload });
+      await api.put(`/measurements/${id}`, { status: 'MEASURED', photos: JSON.stringify(payload) });
       Taro.showToast({ title: '量尺记录已提交', icon: 'success' });
-      setTimeout(() => Taro.navigateBack(), 1500);
+      setTimeout(() => goBack(), 1500);
     } catch (e: any) {
       Taro.showToast({ title: e.message || '提交失败', icon: 'none' });
     } finally {
@@ -172,13 +208,19 @@ export default function InstallerOrderDetail() {
       Taro.showToast({ title: '请至少上传一张图片', icon: 'none' });
       return;
     }
+    const res = await Taro.showModal({
+      title: '提交进度',
+      content: '确认提交施工进度？',
+    });
+    if (!res.confirm) return;
+
     setLoading(true);
     try {
       const { uploadImages } = await import('../../../utils/cloud');
       const results = await uploadImages(images, 'construction-progress');
-      await api.post(`/orders/${id}/progress`, { images: results.map((r) => r.cloudUrl) });
+      await api.post(`/orders/${id}/progress`, { images: results.map((r) => r.fileID) });
       Taro.showToast({ title: '进度已更新', icon: 'success' });
-      setTimeout(() => { setImages([]); Taro.navigateBack(); }, 1500);
+      setTimeout(() => { setImages([]); goBack(); }, 1500);
     } catch {
       Taro.showToast({ title: '提交失败', icon: 'none' });
     } finally {
@@ -187,11 +229,17 @@ export default function InstallerOrderDetail() {
   };
 
   const handleApplyInspection = async () => {
+    const res = await Taro.showModal({
+      title: '申请验收',
+      content: '提交验收申请后需等待管理员审核，确认申请？',
+    });
+    if (!res.confirm) return;
+
     setLoading(true);
     try {
-      await api.put(`/orders/${id}`, { status: 'PENDING_INSPECTION' });
+      await api.put(`/orders/${id}`, { status: 'REVIEWING' });
       Taro.showToast({ title: '验收申请已提交', icon: 'success' });
-      setTimeout(() => Taro.navigateBack(), 1500);
+      setTimeout(() => goBack(), 1500);
     } catch {
       Taro.showToast({ title: '申请失败', icon: 'none' });
     } finally {
@@ -288,7 +336,7 @@ export default function InstallerOrderDetail() {
 
                     {/* 删除按钮 */}
                     <View className='iod-record-delete' onClick={() => removeRecord(record.id)}>
-                      <Icon name='delete-bin' size={28} color='#ef4444' />
+                      <Icon name='delete' size={28} color='#ef4444' />
                     </View>
                   </View>
                 </View>
@@ -320,6 +368,68 @@ export default function InstallerOrderDetail() {
                     <Text className='iod-quick-tag-text'>{tag}</Text>
                   </View>
                 ))}
+              </View>
+            )}
+          </View>
+        )}
+
+        {/* ========== 量尺参考（施工订单模式）========== */}
+        {!isMeasurement && (
+          <View className='iod-card iod-ref-card'>
+            <View className='iod-ref-header' onClick={() => setMeasureExpanded(!measureExpanded)}>
+              <View className='iod-ref-header-left'>
+                <View className='iod-ref-icon-wrap'>
+                  <Icon name='ruler' size={26} color='#8b5cf6' />
+                </View>
+                <Text className='iod-ref-title'>量尺参考</Text>
+                {measureRef.length > 0 && (
+                  <View className='iod-ref-count'>
+                    <Text>{measureRef.length}张</Text>
+                  </View>
+                )}
+              </View>
+              <View className={`iod-ref-arrow ${measureExpanded ? 'iod-ref-arrow-up' : ''}`}>
+                <Icon name='arrow-down' size={28} color='#9ca3af' />
+              </View>
+            </View>
+
+            {measureExpanded && measureRef.length > 0 && (
+              <View className='iod-ref-body'>
+                {measureRef.map((photo: any, idx: number) => (
+                  <View key={idx} className='iod-ref-item'>
+                    <View
+                      className='iod-ref-img-wrap'
+                      onClick={() =>
+                        Taro.previewImage({
+                          current: photo.imageUrl,
+                          urls: measureRef.map((p: any) => p.imageUrl).filter(Boolean),
+                        })
+                      }
+                    >
+                      <Image className='iod-ref-img' src={photo.imageUrl} mode='aspectFill' />
+                      <View className='iod-ref-img-index'>
+                        <Text className='iod-ref-index-text'>{idx + 1}</Text>
+                      </View>
+                    </View>
+                    <View className='iod-ref-desc'>
+                      <Icon name='file-text' size={20} color='#8b5cf6' />
+                      <Text className='iod-ref-desc-text'>{photo.description || '无说明'}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {measureExpanded && measureRef.length === 0 && !measureLoading && (
+              <View className='iod-ref-empty'>
+                <Icon name='image' size={48} color='#d1d5db' />
+                <Text className='iod-ref-empty-text'>暂无量尺记录</Text>
+              </View>
+            )}
+
+            {measureLoading && (
+              <View className='iod-ref-loading'>
+                <Text className='iod-ref-loading-text'>加载中...</Text>
               </View>
             )}
           </View>
@@ -380,12 +490,14 @@ export default function InstallerOrderDetail() {
             >
               <Text className='iod-btn-text'>进度更新与图片</Text>
             </View>
-            <View
-              className={`iod-action-btn iod-btn-secondary ${loading ? 'iod-disabled' : ''}`}
-              onClick={!loading ? handleApplyInspection : undefined}
-            >
-              <Text className='iod-btn-text'>申请验收</Text>
-            </View>
+            {data?.status === 'INSTALLING' && (
+              <View
+                className={`iod-action-btn iod-btn-secondary ${loading ? 'iod-disabled' : ''}`}
+                onClick={!loading ? handleApplyInspection : undefined}
+              >
+                <Text className='iod-btn-text'>申请验收</Text>
+              </View>
+            )}
           </>
         )}
       </View>

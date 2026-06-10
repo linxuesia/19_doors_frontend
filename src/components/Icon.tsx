@@ -92,7 +92,7 @@ const iconUnicode: Record<IconName, string> = {
   'thermometer': '\uf0b5',
   'award': '\uf1cd',
   'play-circle': '\uf0ae',
-  'package': '\uefd6',
+  'package': '\uec01',
   'clipboard-list': '\ueb93',
   'clock': '\uf20d',
 };

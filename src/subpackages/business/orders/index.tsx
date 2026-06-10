@@ -57,6 +57,8 @@ export default function Orders() {
       .finally(() => setLoading(false));
   }, [user, activeTab, page]);
 
+  const isInstaller = (user.role || '').includes('INSTALLER');
+
   useEffect(() => {
     if (user?.storeId && !isInstaller) {
       api.get(`/stores/${user.storeId}`)
@@ -68,7 +70,7 @@ export default function Orders() {
   /** 分配安装工 */
   const handleAssign = async (orderId: string, assigneeId: string) => {
     try {
-      await api.post(`/orders/${orderId}/assign`, { installerId: assigneeId });
+      await api.put(`/orders/${orderId}`, { installerId: assigneeId, status: 'INSTALLING' });
       setOrders((prev) =>
         prev.map((item) =>
           item.id === orderId ? { ...item, installer: storeStaff.find((s) => s.id === assigneeId), status: 'INSTALLING' } : item,
@@ -84,7 +86,8 @@ export default function Orders() {
   /** 标记完工 */
   const handleComplete = async (orderId: string) => {
     try {
-      await Taro.showModal({ title: '确认完工', content: '确定该订单已施工完成？' });
+      const res = await Taro.showModal({ title: '确认完工', content: '确定该订单已施工完成？' });
+      if (!res.confirm) return;
       await api.put(`/orders/${orderId}`, { status: 'COMPLETED' });
       setOrders((prev) =>
         prev.map((item) => (item.id === orderId ? { ...item, status: 'COMPLETED' } : item)),
@@ -100,8 +103,6 @@ export default function Orders() {
   if (!user || !requireBusinessLogin()) {
     return <View className='cl-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
   }
-
-  const isInstaller = (user.role || '').includes('INSTALLER');
 
   return (
     <ScrollView className='bo-page' scrollY>

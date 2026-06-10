@@ -112,7 +112,7 @@ export default function StaffManage() {
   };
 
   const handleAddSubmit = async () => {
-    if (!form.phone.trim() || form.phone.length < 11) {
+    if (!/^1\d{10}$/.test(form.phone.trim())) {
       Taro.showToast({ title: '请输入正确的手机号', icon: 'none' });
       return;
     }

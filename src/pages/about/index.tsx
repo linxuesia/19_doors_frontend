@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Image } from '@tarojs/components';
+import { View, Text, ScrollView, Image, Video } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import Icon from '../../components/Icon';
 import api from '../../utils/api';
@@ -34,6 +34,8 @@ export default function About() {
   const [brandStores, setBrandStores] = useState<any[]>([]);
   const [showAllStores, setShowAllStores] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
+  const [demoVideos, setDemoVideos] = useState<any[]>([]);
+  const [videoUrls, setVideoUrls] = useState<Record<string, string>>({});
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -52,6 +54,29 @@ export default function About() {
         setProducts(list);
       })
       .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    api.get('/demo-videos')
+      .then(async (res: any) => {
+        const list = Array.isArray(res) ? res : [];
+        setDemoVideos(list);
+        if (list.length > 0 && Taro.cloud) {
+          const cloudVideos = list.filter((v: any) => v.videoUrl?.startsWith('cloud://'));
+          if (cloudVideos.length > 0) {
+            try {
+              const fileIDs = cloudVideos.map((v: any) => v.videoUrl);
+              const { fileList } = await Taro.cloud.getTempFileURL({ fileList: fileIDs });
+              const urlMap: Record<string, string> = {};
+              fileList.forEach((f: any, i: number) => {
+                urlMap[cloudVideos[i].id] = f.tempFileURL || fileIDs[i];
+              });
+              setVideoUrls(urlMap);
+            } catch {}
+          }
+        }
+      })
+      .catch(() => setDemoVideos([]));
   }, []);
 
   /** 打开产品检测报告PDF */
@@ -235,6 +260,35 @@ export default function About() {
           </View>
         )}
       </View>
+
+      {/* 产品说明视频 */}
+      {demoVideos.length > 0 && (
+        <View className='section-block'>
+          <View className='section-header'>
+            <View className='section-bar' />
+            <Text className='section-title'>产品说明视频</Text>
+          </View>
+
+          <View className='video-grid'>
+            {demoVideos.map((video) => {
+              const url = videoUrls[video.id];
+              if (!url) return null;
+              return (
+                <View key={video.id} className='video-card'>
+                  <Video
+                    className='video-player'
+                    src={url}
+                    objectFit='cover'
+                    muted
+                    controls
+                  />
+                  <Text className='video-title'>{video.title}</Text>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+      )}
 
       <View className='safe-bottom' />
     </ScrollView>

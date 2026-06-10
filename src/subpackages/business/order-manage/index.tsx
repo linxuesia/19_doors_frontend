@@ -98,7 +98,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
     try {
       const { uploadImages: uploadToCloud } = await import('../../../utils/cloud');
       const results = await uploadToCloud(files, 'order-blueprints');
-      setBlueprintUrls([...blueprintUrls, ...results.map(r => r.cloudUrl)]);
+      setBlueprintUrls([...blueprintUrls, ...results.map(r => r.fileID)]);
     } catch {
       Taro.showToast({ title: '图纸上传失败', icon: 'none' });
     } finally {
@@ -356,6 +356,8 @@ function OrderDetailView({ order: initialOrder }: { order: any }) {
     }
   };
   const handleComplete = async () => {
+    const res = await Taro.showModal({ title: '确认完工', content: '确定该订单已施工完成？' });
+    if (!res.confirm) return;
     setActionLoading(true);
     try {
       const updated = await api.put(`/orders/${order.id}`, { status: 'COMPLETED' });

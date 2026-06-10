@@ -12,7 +12,7 @@ interface CaseItem {
   coverImage?: string;
   style?: string;
   spaceType?: string;
-  viewCount: number;
+  views: number;
   published: boolean;
 }
 
@@ -29,7 +29,10 @@ export default function CaseManage() {
   const [loading, setLoading] = useState(true);
 
   const fetchCases = useCallback(async () => {
-    if (!user?.storeId) return;
+    if (!user?.storeId) {
+      setLoading(false);
+      return;
+    }
 
     setLoading(true);
     try {
@@ -39,7 +42,7 @@ export default function CaseManage() {
 
       const published = list.filter((c: CaseItem) => c.published).length;
       const drafts = list.filter((c: CaseItem) => !c.published).length;
-      const views = list.reduce((sum: number, c: CaseItem) => sum + (c.viewCount || 0), 0);
+      const views = list.reduce((sum: number, c: CaseItem) => sum + (c.views || 0), 0);
 
       setStats({
         publishedCount: published,
@@ -91,7 +94,7 @@ export default function CaseManage() {
         confirmText: '删除',
       });
 
-      await api.delete(`/cases/${caseItem.id}`);
+      await api.del(`/cases/${caseItem.id}`);
       Taro.showToast({ title: '删除成功', icon: 'success' });
       fetchCases();
     } catch (error: any) {
@@ -197,7 +200,7 @@ export default function CaseManage() {
                 {/* 浏览量 */}
                 <View className='cm-meta-row'>
                   <Icon name='eye' size={24} color='#9ca3af' />
-                  <Text className='cm-view-count'>{item.viewCount || 0} 次浏览</Text>
+                  <Text className='cm-view-count'>{item.views || 0} 次浏览</Text>
                 </View>
 
                 {/* 操作按钮 */}

@@ -103,12 +103,13 @@
   padding: 20rpx 32rpx;
 }
 
+// 卡片基础
 .io-card {
   background: #ffffff;
   border-radius: 20rpx;
-  padding: 28rpx;
+  padding: 28rpx 24rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   position: relative;
   overflow: hidden;
 
@@ -129,189 +130,171 @@
   }
 }
 
-.io-card-pending::before {
-  background: linear-gradient(180deg, #f59e0b 0%, #fbbf24 100%);
+// 状态左边框颜色
+.io-card-pending::before { background: linear-gradient(180deg, #f59e0b 0%, #fbbf24 100%); }
+.io-card-assigned::before { background: linear-gradient(180deg, #8b5cf6 0%, #a78bfa 100%); }
+.io-card-installing::before { background: linear-gradient(180deg, #3b82f6 0%, #60a5fa 100%); }
+.io-card-completed::before { background: linear-gradient(180deg, #d1d5db 0%, #e5e7eb 100%); }
+
+// ====== 待办醒目样式 ======
+.io-card-urgent {
+  background: #fffbeb;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 24rpx;
+    right: 24rpx;
+    bottom: 0;
+    height: 2rpx;
+    background: linear-gradient(90deg, transparent, #f59e0b, transparent);
+    animation: io-pulse-line 2s ease-in-out infinite;
+  }
+
+  @keyframes io-pulse-line {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
 }
 
-.io-card-assigned::before {
-  background: linear-gradient(180deg, #8b5cf6 0%, #a78bfa 100%);
-}
-
-.io-card-installing::before {
-  background: linear-gradient(180deg, #3b82f6 0%, #60a5fa 100%);
-}
-
-.io-card-completed::before {
-  background: linear-gradient(180deg, #10b981 0%, #34d399 100%);
-}
-
+// ====== 第一行：标题 + 状态 ======
 .io-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 18rpx;
-}
-
-.io-card-no-wrapper {
-  display: flex;
-  align-items: center;
+  margin-bottom: 16rpx;
   gap: 12rpx;
 }
 
-.io-card-no-icon {
-  width: 48rpx;
-  height: 48rpx;
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-  border-radius: 12rpx;
+.io-title-row {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 10rpx;
+  flex: 1;
+  min-width: 0;
 }
 
-// 类型图标 - 替代原来的 no-icon
-.io-card-type-icon {
-  width: 48rpx;
-  height: 48rpx;
-  border-radius: 12rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.io-urgent-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: io-blink 1.2s ease-in-out infinite;
+  flex-shrink: 0;
+
+  @keyframes io-blink {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
 }
 
-.io-type-measure {
-  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
-}
-
-.io-type-order {
-  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
-}
-
-// 类型标签
-.io-type-tag {
-  padding: 4rpx 14rpx;
-  border-radius: 9999px;
-  font-size: 20rpx;
-  font-weight: 600;
-}
-
-.io-type-tag-measure {
-  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
-  color: #7c3aed;
-}
-
-.io-type-tag-order {
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-  color: #2563eb;
-}
-
-.io-card-no {
+.io-card-title-text {
   font-size: 30rpx;
+  color: #374151;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.io-title-bold {
+  font-size: 32rpx;
   font-weight: 700;
-  color: #1e293b;
+  color: #1f2937;
 }
 
+// 状态标签
 .io-card-status {
-  padding: 8rpx 20rpx;
+  padding: 7rpx 20rpx;
   border-radius: 9999px;
-  font-size: 23rpx;
+  font-size: 22rpx;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
-.io-status-pending {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  color: #d97706;
+.io-status-pending { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #d97706; }
+.io-status-assigned { background: linear-gradient(135deg, #ede9fe, #ddd6fe); color: #7c3aed; }
+.io-status-installing { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #2563eb; }
+.io-status-completed { background: linear-gradient(135deg, #f3f4f6, #e5e7eb); color: #9ca3af; }
+
+// ====== 第二行：类型徽章 + 地址 ======
+.io-card-sub-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
 }
 
-.io-status-assigned {
-  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
-  color: #7c3aed;
+// 类型小徽章（紧凑，不挤压）
+.io-type-badge {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 5rpx 14rpx;
+  border-radius: 9999px;
+  font-size: 21rpx;
+  font-weight: 600;
+  color: #ffffff;
+  flex-shrink: 0;
+
+  Text { color: #ffffff; }
 }
 
-.io-status-installing {
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-  color: #2563eb;
-}
+.io-badge-measure { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+.io-badge-order { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
 
-.io-status-completed {
-  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-  color: #059669;
-}
-
+// 地址
 .io-card-address {
   display: flex;
-  align-items: flex-start;
-  margin-bottom: 16rpx;
-  padding-left: 8rpx;
-}
-
-.io-card-addr-icon {
-  margin-right: 12rpx;
-  margin-top: 4rpx;
-}
-
-.io-card-addr-text {
-  font-size: 27rpx;
-  color: #374151;
-  line-height: 1.5;
+  align-items: center;
+  gap: 6rpx;
   flex: 1;
+  min-width: 0;
 }
 
-.io-card-info-row {
+.io-addr-text {
+  font-size: 25rpx;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ====== 第三行：附加信息（面积/产品）=====
+.io-card-extra {
+  display: inline-flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 6rpx 16rpx;
+  background: #f8fafc;
+  border-radius: 8rpx;
+  margin-bottom: 12rpx;
+
+  Text {
+    font-size: 23rpx;
+    color: #4b5563;
+    font-weight: 500;
+  }
+}
+
+// ====== 底部：电话 + 时间 ======
+.io-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16rpx 8rpx;
-  background: #f8fafc;
-  border-radius: 12rpx;
-  margin-bottom: 12rpx;
+  padding-top: 14rpx;
+  border-top: 1px solid #f3f4f6;
 }
 
-.io-card-client-info {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-}
-
-.io-client-avatar {
-  width: 44rpx;
-  height: 44rpx;
-  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.io-client-name {
-  font-size: 25rpx;
-  color: #475569;
-  font-weight: 500;
-}
-
-.io-client-phone {
+.io-footer-phone {
   font-size: 24rpx;
-  color: #94a3b8;
-}
-
-.io-card-time {
-  font-size: 23rpx;
   color: #9ca3af;
+  font-family: 'Menlo', 'SF Mono', monospace;
 }
 
-.io-card-product-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 8rpx 16rpx;
-  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-  border-radius: 8rpx;
-  margin-left: 8rpx;
-  margin-bottom: 12rpx;
-}
-
-.io-product-text {
+.io-footer-time {
   font-size: 23rpx;
-  color: #15803d;
-  font-weight: 500;
+  color: #c4cdd5;
 }
 
 // ====== 空状态 ======

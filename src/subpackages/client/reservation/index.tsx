@@ -26,6 +26,7 @@ export default function Reservation() {
       await api.post('/measurements', {
         ...form,
         clientId: user?.id,
+        storeId: user?.storeId || undefined,
       });
       setSubmitted(true);
     } catch (e: any) {

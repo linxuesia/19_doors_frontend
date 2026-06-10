@@ -20,6 +20,29 @@ function App({ children }: PropsWithChildren) {
       if (Taro.cloud) {
         Taro.cloud.init({ env: 'prod-d7g81p837f1219e28' });
       }
+
+      // 处理隐私授权事件（微信基础库 2.32.3+）
+      if (typeof (Taro as any).onNeedPrivacyAuthorization === 'function') {
+        (Taro as any).onNeedPrivacyAuthorization((resolve: any) => {
+          console.log('[Privacy] 需要隐私授权，触发弹窗');
+          // 调用 requirePrivacyAuthorize 触发微信原生隐私弹窗
+          if (typeof (Taro as any).requirePrivacyAuthorize === 'function') {
+            (Taro as any).requirePrivacyAuthorize({
+              success: () => {
+                console.log('[Privacy] 用户同意隐私协议');
+                resolve({ event: 'agree', buttonId: 'agree' });
+              },
+              fail: () => {
+                console.log('[Privacy] 用户拒绝隐私协议');
+                resolve({ event: 'disagree' });
+              },
+            });
+          } else {
+            // 降级：直接 resolve agree
+            resolve({ event: 'agree', buttonId: 'agree' });
+          }
+        });
+      }
     }
   });
 

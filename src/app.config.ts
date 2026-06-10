@@ -19,7 +19,6 @@ export default defineAppConfig({
         'store-detail/index',     // 门店详情
         'site-detail/index',      // 工地详情
         'store-apply/index',      // 门店入驻申请
-        'staff-apply/index',      // 员工认证申请
         'warranty/index',         // 质保卡
         'my-orders/index',        // 我的订单列表
         'site-map/index',         // 全国工地地图全屏
@@ -46,15 +45,16 @@ export default defineAppConfig({
         'staff-manage/index',     // 人员管理（老板）
         'case-manage/index',      // 案例库管理
         'case-edit/index',        // 案例编辑/新增
+        'inspections/index',      // 客户验收反馈
       ],
     },
   ],
   permission: {
-    'scope.userLocation': {
-      desc: '用于展示您附近的工地及门店位置、选择施工地址',
+    'scope.userFuzzyLocation': {
+      desc: '用于展示您附近的安装案例及工地位置',
     },
   },
-  requiredPrivateInfos: ['getLocation', 'chooseLocation'],
+  requiredPrivateInfos: ['getFuzzyLocation', 'chooseLocation'],
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#122b4d',

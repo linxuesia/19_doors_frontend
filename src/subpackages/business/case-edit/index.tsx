@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { View, Text, Input, Textarea, ScrollView, Image, Picker } from '@tarojs/components';
-import Taro, { useRouter, useDidShow } from '@tarojs/taro';
+import Taro, { useRouter } from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import api from '../../../utils/api';
-import { uploadFile } from '../../../utils/cloud';
 import Icon from '../../../components/Icon';
 import './index.scss';
 
@@ -80,8 +79,9 @@ export default function CaseEdit() {
       });
       if (res.tempFiles && res.tempFiles[0]) {
         setCoverUploading(true);
-        const url = await uploadFile(res.tempFiles[0].tempFilePath);
-        setForm((prev) => ({ ...prev, coverImage: url }));
+        const { uploadImages } = await import('../../../utils/cloud');
+        const results = await uploadImages([res.tempFiles[0].tempFilePath], 'case-covers');
+        setForm((prev) => ({ ...prev, coverImage: results[0]?.fileID || '' }));
         setCoverUploading(false);
       }
     } catch {

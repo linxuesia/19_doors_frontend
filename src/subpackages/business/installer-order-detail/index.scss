@@ -364,7 +364,143 @@
   white-space: nowrap;
 }
 
-// ====== 底部操作栏 ======
+// ====== 量尺参考折叠卡片（施工订单模式）======
+.iod-ref-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.iod-ref-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 24rpx;
+
+  &:active { background: #f8fafc; }
+}
+
+.iod-ref-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.iod-ref-icon-wrap {
+  width: 56rpx;
+  height: 56rpx;
+  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iod-ref-title {
+  font-size: 29rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.iod-ref-count {
+  padding: 4rpx 14rpx;
+  background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+  border-radius: 9999px;
+
+  Text { font-size: 20rpx; color: #ffffff; font-weight: 600; }
+}
+
+.iod-ref-arrow {
+  transition: transform 0.25s ease;
+
+  &.iod-ref-arrow-up {
+    transform: rotate(180deg);
+  }
+}
+
+.iod-ref-body {
+  padding: 0 20rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 20rpx;
+}
+
+.iod-ref-item {
+  background: #f8fafc;
+  border-radius: 16rpx;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.iod-ref-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 320rpx;
+
+  &:active { opacity: 0.95; }
+}
+
+.iod-ref-img {
+  width: 100%;
+  height: 100%;
+}
+
+.iod-ref-img-index {
+  position: absolute;
+  top: 12rpx;
+  left: 12rpx;
+  width: 44rpx;
+  height: 44rpx;
+  background: rgba(139, 92, 246, 0.85);
+  backdrop-filter: blur(8px);
+  border-radius: 10rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iod-ref-index-text {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.iod-ref-desc {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 16rpx 18rpx;
+}
+
+.iod-ref-desc-text {
+  font-size: 25rpx;
+  color: #4b5563;
+  line-height: 1.4;
+}
+
+.iod-ref-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 0;
+  gap: 12rpx;
+}
+
+.iod-ref-empty-text {
+  font-size: 25rpx;
+  color: #c4cdd5;
+}
+
+.iod-ref-loading {
+  padding: 30rpx;
+  text-align: center;
+}
+
+.iod-ref-loading-text {
+  font-size: 25rpx;
+  color: #9ca3af;
+}
 .iod-bottom-bar {
   position: fixed;
   bottom: 0;

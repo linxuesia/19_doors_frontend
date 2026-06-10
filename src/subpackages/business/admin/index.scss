@@ -712,6 +712,282 @@
   color: #9ca3af;
 }
 
+// ====== 生产进度管理 ======
+.prod-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 0 4rpx;
+}
+
+.prod-search-input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  background: #f3f4f6;
+  border-radius: 16rpx;
+  padding: 16rpx 24rpx;
+  border: 1px solid #e5e7eb;
+}
+
+.prod-search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #1f2937;
+  height: 48rpx;
+  line-height: 48rpx;
+}
+
+.prod-search-btn {
+  padding: 16rpx 36rpx;
+  background: #122b4d;
+  border-radius: 16rpx;
+  flex-shrink: 0;
+
+  &:active { opacity: 0.85; }
+}
+
+.prod-search-btn-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.prod-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(18, 43, 77, 0.05);
+}
+
+.prod-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18rpx;
+}
+
+.prod-card-left { flex: 1; min-width: 0; margin-right: 18rpx; }
+
+.prod-order-no {
+  font-size: 24rpx;
+  color: #9ca3af;
+  display: block;
+}
+
+.prod-product-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-top: 4rpx;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prod-status-tag {
+  padding: 8rpx 18rpx;
+  border-radius: 10rpx;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+
+.prod-status-done {
+  background: #d1fae5 !important;
+  border-color: #a7f3d0 !important;
+}
+
+.prod-card-info {
+  margin-bottom: 20rpx;
+}
+
+.prod-info-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 8rpx;
+}
+
+.prod-info-text {
+  font-size: 25rpx;
+  color: #6b7280;
+}
+
+.prod-info-phone {
+  font-size: 25rpx;
+  color: #9ca3af;
+  margin-left: 12rpx;
+}
+
+// 进度条
+.prod-progress-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 16rpx 0;
+  margin-bottom: 4rpx;
+}
+
+.prod-progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.prod-step-dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  background: #e5e7eb;
+  border: 3rpx solid #d1d5db;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.prod-step-active {
+  background: #122b4d !important;
+  border-color: #122b4d !important;
+}
+
+.prod-step-line {
+  position: absolute;
+  top: 10rpx;
+  left: calc(50% + 10rpx);
+  width: calc(100% - 20rpx);
+  height: 4rpx;
+  background: #e5e7eb;
+}
+
+.prod-step-line-active {
+  background: #122b4d !important;
+}
+
+.prod-step-label {
+  font-size: 18rpx;
+  color: #b0b0b0;
+  margin-top: 8rpx;
+  white-space: nowrap;
+}
+
+.prod-step-label-active {
+  color: #1f2937;
+  font-weight: 500;
+}
+
+// 操作按钮
+.prod-card-action {
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1px solid #f3f4f6;
+}
+
+.prod-update-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  padding: 22rpx 0;
+  background: linear-gradient(135deg, #122b4d, #2b5a8e);
+  border-radius: 14rpx;
+
+  &:active { opacity: 0.85; }
+}
+
+.prod-updating {
+  opacity: 0.6;
+}
+
+.prod-update-text {
+  font-size: 27rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+// ====== 产品视频管理 ======
+.admin-video-upload-section {
+  padding: 24rpx 4rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.admin-video-upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  width: 100%;
+  background: linear-gradient(135deg, #059669, #10b981);
+  border-radius: 16rpx;
+  padding: 28rpx;
+
+  &:active { opacity: 0.85; }
+}
+
+.admin-video-upload-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.admin-video-hint {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.admin-video-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(18, 43, 77, 0.05);
+}
+
+.admin-video-card-left {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-video-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-video-card-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #1f2937;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-video-card-meta {
+  display: block;
+  font-size: 23rpx;
+  color: #9ca3af;
+  margin-top: 6rpx;
+}
+
+.admin-video-card-del {
+  padding: 12rpx;
+  flex-shrink: 0;
+
+  &:active { opacity: 0.7; }
+}
+
 .safe-bottom {
   height: constant(safe-area-inset-bottom);
   height: env(safe-area-inset-bottom);

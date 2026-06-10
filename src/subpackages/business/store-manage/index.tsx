@@ -92,8 +92,8 @@ export default function StoreManage() {
         try {
           const ext = filePath.split('.').pop() || 'jpg';
           const cloudPath = `store-cover/${user!.storeId}_${Date.now()}.${ext}`;
-          const { cloudUrl } = await uploadFile(filePath, cloudPath);
-          setForm(prev => ({ ...prev, coverImage: cloudUrl }));
+          const { fileID } = await uploadFile(filePath, cloudPath);
+          setForm(prev => ({ ...prev, coverImage: fileID }));
           Taro.showToast({ title: '封面上传成功', icon: 'success' });
         } catch {
           Taro.showToast({ title: '封面上传失败', icon: 'none' });
@@ -117,8 +117,8 @@ export default function StoreManage() {
         try {
           const ext = filePath.split('.').pop() || 'jpg';
           const cloudPath = `store-quali/${user!.storeId}_${Date.now()}.${ext}`;
-          const { cloudUrl } = await uploadFile(filePath, cloudPath);
-          setNewQualiImage(cloudUrl);
+          const { fileID } = await uploadFile(filePath, cloudPath);
+          setNewQualiImage(fileID);
         } catch {
           Taro.showToast({ title: '图片上传失败', icon: 'none' });
         } finally {

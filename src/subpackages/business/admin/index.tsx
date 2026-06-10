@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Image } from '@tarojs/components';
+import { View, Text, ScrollView, Image, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
+import { productionStatusMap, productionStatusOrder } from '../../../constants/status';
 import './index.scss';
 
 const mainModules = [
@@ -28,6 +29,20 @@ const mainModules = [
     key: 'cases',
     color: '#2b5a8e',
   },
+  {
+    icon: 'package',
+    title: '生产进度管理',
+    desc: '按手机号查订单，更新生产状态',
+    key: 'production',
+    color: '#7c3aed',
+  },
+  {
+    icon: 'play-circle',
+    title: '产品视频管理',
+    desc: '上传与管理产品说明视频',
+    key: 'videos',
+    color: '#059669',
+  },
 ];
 
 export default function Admin() {
@@ -37,6 +52,17 @@ export default function Admin() {
   const [stores, setStores] = useState<any[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
+
+  // 生产进度
+  const [prodPhone, setProdPhone] = useState('');
+  const [prodOrders, setProdOrders] = useState<any[]>([]);
+  const [prodLoading, setProdLoading] = useState(false);
+  const [prodSearched, setProdSearched] = useState(false);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  // 产品视频管理
+  const [videos, setVideos] = useState<any[]>([]);
+  const [videoUploading, setVideoUploading] = useState(false);
 
   useEffect(() => {
     if (!requireBusinessLogin('/subpackages/business/admin-login/index')) return;
@@ -105,16 +131,66 @@ export default function Admin() {
     }
   };
 
+  // 生产进度 - 按手机号搜索订单
+  const handleSearchOrders = async () => {
+    if (!prodPhone || prodPhone.length < 11) {
+      Taro.showToast({ title: '请输入完整手机号', icon: 'none' });
+      return;
+    }
+    setProdLoading(true);
+    setProdSearched(true);
+    try {
+      const res: any = await api.get('/orders', { clientPhone: prodPhone, pageSize: '50' });
+      setProdOrders(res?.list || []);
+    } catch {
+      setProdOrders([]);
+    } finally {
+      setProdLoading(false);
+    }
+  };
+
+  // 生产进度 - 更新状态（点击当前状态进入下一步）
+  const handleUpdateProductionStatus = async (order: any) => {
+    const currentIdx = productionStatusOrder.indexOf(order.productionStatus || 'ORDERED');
+    const nextIdx = currentIdx + 1;
+    if (nextIdx >= productionStatusOrder.length) {
+      Taro.showToast({ title: '已是最终状态', icon: 'none' });
+      return;
+    }
+    const nextStatus = productionStatusOrder[nextIdx];
+    const nextLabel = productionStatusMap[nextStatus]?.label || nextStatus;
+
+    const res = await Taro.showModal({
+      title: '更新生产进度',
+      content: `将订单 ${order.orderNo} 从「${productionStatusMap[order.productionStatus || 'ORDERED']?.label}」更新为「${nextLabel}」？`,
+      confirmText: '确认更新',
+    });
+    if (!res.confirm) return;
+
+    setUpdatingId(order.id);
+    try {
+      await api.put(`/orders/${order.id}/production-status`, { productionStatus: nextStatus });
+      Taro.showToast({ title: '已更新', icon: 'success' });
+      // 刷新列表
+      await handleSearchOrders();
+    } catch {
+      Taro.showToast({ title: '更新失败', icon: 'none' });
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   // 案例管理 - 删除案例
   const handleDeleteCase = async (caseItem: any) => {
     try {
-      await Taro.showModal({
+      const res = await Taro.showModal({
         title: '确认删除',
         content: `确定要删除案例"${caseItem.title}"吗？此操作不可恢复。`,
         confirmColor: '#ef4444'
       });
+      if (!res.confirm) return;
 
-      await api.delete(`/cases/${caseItem.id}`);
+      await api.del(`/cases/${caseItem.id}`);
       Taro.showToast({ title: '已删除', icon: 'success' });
       setCases(cases.filter((c) => c.id !== caseItem.id));
     } catch (err) {
@@ -123,6 +199,72 @@ export default function Admin() {
       }
     }
   };
+
+  // 加载视频列表
+  const loadVideos = async () => {
+    try {
+      const res: any = await api.get('/demo-videos');
+      setVideos(Array.isArray(res) ? res : []);
+    } catch {
+      setVideos([]);
+    }
+  };
+
+  // 上传视频
+  const handleUploadVideo = async () => {
+    try {
+      const res = await Taro.chooseMedia({
+        count: 1,
+        mediaType: ['video'],
+        sourceType: ['album'],
+        maxDuration: 180,
+      });
+      const tempFilePath = res.tempFiles[0].tempFilePath;
+      setVideoUploading(true);
+      Taro.showLoading({ title: '上传中...' });
+
+      const cloudPath = `demo-videos/${Date.now()}.mp4`;
+      const { uploadFile } = await import('../../../utils/cloud');
+      const result = await uploadFile(tempFilePath, cloudPath);
+      Taro.hideLoading();
+
+      Taro.showLoading({ title: '保存中...' });
+      const title = `产品视频 ${new Date().toLocaleDateString('zh-CN')}`;
+      await api.post('/demo-videos', { title, videoUrl: result.fileID });
+      Taro.hideLoading();
+      Taro.showToast({ title: '上传成功', icon: 'success' });
+      loadVideos();
+    } catch (err: any) {
+      Taro.hideLoading();
+      if (err?.errMsg?.includes('cancel')) return;
+      Taro.showToast({ title: '上传失败', icon: 'none' });
+    } finally {
+      setVideoUploading(false);
+    }
+  };
+
+  // 删除视频
+  const handleDeleteVideo = async (video: any) => {
+    try {
+      const res = await Taro.showModal({
+        title: '确认删除',
+        content: `确定要删除"${video.title}"吗？`,
+        confirmColor: '#ef4444',
+      });
+      if (!res.confirm) return;
+      await api.delete(`/demo-videos/${video.id}`);
+      Taro.showToast({ title: '已删除', icon: 'success' });
+      loadVideos();
+    } catch (err: any) {
+      if (err?.errMsg?.includes('cancel')) return;
+      Taro.showToast({ title: '删除失败', icon: 'none' });
+    }
+  };
+
+  // 进入视频管理 tab 时加载
+  useEffect(() => {
+    if (activeTab === 'videos') loadVideos();
+  }, [activeTab]);
 
   return (
     <ScrollView className='admin-page' scrollY>
@@ -281,19 +423,10 @@ export default function Admin() {
                 {/* 顶部：门店名称 + 状态 + 角色 */}
                 <View className='app-card-top'>
                   <View className='app-header-left'>
-                    <Text className='app-company-name'>{item.storeName || item.companyName || '未命名门店'}</Text>
-                    <View className={`app-role-tag ${(item.role || '').includes('STORE_OWNER') ? 'tag-owner' : 'tag-manager'}`}>
-                      {(item.role || '').includes('STORE_OWNER') ? (
-                        <>
-                          <Icon name='building' size={20} color='#1e40af' />
-                          <Text className={`role-tag-text text-owner`}>门店老板</Text>
-                        </>
-                      ) : (
-                        <>
-                          <Icon name='user' size={20} color='#6b21a8' />
-                          <Text className={`role-tag-text text-manager`}>门店店长</Text>
-                        </>
-                      )}
+                    <Text className='app-company-name'>{item.companyName || '未命名门店'}</Text>
+                    <View className={`app-role-tag tag-owner`}>
+                      <Icon name='building' size={20} color='#1e40af' />
+                      <Text className={`role-tag-text text-owner`}>门店老板</Text>
                     </View>
                   </View>
                   <View className='app-pending-tag'>
@@ -343,14 +476,6 @@ export default function Admin() {
                       )}
                     </View>
                   </View>
-
-                  {/* 店长：显示选择的门店 */}
-                  {(item.role || '').includes('STORE_MANAGER') && item.storeId && (
-                    <View className='app-info-row'>
-                      <Text className='app-info-label'>申请加入</Text>
-                      <Text className='app-info-value app-store-name'>{item.targetStoreName || `门店ID: ${item.storeId}`}</Text>
-                    </View>
-                  )}
 
                   {item.address && (
                     <View className='app-info-row'>
@@ -414,7 +539,7 @@ export default function Admin() {
                   </View>
                   <View className='admin-case-meta-row'>
                     <Icon name='map-pin' size={22} color='#9ca3af' />
-                    <Text className='admin-case-meta'>{item.city || '-'}</Text>
+                    <Text className='admin-case-meta'>{item.communityName || item.store?.name || '-'}</Text>
                   </View>
                   <View className='admin-case-footer'>
                     <View className={`admin-case-status-group`}>
@@ -450,6 +575,186 @@ export default function Admin() {
             ))}
             {cases.length === 0 && (
               <View className='admin-empty'><Icon name='file-text' size={64} color='#d1d5db' /><Text className='admin-empty-text'>暂无案例数据</Text></View>
+            )}
+          </View>
+        </View>
+      )}
+
+      {/* 生产进度管理 */}
+      {activeTab === 'production' && (
+        <View className='admin-subpage'>
+          <View className='admin-subpage-header'>
+            <View className='admin-back-btn' onClick={() => setActiveTab('dashboard')}>
+              <Text className='back-arrow'>←</Text>
+            </View>
+            <Text className='admin-subpage-title'>生产进度管理</Text>
+            <View style={{ width: 40 }} />
+          </View>
+
+          {/* 搜索栏 */}
+          <View className='prod-search-bar'>
+            <View className='prod-search-input-wrap'>
+              <Icon name='search' size={28} color='#9ca3af' />
+              <Input
+                className='prod-search-input'
+                type='number'
+                placeholder='输入客户手机号搜索订单'
+                value={prodPhone}
+                onInput={(e) => setProdPhone(e.detail.value)}
+                maxlength={11}
+                onConfirm={handleSearchOrders}
+              />
+            </View>
+            <View className='prod-search-btn' onClick={handleSearchOrders}>
+              <Text className='prod-search-btn-text'>搜索</Text>
+            </View>
+          </View>
+
+          {/* 结果列表 */}
+          <View className='admin-list' style='margin-top:24rpx'>
+            {prodLoading ? (
+              <View className='admin-empty'><Text className='admin-empty-text'>搜索中...</Text></View>
+            ) : prodOrders.length > 0 ? (
+              prodOrders.map((order: any) => {
+                const ps = order.productionStatus || 'ORDERED';
+                const psInfo = productionStatusMap[ps] || { label: ps, color: '#6b7280' };
+                const currentIdx = productionStatusOrder.indexOf(ps);
+                const isLast = currentIdx >= productionStatusOrder.length - 1;
+
+                return (
+                  <View key={order.id} className='prod-card'>
+                    {/* 订单基本信息 */}
+                    <View className='prod-card-top'>
+                      <View className='prod-card-left'>
+                        <Text className='prod-order-no'>{order.orderNo}</Text>
+                        <Text className='prod-product-name'>{order.productName || '-'}</Text>
+                      </View>
+                      <View
+                        className={`prod-status-tag ${isLast ? 'prod-status-done' : ''}`}
+                        style={{ background: psInfo.color + '18', borderColor: psInfo.color + '40' }}
+                      >
+                        <Text style={{ color: psInfo.color, fontSize: '24rpx', fontWeight: 500 }}>{psInfo.label}</Text>
+                      </View>
+                    </View>
+
+                    {/* 客户和地址 */}
+                    <View className='prod-card-info'>
+                      <View className='prod-info-row'>
+                        <Icon name='user' size={24} color='#9ca3af' />
+                        <Text className='prod-info-text'>{order.client?.name || order.clientName || '-'}</Text>
+                        <Text className='prod-info-phone'>{order.client?.phone || order.clientPhone || '-'}</Text>
+                      </View>
+                      <View className='prod-info-row'>
+                        <Icon name='map-pin' size={24} color='#9ca3af' />
+                        <Text className='prod-info-text'>{order.installAddress || order.communityName || '-'}</Text>
+                      </View>
+                    </View>
+
+                    {/* 进度条 */}
+                    <View className='prod-progress-bar'>
+                      {productionStatusOrder.map((key, idx) => {
+                        const info = productionStatusMap[key];
+                        const isActive = idx <= currentIdx;
+                        return (
+                          <View key={key} className='prod-progress-step'>
+                            <View
+                              className={`prod-step-dot ${isActive ? 'prod-step-active' : ''}`}
+                              style={isActive ? { background: info?.color, borderColor: info?.color } : {}}
+                            />
+                            {idx < productionStatusOrder.length - 1 && (
+                              <View
+                                className={`prod-step-line ${idx < currentIdx ? 'prod-step-line-active' : ''}`}
+                                style={idx < currentIdx ? { background: productionStatusMap[productionStatusOrder[idx + 1]]?.color } : {}}
+                              />
+                            )}
+                            <Text
+                              className={`prod-step-label ${isActive ? 'prod-step-label-active' : ''}`}
+                              style={isActive ? { color: info?.color } : {}}
+                            >
+                              {info?.label}
+                            </Text>
+                          </View>
+                        );
+                      })}
+                    </View>
+
+                    {/* 操作按钮 */}
+                    {!isLast && (
+                      <View className='prod-card-action'>
+                        <View
+                          className={`prod-update-btn ${updatingId === order.id ? 'prod-updating' : ''}`}
+                          onClick={() => updatingId ? null : handleUpdateProductionStatus(order)}
+                        >
+                          <Icon name='arrow-right' size={24} color='#ffffff' />
+                          <Text className='prod-update-text'>
+                            {updatingId === order.id ? '更新中...' : `更新为「${productionStatusMap[productionStatusOrder[currentIdx + 1]]?.label}」`}
+                          </Text>
+                        </View>
+                      </View>
+                    )}
+                  </View>
+                );
+              })
+            ) : prodSearched ? (
+              <View className='admin-empty'>
+                <Icon name='search' size={64} color='#d1d5db' />
+                <Text className='admin-empty-text'>未找到该手机号的订单</Text>
+              </View>
+            ) : (
+              <View className='admin-empty'>
+                <Icon name='package' size={64} color='#d1d5db' />
+                <Text className='admin-empty-text'>输入手机号开始搜索</Text>
+              </View>
+            )}
+          </View>
+        </View>
+      )}
+
+      {/* 产品视频管理 */}
+      {activeTab === 'videos' && (
+        <View className='admin-subpage'>
+          <View className='admin-subpage-header'>
+            <View className='admin-back-btn' onClick={() => setActiveTab('dashboard')}>
+              <Text className='back-arrow'>←</Text>
+            </View>
+            <Text className='admin-subpage-title'>产品视频管理</Text>
+            <View style={{ width: 40 }} />
+          </View>
+
+          {/* 上传按钮 */}
+          <View className='admin-video-upload-section'>
+            <View className='admin-video-upload-btn' onClick={handleUploadVideo}>
+              <Icon name='add' size={36} color='#ffffff' />
+              <Text className='admin-video-upload-text'>
+                {videoUploading ? '上传中...' : '上传视频'}
+              </Text>
+            </View>
+            <Text className='admin-video-hint'>选择视频文件上传，最大 3 分钟</Text>
+          </View>
+
+          {/* 视频列表 */}
+          <View className='admin-list'>
+            {videos.map((item: any) => (
+              <View key={item.id} className='admin-video-card'>
+                <View className='admin-video-card-left'>
+                  <Icon name='play-circle' size={44} color='#059669' />
+                  <View className='admin-video-card-info'>
+                    <Text className='admin-video-card-title'>{item.title}</Text>
+                    <Text className='admin-video-card-meta'>
+                      上传于 {new Date(item.createdAt).toLocaleDateString('zh-CN')}
+                    </Text>
+                  </View>
+                </View>
+                <View className='admin-video-card-del' onClick={() => handleDeleteVideo(item)}>
+                  <Icon name='delete' size={28} color='#ef4444' />
+                </View>
+              </View>
+            ))}
+            {videos.length === 0 && (
+              <View className='admin-empty'>
+                <Icon name='play-circle' size={64} color='#d1d5db' />
+                <Text className='admin-empty-text'>暂无产品视频</Text>
+              </View>
             )}
           </View>
         </View>

@@ -18,7 +18,7 @@ export default function Cases() {
       let url = `/cases?published=true&pageSize=10&page=${pg}`;
       if (mode === 'local') {
         try {
-          const loc = await Taro.getLocation({ type: 'gcj02' });
+          const loc = await Taro.getFuzzyLocation({ type: 'wgs84' });
           url += `&lat=${loc.latitude}&lng=${loc.longitude}`;
         } catch {
           Taro.showToast({ title: '定位失败，展示全部案例', icon: 'none' });
@@ -128,9 +128,11 @@ export default function Cases() {
                   </View>
                 </View>
                 <View className='case-card-footer'>
-                  <View className='case-product-tag'>
-                    <Text className='product-tag-text'>{item.productSeries || 'S100系列'}</Text>
-                  </View>
+                  {item.style && (
+                    <View className='case-product-tag'>
+                      <Text className='product-tag-text'>{item.style}</Text>
+                    </View>
+                  )}
                   <View className='case-views'>
                     <Icon name='eye' size={24} color='#9ca3af' />
                     <Text className='views-text'>{item.views || 0}</Text>

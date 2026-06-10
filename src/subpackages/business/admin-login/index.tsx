@@ -15,7 +15,7 @@ export default function AdminLogin() {
     if (user && (user.role || '').includes('ADMIN')) {
       Taro.redirectTo({ url: '/subpackages/business/admin/index' });
     }
-  }, []);
+  }, [user]);
 
   if (user && (user.role || '').includes('ADMIN')) {
     return <View className='admin-login-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>已登录，跳转中...</Text></View>;

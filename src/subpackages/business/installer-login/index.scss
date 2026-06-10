@@ -207,6 +207,137 @@
   line-height: 1.7;
 }
 
+// 门店选择卡片
+.store-picker-card {
+  width: 100%;
+  max-width: 600rpx;
+  background: #ffffff;
+  border-radius: 32rpx;
+  padding: 40rpx 32rpx;
+  box-sizing: border-box;
+  box-shadow: 0 16rpx 48rpx rgba(18, 43, 77, 0.12);
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  max-height: 60vh;
+}
+
+.store-picker-title {
+  display: block;
+  text-align: center;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #122b4d;
+  margin-bottom: 12rpx;
+}
+
+.store-picker-desc {
+  display: block;
+  text-align: center;
+  font-size: 24rpx;
+  color: #94a3b8;
+  margin-bottom: 32rpx;
+  line-height: 1.5;
+}
+
+.store-picker-loading,
+.store-picker-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 0;
+}
+
+.store-picker-loading-text,
+.store-picker-empty-text {
+  font-size: 26rpx;
+  color: #94a3b8;
+  margin-top: 16rpx;
+}
+
+.store-picker-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.store-picker-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 20rpx;
+  border-radius: 20rpx;
+  margin-bottom: 16rpx;
+  background: #f8fafc;
+  border: 2rpx solid transparent;
+  transition: all 0.2s ease;
+}
+
+.store-picker-item:active {
+  background: #f1f5f9;
+  border-color: #122b4d;
+}
+
+.store-picker-item-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.store-picker-item-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.store-picker-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 20rpx;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+}
+
+.store-picker-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.store-picker-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 6rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.store-picker-addr {
+  font-size: 24rpx;
+  color: #9ca3af;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.store-picker-arrow {
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.store-picker-joining {
+  font-size: 24rpx;
+  color: #94a3b8;
+}
+
 .footer-info {
   width: 100%;
   max-width: 600rpx;

@@ -125,8 +125,8 @@ export default function SiteMap() {
   const handleLocateUser = useCallback(async () => {
     try {
       Taro.showLoading({ title: '定位中...' });
-      const locationRes = await Taro.getLocation({
-        type: 'gcj02',
+      const locationRes = await Taro.getFuzzyLocation({
+        type: 'wgs84',
       });
       
       setUserLocation({
@@ -190,7 +190,7 @@ export default function SiteMap() {
           </View>
         </View>
         <View className='sm-loading'>
-          <Icon name='loader' size={64} color='#122b4d' />
+          <Icon name='time' size={64} color='#122b4d' />
           <Text className='sm-loading-text'>加载工地数据...</Text>
         </View>
       </View>
@@ -247,14 +247,14 @@ export default function SiteMap() {
       {/* 定位按钮 */}
       {!loading && (
         <CoverView className='sm-location-btn' onClick={handleLocateUser}>
-          <Icon name='navigation' size={44} color='#122b4d' />
+          <Icon name='map-pin' size={44} color='#122b4d' />
         </CoverView>
       )}
 
       {/* 底部操作栏 */}
       <CoverView className='sm-bottom-bar'>
         <CoverView className='sm-list-btn' onClick={handleSwitchToList}>
-          <Icon name='list' size={32} color='#ffffff' />
+          <Icon name='clipboard-list' size={32} color='#ffffff' />
           <Text className='sm-list-btn-text'>列表模式</Text>
         </CoverView>
       </CoverView>

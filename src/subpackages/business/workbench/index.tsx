@@ -14,6 +14,7 @@ const ownerFunctions = [
   { icon: 'image', label: '案例库', url: '/subpackages/business/case-manage/index' },
   { icon: 'users', label: '人员管理', url: '/subpackages/business/staff-manage/index' },
   { icon: 'settings', label: '门店设置', url: '/subpackages/business/store-manage/index' },
+  { icon: 'clipboard-list', label: '验收反馈', url: '/subpackages/business/inspections/index' },
 ];
 
 const managerFunctions = [
@@ -23,6 +24,7 @@ const managerFunctions = [
   { icon: 'user', label: '客户档案', url: '/subpackages/business/clients/index' },
   { icon: 'image', label: '案例库', url: '/subpackages/business/case-manage/index' },
   { icon: 'settings', label: '门店设置', url: '/subpackages/business/store-manage/index' },
+  { icon: 'clipboard-list', label: '验收反馈', url: '/subpackages/business/inspections/index' },
 ];
 
 const installerFunctions = [
@@ -33,6 +35,8 @@ export default function Workbench() {
   const { user, requireBusinessLogin, canManageStaff, refreshUser } = useAuth();
   const [orders, setOrders] = useState<any[]>([]);
   const [stats, setStats] = useState({ total: 0, pending: 0, installing: 0, completed: 0 });
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [ordersLoading, setOrdersLoading] = useState(true);
 
   // 每次进入工作台时刷新用户信息（角色变更后无需重新登录）
   useEffect(() => { refreshUser(); }, []);
@@ -45,14 +49,18 @@ export default function Workbench() {
     if ((user?.role || '').includes('INSTALLER')) params.installerId = user.id;
 
     // 统计数据
+    setStatsLoading(true);
     api.get('/orders/stats', { ...params })
       .then((res: any) => setStats(res || { total: 0, pending: 0, installing: 0, completed: 0 }))
-      .catch(() => {});
+      .catch(() => Taro.showToast({ title: '加载统计数据失败', icon: 'none' }))
+      .finally(() => setStatsLoading(false));
 
     // 最近订单（仅显示前5条）
+    setOrdersLoading(true);
     api.get('/orders', { ...params, page: '1', pageSize: '5' })
       .then((res: any) => setOrders(res?.list || []))
-      .catch(() => {});
+      .catch(() => Taro.showToast({ title: '加载订单列表失败', icon: 'none' }))
+      .finally(() => setOrdersLoading(false));
   }, [user]);
 
   if (!user || !requireBusinessLogin()) {
@@ -117,22 +125,22 @@ export default function Workbench() {
           {/* 统计栏 */}
           <View className='wb-stats'>
             <View className='wb-stat-item'>
-              <Text className='wb-stat-num'>{stats.total}</Text>
+              <Text className='wb-stat-num'>{statsLoading ? '-' : stats.total}</Text>
               <Text className='wb-stat-label'>{isInstaller ? '全部' : '全部订单'}</Text>
             </View>
             <View className='wb-stat-divider' />
             <View className='wb-stat-item'>
-              <Text className='wb-stat-num wb-stat-warn'>{stats.pending}</Text>
+              <Text className='wb-stat-num wb-stat-warn'>{statsLoading ? '-' : stats.pending}</Text>
               <Text className='wb-stat-label'>{isInstaller ? '待开工' : '待处理'}</Text>
             </View>
             <View className='wb-stat-divider' />
             <View className='wb-stat-item'>
-              <Text className='wb-stat-num wb-stat-blue'>{stats.installing}</Text>
+              <Text className='wb-stat-num wb-stat-blue'>{statsLoading ? '-' : stats.installing}</Text>
               <Text className='wb-stat-label'>{isInstaller ? '施工中' : '施工中'}</Text>
             </View>
             <View className='wb-stat-divider' />
             <View className='wb-stat-item'>
-              <Text className='wb-stat-num wb-stat-green'>{stats.completed}</Text>
+              <Text className='wb-stat-num wb-stat-green'>{statsLoading ? '-' : stats.completed}</Text>
               <Text className='wb-stat-label'>{isInstaller ? '已完成' : '已完工'}</Text>
             </View>
           </View>
@@ -166,7 +174,13 @@ export default function Workbench() {
             <Text className='wb-dynamic-more' onClick={() => Taro.navigateTo({ url: '/subpackages/business/orders/index' })}>查看全部 ›</Text>
           </View>
           <View className='wb-dynamic-list'>
-            {orders.slice(0, 5).map((item: any) => {
+            {ordersLoading ? (
+              <View className='wb-empty'>
+                <Text className='wb-empty-text'>加载中...</Text>
+              </View>
+            ) : (
+              <>
+                {orders.slice(0, 5).map((item: any) => {
               const statusKey = (item.status || 'PENDING').toLowerCase();
               return (
                 <View key={item.id} className='wb-dynamic-card'>
@@ -195,6 +209,8 @@ export default function Workbench() {
                 <Icon name='file-text' size={64} color='#d1d5db' />
                 <Text className='wb-empty-text'>暂无动态</Text>
               </View>
+            )}
+              </>
             )}
           </View>
         </View>

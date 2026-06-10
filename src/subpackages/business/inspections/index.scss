@@ -1,0 +1,85 @@
+.insp-page { min-height: 100vh; background: #f5f6f8; }
+
+.insp-header {
+  padding: 32rpx;
+  background: #ffffff;
+  border-bottom: 1rpx solid #eeeeee;
+}
+.insp-title { font-size: 36rpx; font-weight: 700; color: #122b4d; display: block; }
+.insp-subtitle { font-size: 24rpx; color: #9ca3af; margin-top: 8rpx; display: block; }
+
+.insp-loading { display: flex; justify-content: center; align-items: center; padding: 200rpx 0; }
+.insp-loading-text { font-size: 28rpx; color: #9ca3af; }
+
+.insp-empty { display: flex; flex-direction: column; align-items: center; padding: 160rpx 32rpx; }
+.insp-empty-text { font-size: 30rpx; color: #6b7280; margin-top: 24rpx; font-weight: 500; }
+.insp-empty-sub { font-size: 24rpx; color: #9ca3af; margin-top: 8rpx; }
+
+.insp-list { padding: 24rpx; display: flex; flex-direction: column; gap: 20rpx; }
+
+.insp-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+}
+
+.insp-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.insp-card-left { flex: 1; min-width: 0; }
+.insp-order-no { font-size: 26rpx; color: #6b7280; display: block; }
+.insp-product { font-size: 30rpx; font-weight: 600; color: #1a1a1a; margin-top: 4rpx; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.insp-card-right {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex-shrink: 0;
+}
+.insp-score-row { display: flex; align-items: baseline; }
+.insp-score-num { font-size: 44rpx; font-weight: 700; color: #122b4d; }
+.insp-score-div { font-size: 24rpx; color: #9ca3af; margin-left: 2rpx; }
+.insp-expand-icon { transition: transform 0.2s; display: flex; }
+.insp-expand-icon.expanded { transform: rotate(180deg); }
+
+.insp-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 16rpx;
+}
+.insp-addr { font-size: 24rpx; color: #9ca3af; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.insp-date { font-size: 22rpx; color: #b0b0b0; flex-shrink: 0; }
+
+.insp-card-detail {
+  margin-top: 24rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.insp-ratings {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.insp-rating-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.insp-rating-label { font-size: 26rpx; color: #333333; }
+.insp-rating-stars { display: flex; gap: 6rpx; flex-shrink: 0; }
+
+.insp-remark {
+  margin-top: 24rpx;
+  padding: 20rpx;
+  background: #f8f9fb;
+  border-radius: 8rpx;
+}
+.insp-remark-label { font-size: 24rpx; color: #122b4d; font-weight: 500; }
+.insp-remark-content { font-size: 26rpx; color: #4b5563; margin-top: 8rpx; line-height: 1.6; display: block; }
+
+.safe-bottom { height: env(safe-area-inset-bottom); height: 40rpx; }

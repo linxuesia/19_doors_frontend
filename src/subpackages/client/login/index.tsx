@@ -25,7 +25,7 @@ export default function Login() {
     if (user) {
       Taro.switchTab({ url: '/pages/profile/index' });
     }
-  }, []);
+  }, [user]);
 
   // 检查微信隐私授权状态
   useEffect(() => {

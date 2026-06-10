@@ -96,7 +96,7 @@ async function request(url: string, options: RequestOptions = {}) {
 
 const api = {
   get: (url: string, params?: any) => {
-    const query = params ? '?' + new URLSearchParams(params).toString() : '';
+    const query = params ? '?' + Object.keys(params).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k] || '')).join('&') : '';
     return request(url + query);
   },
   post: (url: string, data?: any) => request(url, { method: 'POST', data }),

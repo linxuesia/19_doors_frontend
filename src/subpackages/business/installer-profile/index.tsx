@@ -52,15 +52,18 @@ export default function InstallerProfile() {
     if (!requireBusinessLogin()) return;
 
     if (user?.id) {
-      api.get('/orders/stats', { installerId: user.id })
-        .then((res: any) => {
-          setStats({
-            completed: res?.completed || 0,
-            installing: res?.installing || 0,
-            rating: 4.8,
-          });
-        })
-        .catch(() => {});
+      Promise.all([
+        api.get('/orders/stats', { installerId: user.id }).catch(() => ({})),
+        api.get('/measurements', { installerId: user.id, pageSize: '200' }).catch(() => ({ list: [] })),
+      ]).then(([ordersRes, measuresRes]) => {
+        const orders = ordersRes || {};
+        const measures: any[] = measuresRes?.list || (Array.isArray(measuresRes) ? measuresRes : []);
+        setStats({
+          completed: (orders.completed || 0) + measures.filter((m: any) => m.status === 'MEASURED').length,
+          installing: (orders.installing || 0) + measures.filter((m: any) => m.status === 'ASSIGNED').length,
+          rating: 0,
+        });
+      }).catch(() => {});
     }
   }, [user]);
 
@@ -143,7 +146,7 @@ export default function InstallerProfile() {
           </View>
           <View className='ip-stat-divider' />
           <View className='ip-stat-item'>
-            <Text className='ip-stat-num'>{stats.rating}</Text>
+            <Text className='ip-stat-num'>{stats.rating > 0 ? stats.rating : '暂无'}</Text>
             <Text className='ip-stat-label'>评价分数</Text>
           </View>
         </View>

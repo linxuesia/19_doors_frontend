@@ -240,6 +240,63 @@
   font-weight: 600;
 }
 
+// ====== 产品说明视频 ======
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.video-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(18, 43, 77, 0.08);
+}
+
+.video-player {
+  width: 100%;
+  height: 360rpx;
+}
+
+.video-title {
+  display: block;
+  padding: 16rpx 18rpx 20rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #1f2937;
+  text-align: center;
+}
+
+.video-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 0 40rpx;
+  gap: 16rpx;
+}
+
+.video-empty-icon {
+  width: 160rpx;
+  height: 160rpx;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-empty-title {
+  font-size: 30rpx;
+  color: #374151;
+  font-weight: 500;
+}
+
+.video-empty-desc {
+  font-size: 25rpx;
+  color: #9ca3af;
+}
+
 // ====== 产品检测报告 - 面向客户风格 ======
 .report-section {
   padding: 0 28rpx 40rpx;

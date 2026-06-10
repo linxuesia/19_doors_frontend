@@ -172,7 +172,7 @@ export default function Reservations() {
                         </View>
                         <View
                           className='btn-secondary br-action-btn'
-                          onClick={() => Taro.navigateTo({ url: `/subpackages/business/order-manage/index?reservationId=${item.id}` })}
+                          onClick={() => Taro.navigateTo({ url: '/subpackages/business/order-manage/index' })}
                         >
                           <Icon name='add' size={26} color='#122b4d' />
                           <Text>转订单</Text>
@@ -189,7 +189,7 @@ export default function Reservations() {
                     </View>
                     <View
                       className='btn-secondary br-action-btn'
-                      onClick={() => Taro.navigateTo({ url: `/subpackages/business/order-manage/index?reservationId=${item.id}` })}
+                      onClick={() => Taro.navigateTo({ url: '/subpackages/business/order-manage/index' })}
                     >
                       <Icon name='add' size={26} color='#122b4d' />
                       <Text>转订单</Text>
@@ -199,7 +199,7 @@ export default function Reservations() {
                 {item.status === 'MEASURED' && (
                   <View
                     className='btn-primary br-action-btn btn-full'
-                    onClick={() => Taro.navigateTo({ url: `/subpackages/business/order-manage/index?reservationId=${item.id}` })}
+                    onClick={() => Taro.navigateTo({ url: '/subpackages/business/order-manage/index' })}
                   >
                     <Icon name='clipboard' size={28} color='#ffffff' />
                     <Text>转为订单</Text>
