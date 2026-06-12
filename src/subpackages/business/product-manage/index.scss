@@ -1,0 +1,389 @@
+.pm-page {
+  height: 100vh;
+  background: #f5f7fa;
+}
+
+.pm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 32rpx;
+  background: #ffffff;
+  border-bottom: 1rpx solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.pm-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #122b4d;
+}
+
+.pm-back-btn {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-arrow {
+  font-size: 36rpx;
+  color: #374151;
+  font-weight: 500;
+}
+
+.pm-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  background: linear-gradient(135deg, #122b4d 0%, #1e4066 100%);
+  padding: 16rpx 28rpx;
+  border-radius: 20rpx;
+}
+
+.pm-add-text {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.pm-list {
+  padding: 24rpx;
+}
+
+.pm-card {
+  display: flex;
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.pm-card-img-wrap {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-right: 24rpx;
+  background: #f1f5f9;
+}
+
+.pm-card-img {
+  width: 100%;
+  height: 100%;
+}
+
+.pm-card-noimg {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pm-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.pm-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.pm-card-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2937;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pm-status-tag {
+  padding: 4rpx 16rpx;
+  border-radius: 12rpx;
+  flex-shrink: 0;
+  margin-left: 12rpx;
+}
+
+.pm-status-on {
+  background: #ecfdf5;
+}
+
+.pm-status-off {
+  background: #fef2f2;
+}
+
+.pm-status-text {
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.pm-status-on .pm-status-text { color: #059669; }
+.pm-status-off .pm-status-text { color: #ef4444; }
+
+.pm-card-meta {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.pm-card-series {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+.pm-card-cat {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.pm-card-actions {
+  display: flex;
+  gap: 32rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f3f4f6;
+}
+
+.pm-action-edit,
+.pm-action-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.pm-action-text {
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.pm-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+}
+
+.pm-empty-text {
+  font-size: 28rpx;
+  color: #9ca3af;
+  margin-top: 16rpx;
+}
+
+.pm-empty-btn {
+  margin-top: 32rpx;
+  background: linear-gradient(135deg, #122b4d 0%, #1e4066 100%);
+  padding: 20rpx 48rpx;
+  border-radius: 24rpx;
+}
+
+.pm-empty-btn-text {
+  font-size: 28rpx;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+// 表单
+.pm-form {
+  padding: 24rpx;
+}
+
+.pm-field {
+  margin-bottom: 32rpx;
+}
+
+.pm-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 12rpx;
+}
+
+.pm-input {
+  width: 100%;
+  height: 88rpx;
+  padding: 0 24rpx;
+  background: #ffffff;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #1f2937;
+  box-sizing: border-box;
+}
+
+.pm-textarea {
+  width: 100%;
+  min-height: 72rpx;
+  padding: 16rpx 24rpx;
+  background: #ffffff;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #1f2937;
+  box-sizing: border-box;
+}
+.pm-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 88rpx;
+  padding: 0 24rpx;
+  background: #ffffff;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 16rpx;
+}
+
+// ====== 多选 Checkbox ======
+.pm-checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.pm-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 14rpx 24rpx;
+  border-radius: 40rpx;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+
+  &:active { background: #f3f4f6; }
+}
+
+.pm-checkbox-active {
+  border-color: #122b4d;
+  background: #eef2fa;
+}
+
+.pm-checkbox-icon {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  border: 2rpx solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  color: #ffffff;
+  flex-shrink: 0;
+
+  &.checked {
+    background: #122b4d;
+    border-color: #122b4d;
+  }
+}
+
+.pm-checkbox-label {
+  font-size: 26rpx;
+  color: #374151;
+}
+
+.pm-upload-wrap {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 16rpx;
+  border: 2rpx dashed #d1d5db;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.pm-upload-img {
+  width: 100%;
+  height: 100%;
+}
+
+.pm-upload-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.pm-upload-hint {
+  font-size: 22rpx;
+  color: #9ca3af;
+}
+
+.pm-uploading-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 24rpx;
+}
+
+.pm-pdf-upload {
+  width: 100%;
+  height: auto;
+  min-height: 120rpx;
+}
+
+.pm-pdf-info {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx;
+}
+
+.pm-pdf-name {
+  font-size: 26rpx;
+  color: #2563eb;
+  word-break: break-all;
+}
+
+.pm-field-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pm-submit {
+  width: 100%;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #122b4d 0%, #1e4066 100%);
+  color: #ffffff;
+  border-radius: 24rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-top: 40rpx;
+  box-shadow: 0 8rpx 24rpx rgba(18, 43, 77, 0.25);
+}
+
+.opacity-50 {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.safe-bottom {
+  height: 40rpx;
+}

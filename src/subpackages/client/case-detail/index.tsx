@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
-import { View, Text, Image, Swiper, SwiperItem, ScrollView } from '@tarojs/components';
-import Taro, { useRouter } from '@tarojs/taro';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { View, Text, Image, Swiper, SwiperItem, ScrollView, Button } from '@tarojs/components';
+import Taro, { useRouter, useShareAppMessage } from '@tarojs/taro';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
 import './index.scss';
@@ -22,9 +22,20 @@ interface SiteUpdate {
   createdAt: string;
 }
 
+/** 从扫码 scene 还原 UUID（去横线 → 加回横线） */
+function sceneToUuid(scene: string): string {
+  const s = decodeURIComponent(scene);
+  // 32 位 hex → 加上横线变标准 UUID
+  if (/^[0-9a-f]{32}$/i.test(s)) {
+    return `${s.slice(0,8)}-${s.slice(8,12)}-${s.slice(12,16)}-${s.slice(16,20)}-${s.slice(20)}`;
+  }
+  return s;
+}
+
 export default function CaseDetail() {
   const router = useRouter();
-  const id = router.params.id;
+  const scene = router.params.scene;
+  const id = router.params.id || (scene ? sceneToUuid(scene) : undefined);
   const [detail, setDetail] = useState<any>(null);
   const [constructionSteps, setConstructionSteps] = useState<ConstructionStep[]>([]);
   const [siteUpdates, setSiteUpdates] = useState<SiteUpdate[]>([]);
@@ -36,20 +47,26 @@ export default function CaseDetail() {
       .then((res: any) => {
         setDetail(res);
 
-        const isLocal = res.type === 'LOCAL' || !!res.storeId;
+        api.get(`/cases/${id}/construction-steps`)
+          .then((steps: any) => setConstructionSteps(Array.isArray(steps) ? steps : []))
+          .catch(() => setConstructionSteps([]));
 
-        if (isLocal) {
-          api.get(`/cases/${id}/construction-steps`)
-            .then((steps: any) => setConstructionSteps(Array.isArray(steps) ? steps : []))
-            .catch(() => setConstructionSteps([]));
-
-          api.get(`/cases/${id}/site-updates`)
-            .then((updates: any) => setSiteUpdates(Array.isArray(updates) ? updates : []))
-            .catch(() => setSiteUpdates([]));
-        }
+        api.get(`/cases/${id}/site-updates`)
+          .then((updates: any) => setSiteUpdates(Array.isArray(updates) ? updates : []))
+          .catch(() => setSiteUpdates([]));
       })
       .catch(() => setDetail(null));
   }, [id]);
+
+  // 分享配置（用 ref 避免闭包捕获旧值）
+  const detailRef = useRef<any>(null);
+  detailRef.current = detail;
+
+  useShareAppMessage(() => ({
+    title: detailRef.current?.title || '案例详情 - 19分贝系统门窗',
+    path: `/subpackages/client/case-detail/index?id=${id}`,
+    imageUrl: detailRef.current?.coverImage || '',
+  }));
 
   const images = useMemo(() => {
     if (!detail) return [];
@@ -62,9 +79,6 @@ export default function CaseDetail() {
   }, [detail]);
 
   const associatedProducts = detail?.associatedProducts || [];
-
-  // 判断是否为本地案例（业务逻辑：只有本地案例显示施工进度和工地动态）
-  const isLocalCase = detail?.type === 'LOCAL' || !!detail?.storeId;
 
   // 按施工阶段分组工地动态
   const updatesByStep = useMemo(() => {
@@ -128,9 +142,6 @@ export default function CaseDetail() {
               <Icon name='home' size={26} color='#6b7280' />
               <Text>{detail.houseType || '住宅'}</Text>
             </View>
-            {isLocalCase && (
-              <View className='cs-badge cs-badge-local'>本地案例</View>
-            )}
           </View>
         </View>
 
@@ -177,11 +188,8 @@ export default function CaseDetail() {
           </View>
         )}
 
-        {/* ====== 本地案例专属内容（业务逻辑：仅本地案例显示） ====== */}
-        {isLocalCase && (
-          <>
-            {/* 施工进度 */}
-            {constructionSteps.length > 0 && (
+        {/* 施工进度 */}
+        {constructionSteps.length > 0 && (
               <View className='cs-section-card'>
                 <View className='cs-section-header'>
                   <Icon name='clipboard' size={30} color='#122b4d' />
@@ -294,14 +302,16 @@ export default function CaseDetail() {
                 })}
               </View>
             )}
-          </>
-        )}
       </ScrollView>
 
       <View className='safe-bottom' />
 
-      {/* 固定底部预约按钮 */}
+      {/* 固定底部操作栏 */}
       <View className='cs-bottom-bar'>
+        <Button className='cs-share-btn' openType='share'>
+          <Icon name='chat' size={32} color='#122b4d' />
+          <Text className='cs-share-text'>分享</Text>
+        </Button>
         <View className='btn-primary cs-reserve-btn' onClick={handleReserve}>
           <Icon name='calendar' size={32} color='#ffffff' />
           <Text className='cs-reserve-text'>立即预约</Text>

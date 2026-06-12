@@ -32,7 +32,8 @@ export default function StoreManage() {
   const [qualiUploading, setQualiUploading] = useState(false);
   const [addingQuali, setAddingQuali] = useState(false);
 
-  const isOwner = (user?.role || '').includes('STORE_OWNER');
+  // 老板和店长都可以编辑门店信息
+  const canEdit = (user?.role || '').includes('STORE_OWNER') || (user?.role || '').includes('STORE_MANAGER');
 
   useEffect(() => {
     if (!requireBusinessLogin()) return;
@@ -185,12 +186,12 @@ export default function StoreManage() {
     <ScrollView className='sm-page' scrollY>
       <View className='sm-header'>
         <Text className='sm-title'>门店设置</Text>
-        <Text className='sm-subtitle'>{isOwner ? '编辑门店信息' : '查看门店信息'}</Text>
+        <Text className='sm-subtitle'>{canEdit ? '编辑门店信息' : '查看门店信息'}</Text>
       </View>
 
       <View className='sm-form'>
         {/* 门店封面图 */}
-        {isOwner && (
+        {canEdit && (
         <View className='sm-field'>
           <Text className='sm-label'>门店封面图</Text>
           <View className='sm-cover-upload' onClick={coverUploading ? undefined : handleChooseCover}>
@@ -236,7 +237,7 @@ export default function StoreManage() {
             placeholder='请输入门店名称'
             value={form.name}
             onInput={(e) => update('name', e.detail.value)}
-            disabled={!isOwner}
+            disabled={!canEdit}
           />
         </View>
 
@@ -249,7 +250,7 @@ export default function StoreManage() {
             value={form.phone}
             onInput={(e) => update('phone', e.detail.value)}
             maxlength={11}
-            disabled={!isOwner}
+            disabled={!canEdit}
           />
         </View>
 
@@ -260,7 +261,7 @@ export default function StoreManage() {
             placeholder='请输入门店地址'
             value={form.address}
             onInput={(e) => update('address', e.detail.value)}
-            disabled={!isOwner}
+            disabled={!canEdit}
           />
         </View>
 
@@ -271,7 +272,7 @@ export default function StoreManage() {
             placeholder='例如：09:00 - 18:00'
             value={form.businessHours}
             onInput={(e) => update('businessHours', e.detail.value)}
-            disabled={!isOwner}
+            disabled={!canEdit}
           />
         </View>
 
@@ -282,7 +283,7 @@ export default function StoreManage() {
             placeholder='请输入门店简介（选填）'
             value={form.description}
             onInput={(e) => update('description', e.detail.value)}
-            disabled={!isOwner}
+            disabled={!canEdit}
             maxlength={200}
             autoHeight
           />
@@ -290,7 +291,7 @@ export default function StoreManage() {
         </View>
 
         {/* 门店资质 */}
-        {isOwner && (
+        {canEdit && (
         <View className='sm-field'>
           <Text className='sm-label'>门店资质</Text>
 
@@ -375,7 +376,7 @@ export default function StoreManage() {
         </View>
         )}
 
-        {isOwner && (
+        {canEdit && (
           <View className={`btn-primary sm-submit ${saving ? 'opacity-50' : ''}`} onClick={handleSave}>
             <Text>{saving ? '保存中...' : '保存设置'}</Text>
           </View>

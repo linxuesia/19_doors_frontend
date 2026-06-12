@@ -24,8 +24,8 @@ function handleResponse(res: { statusCode: number; data: any }) {
   if (res.statusCode === 401) {
     Taro.removeStorageSync('token');
     Taro.removeStorageSync('user');
-    Taro.navigateTo({ url: '/subpackages/client/login/index' });
-    throw new Error('未授权');
+    // 抛出后端返回的具体错误信息，不再自动跳转，由各页面自行处理跳转逻辑
+    throw new Error((res.data as any)?.message || '未授权，请重新登录');
   }
   throw new Error((res.data as any)?.message || '请求失败');
 }

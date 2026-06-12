@@ -6,21 +6,21 @@ import api from '../../../utils/api';
 import Icon from '../../../components/Icon';
 import './index.scss';
 
-const styleOptions = [
-  { value: 'MODERN', label: '现代简约' },
-  { value: 'MINIMALIST', label: '极简原木' },
-  { value: 'FRENCH', label: '法式奶油' },
-  { value: 'NORDIC', label: '北欧风' },
-  { value: 'NEW_CHINESE', label: '新中式' },
-  { value: 'LIGHT_LUXURY', label: '轻奢风' },
-  { value: 'JAPANESE', label: '日式' },
-  { value: 'AMERICAN', label: '美式' },
-];
-
 const spaceTypeOptions = [
   { value: 'RESIDENTIAL', label: '家居空间' },
   { value: 'COMMERCIAL', label: '商业空间' },
   { value: 'ENGINEERING', label: '品质工程' },
+];
+
+const colorOptions = [
+  { value: 'WHITE', label: '白色系' },
+  { value: 'GRAY', label: '灰色系' },
+  { value: 'BEIGE', label: '米色系' },
+  { value: 'BROWN', label: '棕色系' },
+  { value: 'BLACK', label: '黑色系' },
+  { value: 'WOOD', label: '原木色' },
+  { value: 'GREEN', label: '绿色系' },
+  { value: 'BLUE', label: '蓝色系' },
 ];
 
 export default function CaseEdit() {
@@ -32,8 +32,8 @@ export default function CaseEdit() {
   const [form, setForm] = useState({
     title: '',
     coverImage: '',
-    style: '',
-    spaceType: '',
+    spaceTypes: spaceTypeOptions.map(o => o.value),  // 默认全选
+    colors: colorOptions.map(o => o.value),            // 默认全选
     description: '',
   });
   const [loading, setLoading] = useState(false);
@@ -58,8 +58,8 @@ export default function CaseEdit() {
       setForm({
         title: res.title || '',
         coverImage: res.coverImage || '',
-        style: res.style || '',
-        spaceType: res.spaceType || '',
+        spaceTypes: res.spaceType ? res.spaceType.split(',').filter(Boolean) : spaceTypeOptions.map(o => o.value),
+        colors: res.color ? res.color.split(',').filter(Boolean) : colorOptions.map(o => o.value),
         description: res.description || '',
       });
     } catch {
@@ -107,7 +107,12 @@ export default function CaseEdit() {
 
     setSaving(true);
     try {
-      const data = { ...form };
+      const data: any = { ...form };
+      // 空间类型和色彩数组拼接成逗号分隔字符串
+      data.spaceType = form.spaceTypes.join(',');
+      data.color = form.colors.join(',');
+      delete data.spaceTypes;
+      delete data.colors;
       if (publish) data.published = true;
 
       if (isCreate) {
@@ -181,26 +186,48 @@ export default function CaseEdit() {
         </View>
 
         <View className='ce-form-item'>
-          <Text className='ce-form-label'>装修风格</Text>
-          <View className='ce-picker-row'>
-            <Picker mode='selector' range={styleOptions.map((o) => o.label)} value={styleOptions.findIndex((o) => o.value === form.style)} onChange={(e) => setForm((prev) => ({ ...prev, style: styleOptions[e.detail.value].value }))}>
-              <View className='ce-picker-value'>
-                <Text>{styleOptions.find((o) => o.value === form.style)?.label || '请选择风格'}</Text>
-                <Icon name='arrow-right-s' size={28} color='#9ca3af' />
+          <Text className='ce-form-label'>适用空间</Text>
+          <View className='ce-checkbox-group'>
+            {spaceTypeOptions.map((opt) => (
+              <View
+                key={opt.value}
+                className={`ce-checkbox ${form.spaceTypes.includes(opt.value) ? 'ce-checkbox-active' : ''}`}
+                onClick={() => setForm((prev) => ({
+                  ...prev,
+                  spaceTypes: prev.spaceTypes.includes(opt.value)
+                    ? prev.spaceTypes.filter(v => v !== opt.value)
+                    : [...prev.spaceTypes, opt.value],
+                }))}
+              >
+                <Text className={`ce-checkbox-icon ${form.spaceTypes.includes(opt.value) ? 'checked' : ''}`}>
+                  {form.spaceTypes.includes(opt.value) ? '✓' : ''}
+                </Text>
+                <Text className='ce-checkbox-label'>{opt.label}</Text>
               </View>
-            </Picker>
+            ))}
           </View>
         </View>
 
         <View className='ce-form-item'>
-          <Text className='ce-form-label'>空间类型</Text>
-          <View className='ce-picker-row'>
-            <Picker mode='selector' range={spaceTypeOptions.map((o) => o.label)} value={spaceTypeOptions.findIndex((o) => o.value === form.spaceType)} onChange={(e) => setForm((prev) => ({ ...prev, spaceType: spaceTypeOptions[e.detail.value].value }))}>
-              <View className='ce-picker-value'>
-                <Text>{spaceTypeOptions.find((o) => o.value === form.spaceType)?.label || '请选择空间类型'}</Text>
-                <Icon name='arrow-right-s' size={28} color='#9ca3af' />
+          <Text className='ce-form-label'>色彩风格</Text>
+          <View className='ce-checkbox-group'>
+            {colorOptions.map((opt) => (
+              <View
+                key={opt.value}
+                className={`ce-checkbox ${form.colors.includes(opt.value) ? 'ce-checkbox-active' : ''}`}
+                onClick={() => setForm((prev) => ({
+                  ...prev,
+                  colors: prev.colors.includes(opt.value)
+                    ? prev.colors.filter(v => v !== opt.value)
+                    : [...prev.colors, opt.value],
+                }))}
+              >
+                <Text className={`ce-checkbox-icon ${form.colors.includes(opt.value) ? 'checked' : ''}`}>
+                  {form.colors.includes(opt.value) ? '✓' : ''}
+                </Text>
+                <Text className='ce-checkbox-label'>{opt.label}</Text>
               </View>
-            </Picker>
+            ))}
           </View>
         </View>
 

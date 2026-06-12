@@ -138,6 +138,22 @@ export default function Profile() {
       </View>
       )}
 
+      {/* 系统管理入口（仅管理员可见） */}
+      {user && (user.role || '').includes('ADMIN') && (
+      <View className='store-entry-card'>
+        <View className='store-entry-left'>
+          <Text className='store-entry-title'>系统管理</Text>
+          <Text className='store-entry-desc'>产品、视频、门店等配置</Text>
+        </View>
+        <View
+          className='store-entry-btn'
+          onClick={() => Taro.navigateTo({ url: '/subpackages/business/admin/index' })}
+        >
+          <Text className='store-entry-btn-text'>进入</Text>
+        </View>
+      </View>
+      )}
+
       {/* 常用服务 */}
       <View className='service-section'>
         <Text className='service-title'>常用服务</Text>
@@ -161,16 +177,15 @@ export default function Profile() {
         </View>
       </View>
 
+      {/* 退出登录 */}
+      {user && (
+        <View className='logout-section' onClick={handleLogout}>
+          <Icon name='logout' size={36} color='#ef4444' />
+          <Text className='logout-text'>退出登录</Text>
+        </View>
+      )}
       <View className='safe-bottom' />
     </ScrollView>
-
-    {/* 退出登录 */}
-    {user && (
-      <View className='logout-section' onClick={handleLogout}>
-        <Icon name='logout' size={36} color='#ef4444' />
-        <Text className='logout-text'>退出登录</Text>
-      </View>
-    )}
     </View>
   );
 }

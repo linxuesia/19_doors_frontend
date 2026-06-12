@@ -1,11 +1,29 @@
-import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Image, Input } from '@tarojs/components';
+import { useState, useEffect, Component } from 'react';
+import { View, Text, ScrollView, Image, Input, Canvas, Video } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
 import { productionStatusMap, productionStatusOrder } from '../../../constants/status';
 import './index.scss';
+
+// 错误边界 - 捕获渲染异常避免白屏
+class ErrorBoundary extends Component<{ children: React.ReactNode }, { error: Error | null }> {
+  state: { error: Error | null } = { error: null };
+  componentDidCatch(error: Error, info: any) {
+    console.error('[Admin] render error:', error, info);
+    this.setState({ error });
+  }
+  render() {
+    if (this.state.error) {
+      return <View style='padding:100rpx 40rpx;display:flex;flex-direction:column;align-items:center;gap:24rpx'>
+        <Text style='font-size:32rpx;color:#ef4444;font-weight:700'>页面加载异常</Text>
+        <Text style='font-size:24rpx;color:#6b7280;word-break:break-all;text-align:center'>{this.state.error.message}</Text>
+      </View>;
+    }
+    return this.props.children as any;
+  }
+}
 
 const mainModules = [
   {
@@ -38,14 +56,21 @@ const mainModules = [
   },
   {
     icon: 'play-circle',
-    title: '产品视频管理',
+    title: '首页展示视频管理',
     desc: '上传与管理产品说明视频',
     key: 'videos',
     color: '#059669',
   },
+  {
+    icon: 'package',
+    title: '产品管理',
+    desc: '管理产品目录与检测报告',
+    key: 'products',
+    color: '#0ea5e9',
+  },
 ];
 
-export default function Admin() {
+function Admin() {
   const { user, requireBusinessLogin } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [stats, setStats] = useState({ stores: 0, todayNew: 0, pendingApps: 0, activeCases: 0 });
@@ -60,9 +85,15 @@ export default function Admin() {
   const [prodSearched, setProdSearched] = useState(false);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
-  // 产品视频管理
+  // 首页展示视频管理
   const [videos, setVideos] = useState<any[]>([]);
   const [videoUploading, setVideoUploading] = useState(false);
+
+  // 案例二维码
+  const [qrcodeModal, setQrcodeModal] = useState<any>(null);
+  const [qrcodeBase64, setQrcodeBase64] = useState('');
+  const [qrcodeLoading, setQrcodeLoading] = useState(false);
+  const [qrcodeSaving, setQrcodeSaving] = useState(false);
 
   useEffect(() => {
     if (!requireBusinessLogin('/subpackages/business/admin-login/index')) return;
@@ -229,8 +260,7 @@ export default function Admin() {
       Taro.hideLoading();
 
       Taro.showLoading({ title: '保存中...' });
-      const title = `产品视频 ${new Date().toLocaleDateString('zh-CN')}`;
-      await api.post('/demo-videos', { title, videoUrl: result.fileID });
+      await api.post('/demo-videos', { videoUrl: result.fileID });
       Taro.hideLoading();
       Taro.showToast({ title: '上传成功', icon: 'success' });
       loadVideos();
@@ -248,7 +278,7 @@ export default function Admin() {
     try {
       const res = await Taro.showModal({
         title: '确认删除',
-        content: `确定要删除"${video.title}"吗？`,
+        content: '确定要删除该视频吗？',
         confirmColor: '#ef4444',
       });
       if (!res.confirm) return;
@@ -261,10 +291,147 @@ export default function Admin() {
     }
   };
 
+  // 进入案例管理 tab 时加载全部案例
+  useEffect(() => {
+    if (activeTab === 'cases') {
+      api.get('/cases?all=true&pageSize=200')
+        .then((r: any) => setCases(r?.list || r))
+        .catch(() => {});
+    }
+  }, [activeTab]);
+
   // 进入视频管理 tab 时加载
   useEffect(() => {
     if (activeTab === 'videos') loadVideos();
   }, [activeTab]);
+
+  // 案例二维码 - 生成
+  const handleGenerateQrcode = async (caseItem: any) => {
+    setQrcodeModal({ caseId: caseItem.id, caseName: caseItem.title });
+    setQrcodeBase64('');
+    setQrcodeLoading(true);
+    try {
+      const res: any = await api.get(`/cases/${caseItem.id}/qrcode`, { base64: 'true' });
+      if (res?.base64) {
+        setQrcodeBase64(res.base64);
+      } else {
+        Taro.showToast({ title: '生成失败', icon: 'none' });
+        setQrcodeModal(null);
+      }
+    } catch {
+      Taro.showToast({ title: '生成失败', icon: 'none' });
+      setQrcodeModal(null);
+    } finally {
+      setQrcodeLoading(false);
+    }
+  };
+
+  // 案例二维码 - 保存到相册
+  const handleSaveToAlbum = async () => {
+    if (!qrcodeModal || !qrcodeBase64 || qrcodeSaving) return;
+    setQrcodeSaving(true);
+    Taro.showLoading({ title: '生成图片...' });
+    try {
+      const query = Taro.createSelectorQuery();
+      const canvasNode: any = await new Promise((resolve, reject) => {
+        query.select('#qrcode-canvas')
+          .fields({ node: true, size: true })
+          .exec((res: any) => {
+            if (res?.[0]?.node) resolve(res[0].node);
+            else reject(new Error('Canvas not found'));
+          });
+      });
+
+      const dpr = Taro.getSystemInfoSync().pixelRatio || 2;
+      const width = 430;
+      const height = 520;
+      canvasNode.width = width * dpr;
+      canvasNode.height = height * dpr;
+      const ctx = canvasNode.getContext('2d');
+      ctx.scale(dpr, dpr);
+
+      // 白色背景
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+
+      // 加载并绘制二维码
+      const img = canvasNode.createImage();
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = `data:image/png;base64,${qrcodeBase64}`;
+      });
+
+      const qrPadding = 20;
+      const qrSize = width - qrPadding * 2;
+      ctx.drawImage(img, qrPadding, qrPadding, qrSize, qrSize);
+
+      // 绘制案例名称
+      const textY = qrPadding + qrSize + 44;
+      ctx.fillStyle = '#1f2937';
+      ctx.font = 'bold 16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+
+      // 手动换行（微信 Canvas 2D 不支持 measureText 换行）
+      const name = qrcodeModal.caseName || '';
+      const maxChars = 18;
+      if (name.length <= maxChars) {
+        ctx.fillText(name, width / 2, textY);
+      } else {
+        const line1 = name.substring(0, maxChars);
+        const line2 = name.substring(maxChars, maxChars * 2);
+        ctx.fillText(line1, width / 2, textY);
+        ctx.fillText(line2, width / 2, textY + 24);
+      }
+
+      // 导出到临时文件
+      const tempRes: any = await new Promise((resolve, reject) => {
+        Taro.canvasToTempFilePath({
+          canvas: canvasNode,
+          success: resolve,
+          fail: reject,
+        });
+      });
+
+      Taro.hideLoading();
+
+      // 保存到相册
+      await new Promise<void>((resolve, reject) => {
+        Taro.saveImageToPhotosAlbum({
+          filePath: tempRes.tempFilePath,
+          success: () => resolve(),
+          fail: (err: any) => {
+            if (err?.errMsg?.includes('auth deny')) {
+              Taro.showModal({
+                title: '需要授权',
+                content: '请允许保存图片到相册',
+                confirmText: '去设置',
+                success: (modalRes) => {
+                  if (modalRes.confirm) {
+                    Taro.openSetting();
+                  }
+                },
+              });
+              reject(err);
+            } else {
+              reject(err);
+            }
+          },
+        });
+      });
+
+      Taro.showToast({ title: '已保存到相册', icon: 'success' });
+      setQrcodeModal(null);
+    } catch (err: any) {
+      Taro.hideLoading();
+      if (!err?.errMsg?.includes('auth deny')) {
+        Taro.showToast({ title: '保存失败', icon: 'none' });
+      }
+    } finally {
+      setQrcodeSaving(false);
+    }
+  };
 
   return (
     <ScrollView className='admin-page' scrollY>
@@ -339,7 +506,7 @@ export default function Admin() {
                 <View
                   key={mod.key}
                   className='admin-module-card'
-                  onClick={() => setActiveTab(mod.key)}
+                  onClick={() => mod.key === 'products' ? Taro.navigateTo({ url: '/subpackages/business/product-manage/index' }) : setActiveTab(mod.key)}
                 >
                   <View className='admin-module-icon-wrap' style={{ background: `linear-gradient(135deg, ${mod.color}15 0%, ${mod.color}08 100%)` }}>
                     <Icon name={mod.icon as any} size={40} color={mod.color} />
@@ -555,14 +722,21 @@ export default function Admin() {
 
                   {/* 管理员操作按钮 */}
                   <View className='admin-case-actions'>
-                    <View 
+                    <View
                       className={`admin-action-btn ${item.isPublished ? 'btn-unpublish' : 'btn-publish'}`}
                       onClick={() => handleToggleCasePublish(item)}
                     >
                       <Icon name={item.isPublished ? 'close' : 'check'} size={24} color="#ffffff" />
                       <Text>{item.isPublished ? '下架' : '发布'}</Text>
                     </View>
-                    <View 
+                    <View
+                      className='admin-action-btn btn-qrcode'
+                      onClick={() => handleGenerateQrcode(item)}
+                    >
+                      <Icon name='qr-code' size={24} color="#ffffff" />
+                      <Text>二维码</Text>
+                    </View>
+                    <View
                       className='admin-action-btn btn-delete'
                       onClick={() => handleDeleteCase(item)}
                     >
@@ -710,14 +884,14 @@ export default function Admin() {
         </View>
       )}
 
-      {/* 产品视频管理 */}
+      {/* 首页展示视频管理 */}
       {activeTab === 'videos' && (
         <View className='admin-subpage'>
           <View className='admin-subpage-header'>
             <View className='admin-back-btn' onClick={() => setActiveTab('dashboard')}>
               <Text className='back-arrow'>←</Text>
             </View>
-            <Text className='admin-subpage-title'>产品视频管理</Text>
+            <Text className='admin-subpage-title'>首页展示视频管理</Text>
             <View style={{ width: 40 }} />
           </View>
 
@@ -733,27 +907,26 @@ export default function Admin() {
           </View>
 
           {/* 视频列表 */}
-          <View className='admin-list'>
+          <View className='admin-video-list'>
             {videos.map((item: any) => (
-              <View key={item.id} className='admin-video-card'>
-                <View className='admin-video-card-left'>
-                  <Icon name='play-circle' size={44} color='#059669' />
-                  <View className='admin-video-card-info'>
-                    <Text className='admin-video-card-title'>{item.title}</Text>
-                    <Text className='admin-video-card-meta'>
-                      上传于 {new Date(item.createdAt).toLocaleDateString('zh-CN')}
-                    </Text>
-                  </View>
-                </View>
-                <View className='admin-video-card-del' onClick={() => handleDeleteVideo(item)}>
+              <View key={item.id} className='admin-video-item'>
+                <Video
+                  className='admin-video-player'
+                  src={item.videoUrl}
+                  controls
+                  autoplay={false}
+                  objectFit='contain'
+                />
+                <View className='admin-video-del' onClick={() => handleDeleteVideo(item)}>
                   <Icon name='delete' size={28} color='#ef4444' />
+                  <Text className='admin-video-del-text'>删除</Text>
                 </View>
               </View>
             ))}
             {videos.length === 0 && (
               <View className='admin-empty'>
                 <Icon name='play-circle' size={64} color='#d1d5db' />
-                <Text className='admin-empty-text'>暂无产品视频</Text>
+                <Text className='admin-empty-text'>暂无视频</Text>
               </View>
             )}
           </View>
@@ -761,6 +934,62 @@ export default function Admin() {
       )}
 
       <View className='safe-bottom' />
+
+      {/* 隐藏的 Canvas - 用于合成二维码+文字 */}
+      <Canvas
+        id='qrcode-canvas'
+        type='2d'
+        className='qrcode-canvas-hidden'
+      />
+
+      {/* 二维码弹窗 */}
+      {qrcodeModal && (
+        <View className='qrcode-modal-mask' onClick={() => !qrcodeLoading && !qrcodeSaving && setQrcodeModal(null)}>
+          <View className='qrcode-modal' onClick={(e) => e.stopPropagation()}>
+            <View className='qrcode-modal-header'>
+              <Text className='qrcode-modal-title'>案例小程序码</Text>
+              <View className='qrcode-modal-close' onClick={() => !qrcodeSaving && setQrcodeModal(null)}>
+                <Icon name='close' size={28} color='#6b7280' />
+              </View>
+            </View>
+
+            <View className='qrcode-modal-body'>
+              {qrcodeLoading ? (
+                <View className='qrcode-modal-loading'>
+                  <Text>生成中...</Text>
+                </View>
+              ) : qrcodeBase64 ? (
+                <>
+                  <Image
+                    className='qrcode-modal-img'
+                    src={`data:image/png;base64,${qrcodeBase64}`}
+                    mode='widthFix'
+                  />
+                  <Text className='qrcode-modal-name'>{qrcodeModal.caseName}</Text>
+                </>
+              ) : null}
+            </View>
+
+            {qrcodeBase64 && (
+              <View className='qrcode-modal-footer'>
+                <View
+                  className={`qrcode-save-btn ${qrcodeSaving ? 'qrcode-saving' : ''}`}
+                  onClick={handleSaveToAlbum}
+                >
+                  <Icon name='image' size={28} color='#ffffff' />
+                  <Text className='qrcode-save-text'>
+                    {qrcodeSaving ? '保存中...' : '保存到相册'}
+                  </Text>
+                </View>
+              </View>
+            )}
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
+}
+
+export default function AdminWithErrorBoundary() {
+  return <ErrorBoundary><Admin /></ErrorBoundary>;
 }

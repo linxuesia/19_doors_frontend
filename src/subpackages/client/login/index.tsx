@@ -36,8 +36,6 @@ export default function Login() {
         Taro.getPrivacySetting({
           success: (res: any) => {
             if (res.needAuthorization) {
-              // 用户需要同意隐私协议才能使用隐私相关功能
-              // 微信会自动弹出隐私协议弹窗
               console.log('[Login] 需要隐私授权');
             }
           },

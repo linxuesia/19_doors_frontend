@@ -27,7 +27,6 @@ export default function Orders() {
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
   const [storeStaff, setStoreStaff] = useState<any[]>([]);
-  const [assigningId, setAssigningId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!requireBusinessLogin()) return;
@@ -67,20 +66,30 @@ export default function Orders() {
     }
   }, [user?.storeId, isInstaller]);
 
-  /** 分配安装工 */
-  const handleAssign = async (orderId: string, assigneeId: string) => {
-    try {
-      await api.put(`/orders/${orderId}`, { installerId: assigneeId, status: 'INSTALLING' });
-      setOrders((prev) =>
-        prev.map((item) =>
-          item.id === orderId ? { ...item, installer: storeStaff.find((s) => s.id === assigneeId), status: 'INSTALLING' } : item,
-        ),
-      );
-      setAssigningId(null);
-      Taro.showToast({ title: '已分配安装工', icon: 'success' });
-    } catch (e: any) {
-      Taro.showToast({ title: e.message || '操作失败', icon: 'none' });
+  /** 分配安装工 - 使用选择器 */
+  const handleAssignPicker = (orderId: string) => {
+    const installers = storeStaff.filter((s: any) => (s.role || '').includes('INSTALLER'));
+    if (installers.length === 0) {
+      Taro.showToast({ title: '暂无可用安装工', icon: 'none' });
+      return;
     }
+    Taro.showActionSheet({
+      itemList: installers.map((s: any) => s.name),
+      success: async (res) => {
+        const assigneeId = installers[res.tapIndex].id;
+        try {
+          await api.put(`/orders/${orderId}`, { installerId: assigneeId, status: 'INSTALLING' });
+          setOrders((prev) =>
+            prev.map((item) =>
+              item.id === orderId ? { ...item, installer: storeStaff.find((s) => s.id === assigneeId), status: 'INSTALLING' } : item,
+            ),
+          );
+          Taro.showToast({ title: `已分配给 ${installers[res.tapIndex].name}`, icon: 'success' });
+        } catch (e: any) {
+          Taro.showToast({ title: e.message || '操作失败', icon: 'none' });
+        }
+      },
+    });
   };
 
   /** 标记完工 */
@@ -135,7 +144,7 @@ export default function Orders() {
               className='bo-card'
             >
               <View className='bo-card-top'>
-                <Text className='bo-card-no'>{item.orderNo || `#${item.id}`}</Text>
+                <Text className='bo-card-no'>{item.client?.name || '未知客户'} · {item.communityName || item.installAddress || '-'}</Text>
                 <View className='bo-card-status' style={{ background: st.bg }}>
                   <Text className='bo-card-status-text' style={{ color: st.text }}>
                     {item.status === 'PENDING' ? (isInstaller ? '待开工' : '待处理') : item.status === 'INSTALLING' ? '施工中' : item.status === 'COMPLETED' ? (isInstaller ? '已完成' : '已完工') : item.status}
@@ -163,40 +172,14 @@ export default function Orders() {
               <View className='bo-card-actions'>
                 {item.status === 'PENDING' && (
                   <>
-                    {assigningId === item.id ? (
-                      <View className='bo-assign-panel'>
-                        <Text className='bo-assign-hint'>选择安装工</Text>
-                        {storeStaff
-                          .filter((s: any) => (s.role || '').includes('INSTALLER'))
-                          .map((staff: any) => (
-                            <View
-                              key={staff.id}
-                              className='bo-assign-item'
-                              onClick={() => handleAssign(item.id, staff.id)}
-                            >
-                              <Text className='bo-assign-name'>{staff.name}</Text>
-                              <Text className='bo-assign-role'>安装工</Text>
-                            </View>
-                          ))}
-                        {storeStaff.filter((s: any) => (s.role || '').includes('INSTALLER')).length === 0 && (
-                          <Text className='bo-assign-empty'>暂无安装工</Text>
-                        )}
-                        <View className='bo-assign-cancel' onClick={() => setAssigningId(null)}>
-                          <Text>取消</Text>
-                        </View>
-                      </View>
-                    ) : (
-                      <>
-                        <View className='btn-primary bo-action-btn' onClick={() => setAssigningId(item.id)}>
-                          <Icon name='user' size={26} color='#ffffff' />
-                          <Text>分配工人</Text>
-                        </View>
-                        <View className='bo-action-btn btn-disabled' onClick={() => Taro.showToast({ title: '请先分配安装工', icon: 'none' })}>
-                          <Icon name='tools' size={26} color='#9ca3af' />
-                          <Text>开工</Text>
-                        </View>
-                      </>
-                    )}
+                    <View className='btn-primary bo-action-btn' onClick={() => handleAssignPicker(item.id)}>
+                      <Icon name='user' size={26} color='#ffffff' />
+                      <Text>分配工人</Text>
+                    </View>
+                    <View className='bo-action-btn btn-disabled' onClick={() => Taro.showToast({ title: '请先分配安装工', icon: 'none' })}>
+                      <Icon name='tools' size={26} color='#9ca3af' />
+                      <Text>开工</Text>
+                    </View>
                   </>
                 )}
                 {item.status === 'INSTALLING' && (

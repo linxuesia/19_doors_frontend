@@ -30,6 +30,9 @@ export default function StaffManage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
 
+  // 店长只能管理安装工，老板可以管理所有角色
+  const isOwner = (user?.role || '').includes('STORE_OWNER');
+
   // 表单数据
   const [form, setForm] = useState({
     name: '',
@@ -40,8 +43,8 @@ export default function StaffManage() {
 
   useEffect(() => {
     if (!requireBusinessLogin()) return;
-    if (!(user?.role || '').includes('STORE_OWNER')) {
-      Taro.showToast({ title: '仅门店老板可访问', icon: 'none' });
+    if (!(user?.role || '').includes('STORE_OWNER') && !(user?.role || '').includes('STORE_MANAGER')) {
+      Taro.showToast({ title: '无权限访问', icon: 'none' });
       setTimeout(() => Taro.navigateBack(), 1500);
       return;
     }
@@ -81,9 +84,17 @@ export default function StaffManage() {
     return name.charAt(0).toUpperCase();
   };
 
-  const filteredList = activeTab === 'all'
-    ? staffList
-    : staffList.filter(s => (s.role || '').includes(activeTab));
+  const filteredList = (() => {
+    let list = staffList;
+    // 店长只能看到安装工，看不到其他店长
+    if (!isOwner) {
+      list = list.filter(s => (s.role || '').includes('INSTALLER'));
+    }
+    if (activeTab !== 'all') {
+      list = list.filter(s => (s.role || '').includes(activeTab));
+    }
+    return list;
+  })();
 
   const openAddModal = () => {
     setForm({ phone: '', role: 'INSTALLER' });
@@ -184,7 +195,7 @@ export default function StaffManage() {
     return <View className='cl-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
   }
 
-  if (!(user.role || '').includes('STORE_OWNER')) {
+  if (!(user.role || '').includes('STORE_OWNER') && !(user.role || '').includes('STORE_MANAGER')) {
     return (
       <View className='smp-loading'>
         <Text className='smp-loading-text'>无权限访问</Text>
@@ -202,11 +213,11 @@ export default function StaffManage() {
 
   return (
     <ScrollView className='smp-page' scrollY>
-      {/* Tab 栏 */}
+      {/* Tab 栏 - 店长不显示"店长"tab */}
       <View className='smp-tabs'>
         {([
           { key: 'all' as TabType, label: '全部成员' },
-          { key: 'STORE_MANAGER' as TabType, label: '店长' },
+          ...(isOwner ? [{ key: 'STORE_MANAGER' as TabType, label: '店长' }] : []),
           { key: 'INSTALLER' as TabType, label: '安装工' },
         ]).map(tab => (
           <View
@@ -303,10 +314,12 @@ export default function StaffManage() {
               <View
                 className='smp-form-picker'
                 onClick={() => {
+                  // 店长只能选择安装工
+                  const options = isOwner ? ROLE_OPTIONS : ROLE_OPTIONS.filter(r => r.value === 'INSTALLER');
                   Taro.showActionSheet({
-                    itemList: ROLE_OPTIONS.map(r => r.label),
+                    itemList: options.map(r => r.label),
                     success: (res) => {
-                      updateForm('role', ROLE_OPTIONS[res.tapIndex].value);
+                      updateForm('role', options[res.tapIndex].value);
                     },
                   });
                 }}
@@ -352,10 +365,12 @@ export default function StaffManage() {
               <View
                 className='smp-form-picker'
                 onClick={() => {
+                  // 店长只能选择安装工
+                  const options = isOwner ? ROLE_OPTIONS : ROLE_OPTIONS.filter(r => r.value === 'INSTALLER');
                   Taro.showActionSheet({
-                    itemList: ROLE_OPTIONS.map(r => r.label),
+                    itemList: options.map(r => r.label),
                     success: (res) => {
-                      updateForm('role', ROLE_OPTIONS[res.tapIndex].value);
+                      updateForm('role', options[res.tapIndex].value);
                     },
                   });
                 }}

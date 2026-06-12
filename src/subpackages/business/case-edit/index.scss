@@ -1,5 +1,5 @@
 .ce-page {
-  min-height: 100vh;
+  height: 100vh;
   background: #f5f7fa;
 }
 
@@ -134,6 +134,53 @@
     font-size: 28rpx;
     color: #1f2937;
   }
+}
+
+// ====== 多选 Checkbox ======
+.ce-checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.ce-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 14rpx 24rpx;
+  border-radius: 40rpx;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+
+  &:active { background: #f3f4f6; }
+}
+
+.ce-checkbox-active {
+  border-color: #122b4d;
+  background: #eef2fa;
+}
+
+.ce-checkbox-icon {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  border: 2rpx solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  color: #ffffff;
+  flex-shrink: 0;
+
+  &.checked {
+    background: #122b4d;
+    border-color: #122b4d;
+  }
+}
+
+.ce-checkbox-label {
+  font-size: 26rpx;
+  color: #374151;
 }
 
 // ====== 操作按钮 ======

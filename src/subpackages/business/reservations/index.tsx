@@ -19,7 +19,6 @@ export default function Reservations() {
   const [list, setList] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState('');
   const [storeStaff, setStoreStaff] = useState<any[]>([]);
-  const [assigningId, setAssigningId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!requireBusinessLogin()) return;
@@ -41,20 +40,30 @@ export default function Reservations() {
     }
   }, [user?.storeId]);
 
-  /** 分配量尺人员 */
-  const handleAssign = async (reservationId: string, assigneeId: string) => {
-    try {
-      await api.post(`/measurements/${reservationId}/assign`, { assigneeId });
-      setList((prev) =>
-        prev.map((item) =>
-          item.id === reservationId ? { ...item, assignee: storeStaff.find((s) => s.id === assigneeId), status: 'ASSIGNED' } : item,
-        ),
-      );
-      setAssigningId(null);
-      Taro.showToast({ title: '已分配', icon: 'success' });
-    } catch (e: any) {
-      Taro.showToast({ title: e.message || '操作失败', icon: 'none' });
+  /** 分配量尺人员 - 使用选择器（仅安装工） */
+  const handleAssignPicker = (reservationId: string) => {
+    const installers = storeStaff.filter((s: any) => (s.role || '').includes('INSTALLER'));
+    if (installers.length === 0) {
+      Taro.showToast({ title: '暂无可用安装工', icon: 'none' });
+      return;
     }
+    Taro.showActionSheet({
+      itemList: installers.map((s: any) => s.name),
+      success: async (res) => {
+        const assigneeId = installers[res.tapIndex].id;
+        try {
+          await api.post(`/measurements/${reservationId}/assign`, { assigneeId });
+          setList((prev) =>
+            prev.map((item) =>
+              item.id === reservationId ? { ...item, assignee: storeStaff.find((s: any) => s.id === assigneeId), status: 'ASSIGNED' } : item,
+            ),
+          );
+          Taro.showToast({ title: `已分配给 ${installers[res.tapIndex].name}`, icon: 'success' });
+        } catch (e: any) {
+          Taro.showToast({ title: e.message || '操作失败', icon: 'none' });
+        }
+      },
+    });
   };
 
   /** 标记已量尺 */
@@ -142,43 +151,17 @@ export default function Reservations() {
               <View className='br-card-actions'>
                 {item.status === 'PENDING' && (
                   <>
-                    {assigningId === item.id ? (
-                      <View className='br-assign-panel'>
-                        <Text className='br-assign-hint'>选择量尺人员</Text>
-                        {storeStaff
-                          .filter((s: any) => (s.role || '').includes('STORE_MANAGER') || (s.role || '').includes('INSTALLER'))
-                          .map((staff: any) => (
-                            <View
-                              key={staff.id}
-                              className='br-assign-item'
-                              onClick={() => handleAssign(item.id, staff.id)}
-                            >
-                              <Text className='br-assign-name'>{staff.name}</Text>
-                              <Text className='br-assign-role'>{(staff.role || '').includes('STORE_MANAGER') ? '店长' : '安装工'}</Text>
-                            </View>
-                          ))}
-                        {storeStaff.filter((s: any) => (s.role || '').includes('STORE_MANAGER') || (s.role || '').includes('INSTALLER')).length === 0 && (
-                          <Text className='br-assign-empty'>暂无可用员工</Text>
-                        )}
-                        <View className='br-assign-cancel' onClick={() => setAssigningId(null)}>
-                          <Text>取消</Text>
-                        </View>
-                      </View>
-                    ) : (
-                      <>
-                        <View className='btn-primary br-action-btn' onClick={() => setAssigningId(item.id)}>
-                          <Icon name='ruler' size={26} color='#ffffff' />
-                          <Text>安排量尺</Text>
-                        </View>
-                        <View
-                          className='btn-secondary br-action-btn'
-                          onClick={() => Taro.navigateTo({ url: '/subpackages/business/order-manage/index' })}
-                        >
-                          <Icon name='add' size={26} color='#122b4d' />
-                          <Text>转订单</Text>
-                        </View>
-                      </>
-                    )}
+                    <View className='btn-primary br-action-btn' onClick={() => handleAssignPicker(item.id)}>
+                      <Icon name='ruler' size={26} color='#ffffff' />
+                      <Text>安排量尺</Text>
+                    </View>
+                    <View
+                      className='btn-secondary br-action-btn'
+                      onClick={() => Taro.navigateTo({ url: '/subpackages/business/order-manage/index' })}
+                    >
+                      <Icon name='add' size={26} color='#122b4d' />
+                      <Text>转订单</Text>
+                    </View>
                   </>
                 )}
                 {item.status === 'ASSIGNED' && (

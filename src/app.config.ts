@@ -46,11 +46,12 @@ export default defineAppConfig({
         'case-manage/index',      // 案例库管理
         'case-edit/index',        // 案例编辑/新增
         'inspections/index',      // 客户验收反馈
+        'product-manage/index',   // 产品管理
       ],
     },
   ],
   permission: {
-    'scope.userFuzzyLocation': {
+    'scope.userLocation': {
       desc: '用于展示您附近的安装案例及工地位置',
     },
   },
@@ -75,5 +76,4 @@ export default defineAppConfig({
       { pagePath: 'pages/profile/index', text: '我的' },
     ],
   },
-  __usePrivacyCheck__: true,
 });

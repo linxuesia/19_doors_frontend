@@ -15,7 +15,7 @@
 
 // ====== 创建表单（原型风格）=======
 .omf-page {
-  min-height: 100vh;
+  height: 100vh;
   background: #f9fafb;
   padding-bottom: 160rpx; // 底部提交栏高度
 }
@@ -258,7 +258,7 @@
 .opacity-50 { opacity: 0.5; }
 
 // 订单详情
-.om-detail-page { min-height: 100vh; background: #f0f5fa; }
+.om-detail-page { height: 100vh; background: #f0f5fa; }
 .om-detail-header { display: flex; justify-content: space-between; align-items: center; padding: 32rpx 24rpx; background: #ffffff; margin-bottom: 12rpx; }
 .om-detail-no { font-size: 32rpx; font-weight: 700; color: #122b4d; }
 
