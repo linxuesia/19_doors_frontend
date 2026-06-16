@@ -263,9 +263,14 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
           </View>
           <View className='omf-field'>
             <Text className='omf-label'>预计安装日期</Text>
-            <View className='omf-input-wrap'>
-              <Input className='omf-input' placeholder='2026-06-01' value={form.scheduledInstallDate} onInput={(e) => update('scheduledInstallDate', e.detail.value)} />
-            </View>
+            <Picker mode='date' value={form.scheduledInstallDate} onChange={(e) => update('scheduledInstallDate', e.detail.value)}>
+              <View className='omf-picker'>
+                <Text className={form.scheduledInstallDate ? 'omf-picker-text' : 'omf-picker-placeholder'}>
+                  {form.scheduledInstallDate || '请选择日期'}
+                </Text>
+                <Icon name='calendar' size={28} color='#9ca3af' />
+              </View>
+            </Picker>
           </View>
         </View>
 
