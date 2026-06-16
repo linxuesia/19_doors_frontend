@@ -218,7 +218,7 @@
 // 添加按钮 - 固定底部
 .smp-add-btn {
   position: fixed;
-  bottom: 48rpx;
+  bottom: calc(48rpx + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 64rpx);

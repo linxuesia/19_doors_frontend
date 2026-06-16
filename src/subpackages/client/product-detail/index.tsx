@@ -5,11 +5,47 @@ import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
 import './index.scss';
 
+// 适用空间选项（与产品管理保持一致）
+const spaceOptions = [
+  { value: 'LIVING', label: '客厅' },
+  { value: 'BEDROOM', label: '卧室' },
+  { value: 'KITCHEN', label: '厨房' },
+  { value: 'BALCONY', label: '阳台' },
+  { value: 'STUDY', label: '书房' },
+];
+
+// 色彩选项（与产品管理保持一致）
+const colorOptions = [
+  { value: 'WHITE', label: '白色系' },
+  { value: 'GRAY', label: '灰色系' },
+  { value: 'BEIGE', label: '米色系' },
+  { value: 'BROWN', label: '棕色系' },
+  { value: 'BLACK', label: '黑色系' },
+  { value: 'WOOD', label: '原木色' },
+  { value: 'GOLD', label: '香槟金' },
+  { value: 'SLIVER', label: '银灰色' },
+];
+
 export default function ProductDetail() {
   const router = useRouter();
   const id = router.params.id;
   const [product, setProduct] = useState<any>(null);
   const [openingReport, setOpeningReport] = useState(false);
+
+  // 解析后端逗号分隔字符串为数组，空则默认全选
+  const selectedSpaces = useMemo(() => {
+    if (!product) return spaceOptions.map(o => o.value);
+    const raw = product.space || '';
+    const arr = raw.split(',').filter(Boolean);
+    return arr.length > 0 ? arr : spaceOptions.map(o => o.value);
+  }, [product]);
+
+  const selectedColors = useMemo(() => {
+    if (!product) return colorOptions.map(o => o.value);
+    const raw = product.color || '';
+    const arr = raw.split(',').filter(Boolean);
+    return arr.length > 0 ? arr : colorOptions.map(o => o.value);
+  }, [product]);
 
   /** 打开质量检测报告 PDF */
   const handleOpenReport = async () => {
@@ -100,11 +136,29 @@ export default function ProductDetail() {
           <View className='pd-specs-list'>
             <View className='pd-spec-item'>
               <Text className='pd-spec-label'>色彩</Text>
-              <Text className='pd-spec-value'>{product.color || '-'}</Text>
+              <View className='pd-checkbox-group'>
+                {colorOptions.map((opt) => (
+                  <View key={opt.value} className={`pd-checkbox ${selectedColors.includes(opt.value) ? 'pd-checkbox-active' : ''}`}>
+                    <Text className={`pd-checkbox-icon ${selectedColors.includes(opt.value) ? 'checked' : ''}`}>
+                      {selectedColors.includes(opt.value) ? '✓' : ''}
+                    </Text>
+                    <Text className='pd-checkbox-label'>{opt.label}</Text>
+                  </View>
+                ))}
+              </View>
             </View>
             <View className='pd-spec-item'>
               <Text className='pd-spec-label'>可适用空间</Text>
-              <Text className='pd-spec-value'>{product.space || '-'}</Text>
+              <View className='pd-checkbox-group'>
+                {spaceOptions.map((opt) => (
+                  <View key={opt.value} className={`pd-checkbox ${selectedSpaces.includes(opt.value) ? 'pd-checkbox-active' : ''}`}>
+                    <Text className={`pd-checkbox-icon ${selectedSpaces.includes(opt.value) ? 'checked' : ''}`}>
+                      {selectedSpaces.includes(opt.value) ? '✓' : ''}
+                    </Text>
+                    <Text className='pd-checkbox-label'>{opt.label}</Text>
+                  </View>
+                ))}
+              </View>
             </View>
             <View className='pd-spec-item'>
               <Text className='pd-spec-label'>功能特性</Text>

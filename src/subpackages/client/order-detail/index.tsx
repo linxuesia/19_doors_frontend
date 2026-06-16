@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { View, Text } from '@tarojs/components';
+import { View, Text, Image } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
 import { orderStatusMap } from '../../../constants/status';
+import { CONSTRUCTION_STAGES, getStageLabel } from '../../../constants/construction-stages';
 import './index.scss';
 
 export default function OrderDetail() {
@@ -13,6 +14,7 @@ export default function OrderDetail() {
   const { user } = useAuth();
   const [order, setOrder] = useState<any>(null);
   const [orders, setOrders] = useState<any[]>([]);
+  const [constructionLogs, setConstructionLogs] = useState<any[]>([]);
 
   const isListMode = router.params.list === '1' || !id;
 
@@ -25,6 +27,10 @@ export default function OrderDetail() {
       api.get(`/orders/${id}`)
         .then((res: any) => setOrder(res))
         .catch(() => setOrder(null));
+      // 获取施工进度
+      api.get(`/orders/${id}/construction-logs`)
+        .then((res: any) => setConstructionLogs(Array.isArray(res) ? res : res?.list || []))
+        .catch(() => setConstructionLogs([]));
     }
   }, [id, isListMode, user]);
 
@@ -136,6 +142,45 @@ export default function OrderDetail() {
           ))}
         </View>
       </View>
+
+      {/* 施工进度 - 仅施工中或已完工显示 */}
+      {(order.status === 'INSTALLING' || order.status === 'COMPLETED') && constructionLogs.length > 0 && (
+        <View className='od-progress-card'>
+          <View className='od-section-header'>
+            <Icon name='clipboard' size={30} color='#122b4d' />
+            <Text className='od-section-title'>施工进度</Text>
+          </View>
+          <View className='od-progress-steps'>
+            {CONSTRUCTION_STAGES.map((stage) => {
+              const logsForStage = constructionLogs.filter((log: any) => log.stage === stage.key);
+              const isCompleted = logsForStage.length > 0;
+              return (
+                <View key={stage.key} className={`od-step-item ${isCompleted ? 'od-step-done' : 'od-step-pending'}`}>
+                  <View className={`od-step-circle ${isCompleted ? 'od-step-circle-done' : ''}`}>
+                    {isCompleted ? (
+                      <Text className='od-step-check'>✓</Text>
+                    ) : (
+                      <Text className='od-step-dot' />
+                    )}
+                  </View>
+                  <Text className={`od-step-label ${isCompleted ? 'od-step-label-done' : ''}`}>{stage.label}</Text>
+                  {isCompleted && logsForStage[0]?.images?.length > 0 && (
+                    <Image
+                      className='od-step-thumb'
+                      src={logsForStage[0].images[0]}
+                      mode='aspectFill'
+                      onClick={() => Taro.previewImage({
+                        current: logsForStage[0].images[0],
+                        urls: logsForStage[0].images,
+                      })}
+                    />
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        </View>
+      )}
 
       <View className='safe-bottom' />
     </View>

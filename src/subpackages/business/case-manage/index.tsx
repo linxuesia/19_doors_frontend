@@ -14,6 +14,7 @@ interface CaseItem {
   spaceType?: string;
   views: number;
   published: boolean;
+  orderId?: string; // 有值表示从订单自动生成
 }
 
 interface Stats {
@@ -178,8 +179,15 @@ export default function CaseManage() {
                 {/* 标题行 */}
                 <View className='cm-card-header'>
                   <Text className='cm-card-title'>{item.title || '未命名案例'}</Text>
-                  <View className={`cm-status-tag ${item.published ? 'cm-status-published' : 'cm-status-draft'}`}>
-                    <Text>{item.published ? '已发布' : '草稿'}</Text>
+                  <View className='cm-card-tags'>
+                    {item.orderId && (
+                      <View className='cm-tag-order'>
+                        <Text>来自订单</Text>
+                      </View>
+                    )}
+                    <View className={`cm-status-tag ${item.published ? 'cm-status-published' : 'cm-status-draft'}`}>
+                      <Text>{item.published ? '已发布' : '草稿'}</Text>
+                    </View>
                   </View>
                 </View>
 

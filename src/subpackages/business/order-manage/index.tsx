@@ -37,9 +37,13 @@ const WARRANTY_OPTIONS = ['1', '2', '3', '5', '10', '15', '终身'];
 
 // 创建订单表单
 function CreateOrderForm({ onDone }: { onDone: () => void }) {
+  const router = useRouter();
   const { user } = useAuth();
+  // URL 参数需要手动 decode，Taro router.params 不会自动解码中文
+  const decode = (v: string | undefined) => v ? decodeURIComponent(v) : '';
   const [form, setForm] = useState({
-    clientName: '', clientPhone: '', communityName: '', installAddress: '',
+    clientName: decode(router.params.clientName), clientPhone: decode(router.params.clientPhone),
+    communityName: decode(router.params.communityName), installAddress: decode(router.params.installAddress),
     productId: '', productName: '', productSeries: '',
     totalAmount: '', paidAmount: '', warrantyYears: '5',
     scheduledInstallDate: '', remarks: '',

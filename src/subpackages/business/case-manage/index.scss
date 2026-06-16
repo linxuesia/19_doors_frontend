@@ -111,6 +111,13 @@
 }
 
 // 状态标签
+.cm-card-tags {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  flex-shrink: 0;
+}
+
 .cm-status-tag {
   font-size: 22rpx;
   font-weight: 600;
@@ -127,6 +134,16 @@
 .cm-status-draft {
   background: #f3f4f6;
   color: #9ca3af;
+}
+
+// 来自订单标签
+.cm-tag-order {
+  font-size: 22rpx;
+  font-weight: 600;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  background: #eff6ff;
+  color: #2563eb;
 }
 
 // 标签组

@@ -157,7 +157,14 @@ export default function Reservations() {
                     </View>
                     <View
                       className='btn-secondary br-action-btn'
-                      onClick={() => Taro.navigateTo({ url: '/subpackages/business/order-manage/index' })}
+                      onClick={() => {
+                        const params = new URLSearchParams();
+                        if (item.contactName) params.set('clientName', item.contactName.slice(0, 20));
+                        if (item.phone) params.set('clientPhone', item.phone);
+                        if (item.communityName) params.set('communityName', item.communityName.slice(0, 50));
+                        if (item.address) params.set('installAddress', item.address.slice(0, 100));
+                        Taro.navigateTo({ url: `/subpackages/business/order-manage/index?${params.toString()}` });
+                      }}
                     >
                       <Icon name='add' size={26} color='#122b4d' />
                       <Text>转订单</Text>
@@ -172,7 +179,14 @@ export default function Reservations() {
                     </View>
                     <View
                       className='btn-secondary br-action-btn'
-                      onClick={() => Taro.navigateTo({ url: '/subpackages/business/order-manage/index' })}
+                      onClick={() => {
+                        const params = new URLSearchParams();
+                        if (item.contactName) params.set('clientName', item.contactName.slice(0, 20));
+                        if (item.phone) params.set('clientPhone', item.phone);
+                        if (item.communityName) params.set('communityName', item.communityName.slice(0, 50));
+                        if (item.address) params.set('installAddress', item.address.slice(0, 100));
+                        Taro.navigateTo({ url: `/subpackages/business/order-manage/index?${params.toString()}` });
+                      }}
                     >
                       <Icon name='add' size={26} color='#122b4d' />
                       <Text>转订单</Text>
@@ -182,7 +196,14 @@ export default function Reservations() {
                 {item.status === 'MEASURED' && (
                   <View
                     className='btn-primary br-action-btn btn-full'
-                    onClick={() => Taro.navigateTo({ url: '/subpackages/business/order-manage/index' })}
+                    onClick={() => {
+                        const params = new URLSearchParams();
+                        if (item.contactName) params.set('clientName', item.contactName.slice(0, 20));
+                        if (item.phone) params.set('clientPhone', item.phone);
+                        if (item.communityName) params.set('communityName', item.communityName.slice(0, 50));
+                        if (item.address) params.set('installAddress', item.address.slice(0, 100));
+                        Taro.navigateTo({ url: `/subpackages/business/order-manage/index?${params.toString()}` });
+                      }}
                   >
                     <Icon name='clipboard' size={28} color='#ffffff' />
                     <Text>转为订单</Text>

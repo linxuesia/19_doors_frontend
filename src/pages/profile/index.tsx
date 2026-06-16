@@ -122,12 +122,12 @@ export default function Profile() {
       </View>
       )}
 
-      {/* 安装工工作台入口（仅安装工可见） */}
+      {/* 安装工入口 */}
       {user && (user.role || '').includes('INSTALLER') && (
       <View className='store-entry-card'>
         <View className='store-entry-left'>
-          <Text className='store-entry-title'>安装工工作台</Text>
-          <Text className='store-entry-desc'>查看待安装订单与施工任务</Text>
+          <Text className='store-entry-title'>我的任务</Text>
+          <Text className='store-entry-desc'>查看待安装订单与施工进度</Text>
         </View>
         <View
           className='store-entry-btn'

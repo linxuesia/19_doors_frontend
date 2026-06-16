@@ -37,13 +37,7 @@ const statusTabs = [
   { value: 'MEASURED', label: '已完成' },
 ];
 
-function maskPhone(phone?: string): string {
-  if (!phone) return '-';
-  const str = phone.toString();
-  if (str.length <= 7) return str;
-  return str.slice(0, 3) + '****' + str.slice(-4);
-}
-
+// 安装工订单列表页面
 export default function InstallerOrders() {
   const { user, requireBusinessLogin } = useAuth();
   const [tasks, setTasks] = useState<TaskItem[]>([]);
@@ -293,7 +287,7 @@ export default function InstallerOrders() {
 
               {/* 底部：客户电话 + 时间 */}
               <View className='io-card-footer'>
-                <Text className='io-footer-phone'>{maskPhone(item.phone || item.client?.phone)}</Text>
+                <Text className='io-footer-phone'>{item.phone || item.client?.phone}</Text>
                 <Text className='io-footer-time'>{item.expectedDate || item.createdAt ? formatShortTime(item.expectedDate || item.createdAt) : '-'}</Text>
               </View>
             </View>

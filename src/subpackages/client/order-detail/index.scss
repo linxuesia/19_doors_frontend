@@ -65,4 +65,25 @@
 .od-phone-call { width: 64rpx; height: 64rpx; border-radius: 50%; background: #e1ecf4; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .od-phone-call:active { background: #d1e3f0; transform: scale(0.95); }
 
+// 施工进度
+.od-section-header { display: flex; align-items: center; gap: 12rpx; margin-bottom: 24rpx; }
+.od-progress-steps { display: flex; flex-wrap: wrap; gap: 16rpx 24rpx; }
+.od-step-item { display: flex; align-items: center; gap: 12rpx; width: calc(50% - 12rpx); box-sizing: border-box; }
+.od-step-circle {
+  width: 44rpx; height: 44rpx; border-radius: 50%;
+  border: 2rpx solid #d1d5db;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.od-step-circle-done {
+  background: #059669; border-color: #059669;
+}
+.od-step-check { color: #ffffff; font-size: 24rpx; font-weight: 700; }
+.od-step-dot { width: 14rpx; height: 14rpx; border-radius: 50%; background: #d1d5db; }
+.od-step-label { font-size: 25rpx; color: #9ca3af; flex: 1; }
+.od-step-label-done { color: #059669; font-weight: 500; }
+.od-step-thumb {
+  width: 56rpx; height: 56rpx; border-radius: 10rpx; flex-shrink: 0;
+}
+
 .safe-bottom { height: constant(safe-area-inset-bottom); height: env(safe-area-inset-bottom); }

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Image, Input } from '@tarojs/components';
+import { View, Text, Image, Input, Picker } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import api from '../../../utils/api';
 import Icon from '../../../components/Icon';
+import { CONSTRUCTION_STAGES } from '../../../constants/construction-stages';
 import './index.scss';
 
 const MAX_RECORDS = 9;
@@ -28,6 +29,8 @@ export default function InstallerOrderDetail() {
 
   // 施工订单模式 - 简单图片列表
   const [images, setImages] = useState<string[]>([]);
+  const [stageIndex, setStageIndex] = useState<number>(0);
+  const selectedStage = CONSTRUCTION_STAGES[stageIndex]?.key || '';
 
   // 量尺模式 - 图片+文字配对
   const [records, setRecords] = useState<ImageRecord[]>([]);
@@ -210,7 +213,7 @@ export default function InstallerOrderDetail() {
     }
     const res = await Taro.showModal({
       title: '提交进度',
-      content: '确认提交施工进度？',
+      content: `确认提交「${CONSTRUCTION_STAGES[stageIndex]?.label}」的施工进度？`,
     });
     if (!res.confirm) return;
 
@@ -218,9 +221,13 @@ export default function InstallerOrderDetail() {
     try {
       const { uploadImages } = await import('../../../utils/cloud');
       const results = await uploadImages(images, 'construction-progress');
-      await api.post(`/orders/${id}/progress`, { images: results.map((r) => r.fileID) });
+      await api.post(`/orders/${id}/progress`, {
+        images: results.map((r) => r.fileID),
+        stage: selectedStage,
+        content: CONSTRUCTION_STAGES[stageIndex]?.label || '',
+      });
       Taro.showToast({ title: '进度已更新', icon: 'success' });
-      setTimeout(() => { setImages([]); goBack(); }, 1500);
+      setTimeout(() => { setImages([]); setStageIndex(0); goBack(); }, 1500);
     } catch {
       Taro.showToast({ title: '提交失败', icon: 'none' });
     } finally {
@@ -252,11 +259,6 @@ export default function InstallerOrderDetail() {
     return <View className='iod-loading'><Text>加载中...</Text></View>;
   }
 
-  const maskPhone = (phone: string) => {
-    if (!phone || phone.length < 7) return phone || '';
-    return phone.slice(0, 3) + '****' + phone.slice(-4);
-  };
-
   return (
     <View className={`iod-page ${isMeasurement ? 'iod-page-measure' : ''}`}>
       <View className='iod-content'>
@@ -271,13 +273,13 @@ export default function InstallerOrderDetail() {
             <Text className='iod-info-label'>客户</Text>
             <Text className='iod-info-value'>
               {data.client?.name || data.contactName || data.clientName || '-'}{' '}
-              {maskPhone(data.client?.phone || data.phone || data.clientPhone)}
+              {data.client?.phone || data.phone || data.clientPhone}
             </Text>
           </View>
           {data.scheduledInstallDate && (
             <View className='iod-info-row'>
               <Text className='iod-info-label'>时间</Text>
-              <Text className='iod-info-value'>{data.scheduledInstallDate} 09:00</Text>
+              <Text className='iod-info-value'>{data.scheduledInstallDate}</Text>
             </View>
           )}
           {isMeasurement && data.houseArea && (
@@ -435,10 +437,26 @@ export default function InstallerOrderDetail() {
           </View>
         )}
 
-        {/* ========== 施工订单模式：简单图片上传 ========== */}
+        {/* ========== 施工订单模式：阶段选择 + 图片上传 ========== */}
         {!isMeasurement && (
           <View className='iod-card'>
             <Text className='iod-card-title'>进度更新与图片</Text>
+
+            {/* 阶段选择 */}
+            <Picker
+              mode='selector'
+              range={CONSTRUCTION_STAGES.map(s => s.label)}
+              value={stageIndex}
+              onChange={(e) => setStageIndex(e.detail.value)}
+            >
+              <View className='iod-stage-picker'>
+                <Text className='iod-stage-value iod-stage-selected'>
+                  {CONSTRUCTION_STAGES[stageIndex]?.label}
+                </Text>
+                <Text className='iod-stage-arrow'>▼</Text>
+              </View>
+            </Picker>
+
             <View className='iod-upload-grid'>
               {images.map((img, idx) => (
                 <View key={idx} className='iod-image-item'>

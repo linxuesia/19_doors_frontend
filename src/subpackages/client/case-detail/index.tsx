@@ -3,13 +3,8 @@ import { View, Text, Image, Swiper, SwiperItem, ScrollView, Button } from '@taro
 import Taro, { useRouter, useShareAppMessage } from '@tarojs/taro';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
+import { CONSTRUCTION_STAGES } from '../../../constants/construction-stages';
 import './index.scss';
-
-interface ConstructionStep {
-  id: string;
-  name: string;
-  status: 'pending' | 'in_progress' | 'completed';
-}
 
 interface SiteUpdate {
   id: string;
@@ -37,8 +32,24 @@ export default function CaseDetail() {
   const scene = router.params.scene;
   const id = router.params.id || (scene ? sceneToUuid(scene) : undefined);
   const [detail, setDetail] = useState<any>(null);
-  const [constructionSteps, setConstructionSteps] = useState<ConstructionStep[]>([]);
   const [siteUpdates, setSiteUpdates] = useState<SiteUpdate[]>([]);
+
+  // 使用统一施工阶段常量，根据工地动态判断各阶段状态
+  const constructionSteps = useMemo(() => {
+    return CONSTRUCTION_STAGES.map((stage, index) => {
+      const hasUpdates = siteUpdates.some(
+        (u) => u.stepName === stage.label || u.stepId?.includes(stage.key)
+      );
+      // 找到第一个未完成的阶段标记为 in_progress
+      const prevAllCompleted = CONSTRUCTION_STAGES.slice(0, index).every((s) =>
+        siteUpdates.some((u) => u.stepName === s.label || u.stepId?.includes(s.key))
+      );
+      let status: 'pending' | 'in_progress' | 'completed' = 'pending';
+      if (hasUpdates) status = 'completed';
+      else if (prevAllCompleted && !hasUpdates) status = 'in_progress';
+      return { id: stage.key, name: stage.label, status };
+    });
+  }, [siteUpdates]);
 
   useEffect(() => {
     if (!id) return;
@@ -46,10 +57,6 @@ export default function CaseDetail() {
     api.get(`/cases/${id}`)
       .then((res: any) => {
         setDetail(res);
-
-        api.get(`/cases/${id}/construction-steps`)
-          .then((steps: any) => setConstructionSteps(Array.isArray(steps) ? steps : []))
-          .catch(() => setConstructionSteps([]));
 
         api.get(`/cases/${id}/site-updates`)
           .then((updates: any) => setSiteUpdates(Array.isArray(updates) ? updates : []))

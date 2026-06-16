@@ -15,7 +15,6 @@ const ownerFunctions = [
   { icon: 'users', label: '人员管理', url: '/subpackages/business/staff-manage/index' },
   { icon: 'settings', label: '门店设置', url: '/subpackages/business/store-manage/index' },
   { icon: 'clipboard-list', label: '验收反馈', url: '/subpackages/business/inspections/index' },
-  { icon: 'package', label: '产品管理', url: '/subpackages/business/product-manage/index' },
 ];
 
 const managerFunctions = [
@@ -27,11 +26,6 @@ const managerFunctions = [
   { icon: 'users', label: '人员管理', url: '/subpackages/business/staff-manage/index' },
   { icon: 'settings', label: '门店设置', url: '/subpackages/business/store-manage/index' },
   { icon: 'clipboard-list', label: '验收反馈', url: '/subpackages/business/inspections/index' },
-  { icon: 'package', label: '产品管理', url: '/subpackages/business/product-manage/index' },
-];
-
-const installerFunctions = [
-  { icon: 'clipboard', label: '我的工单', url: '/subpackages/business/installer-orders/index' },
 ];
 
 export default function Workbench() {
@@ -49,7 +43,6 @@ export default function Workbench() {
 
     const params: any = {};
     if (user?.storeId) params.storeId = user.storeId;
-    if ((user?.role || '').includes('INSTALLER')) params.installerId = user.id;
 
     // 统计数据
     setStatsLoading(true);
@@ -72,11 +65,8 @@ export default function Workbench() {
 
   const isOwner = (user.role || '').includes('STORE_OWNER');
   const isManager = (user.role || '').includes('STORE_MANAGER');
-  const isInstaller = (user.role || '').includes('INSTALLER');
 
-  let functions = ownerFunctions;
-  if (isInstaller) functions = installerFunctions;
-  else if (isManager) functions = managerFunctions;
+  const functions = isManager ? managerFunctions : ownerFunctions;
 
   return (
     <ScrollView className='wb-page' scrollY>
@@ -99,7 +89,7 @@ export default function Workbench() {
             <View className='wb-brand-section'>
               <Text className='wb-brand-name'>SOJOY</Text>
               <Text className='wb-brand-divider'>|</Text>
-              <Text className='wb-brand-role'>{isOwner ? '门店老板' : isManager ? '门店店长' : '安装工'}</Text>
+              <Text className='wb-brand-role'>{isOwner ? '门店老板' : '门店店长'}</Text>
             </View>
             <View className='wb-workbench-tag'>
               <Icon name='clipboard' size={18} color='#ffffff' />
@@ -129,22 +119,22 @@ export default function Workbench() {
           <View className='wb-stats'>
             <View className='wb-stat-item'>
               <Text className='wb-stat-num'>{statsLoading ? '-' : stats.total}</Text>
-              <Text className='wb-stat-label'>{isInstaller ? '全部' : '全部订单'}</Text>
+              <Text className='wb-stat-label'>全部订单</Text>
             </View>
             <View className='wb-stat-divider' />
             <View className='wb-stat-item'>
               <Text className='wb-stat-num wb-stat-warn'>{statsLoading ? '-' : stats.pending}</Text>
-              <Text className='wb-stat-label'>{isInstaller ? '待开工' : '待处理'}</Text>
+              <Text className='wb-stat-label'>待处理</Text>
             </View>
             <View className='wb-stat-divider' />
             <View className='wb-stat-item'>
               <Text className='wb-stat-num wb-stat-blue'>{statsLoading ? '-' : stats.installing}</Text>
-              <Text className='wb-stat-label'>{isInstaller ? '施工中' : '施工中'}</Text>
+              <Text className='wb-stat-label'>施工中</Text>
             </View>
             <View className='wb-stat-divider' />
             <View className='wb-stat-item'>
               <Text className='wb-stat-num wb-stat-green'>{statsLoading ? '-' : stats.completed}</Text>
-              <Text className='wb-stat-label'>{isInstaller ? '已完成' : '已完工'}</Text>
+              <Text className='wb-stat-label'>已完工</Text>
             </View>
           </View>
         </View>
@@ -153,7 +143,7 @@ export default function Workbench() {
       {/* 功能入口 */}
       <View className='wb-fn-section'>
         <Text className='wb-section-title'>功能入口</Text>
-        <View className={`wb-fn-grid ${isInstaller ? 'wb-fn-grid-sm' : ''}`}>
+        <View className='wb-fn-grid'>
           {functions.map((fn) => (
             <View
               key={fn.label}
@@ -169,55 +159,50 @@ export default function Workbench() {
         </View>
       </View>
 
-      {/* 最新动态（老板/店长显示） */}
-      {!isInstaller && (
-        <View className='wb-dynamic-section'>
-          <View className='wb-dynamic-header'>
-            <Text className='wb-section-title'>最新动态</Text>
-            <Text className='wb-dynamic-more' onClick={() => Taro.navigateTo({ url: '/subpackages/business/orders/index' })}>查看全部 ›</Text>
-          </View>
-          <View className='wb-dynamic-list'>
-            {ordersLoading ? (
-              <View className='wb-empty'>
-                <Text className='wb-empty-text'>加载中...</Text>
-              </View>
-            ) : (
-              <>
-                {orders.slice(0, 5).map((item: any) => {
-              const statusKey = (item.status || 'PENDING').toLowerCase();
-              return (
-                <View key={item.id} className='wb-dynamic-card'>
-                  <View className='wb-dynamic-top'>
-                    <Text className='wb-dynamic-no'>{item.orderNo || `#${item.id}`}</Text>
-                    <View className={`wb-dynamic-status wb-status-${statusKey}`}>
-                      <Text className='wb-dynamic-status-text'>
-                        {item.status === 'PENDING' ? '待处理' : item.status === 'INSTALLING' ? '施工中' : item.status === 'COMPLETED' ? '已完工' : item.status}
-                      </Text>
+      {/* 最新动态 */}
+      <View className='wb-dynamic-section'>
+        <View className='wb-dynamic-header'>
+          <Text className='wb-section-title'>最新动态</Text>
+          <Text className='wb-dynamic-more' onClick={() => Taro.navigateTo({ url: '/subpackages/business/orders/index' })}>查看全部 ›</Text>
+        </View>
+        <View className='wb-dynamic-list'>
+          {ordersLoading ? (
+            <View className='wb-empty'>
+              <Text className='wb-empty-text'>加载中...</Text>
+            </View>
+          ) : (
+            <>
+              {orders.slice(0, 5).map((item: any) => {
+                const statusKey = (item.status || 'PENDING').toLowerCase();
+                return (
+                  <View key={item.id} className='wb-dynamic-card'>
+                    <View className='wb-dynamic-top'>
+                      <Text className='wb-dynamic-title'>{item.client?.name || item.installAddress || item.communityName || item.productName || `订单${item.id}`}</Text>
+                      <View className={`wb-dynamic-status wb-status-${statusKey}`}>
+                        <Text className='wb-dynamic-status-text'>
+                          {item.status === 'PENDING' ? '待处理' : item.status === 'INSTALLING' ? '施工中' : item.status === 'COMPLETED' ? '已完工' : item.status}
+                        </Text>
+                      </View>
+                    </View>
+                    <Text className='wb-dynamic-product'>{item.productName || '未指定产品'}</Text>
+                    <View className='wb-dynamic-row'>
+                      <Text className='wb-dynamic-no-small'>{item.orderNo || `#${item.id}`}</Text>
+                      <View style={{ flex: 1 }} />
+                      <Text className='wb-dynamic-amount'>¥{item.totalAmount?.toLocaleString() || 0}</Text>
                     </View>
                   </View>
-                  <Text className='wb-dynamic-product'>{item.productName || '未指定产品'}</Text>
-                  <View className='wb-dynamic-row'>
-                    <Icon name='map-pin' size={24} color='#9ca3af' />
-                    <Text className='wb-dynamic-addr'>{item.installAddress || item.communityName || '-'}</Text>
-                  </View>
-                  <View className='wb-dynamic-bottom'>
-                    <Text className='wb-dynamic-client'>{item.client?.name || '-'}</Text>
-                    <Text className='wb-dynamic-amount'>¥{item.totalAmount?.toLocaleString() || 0}</Text>
-                  </View>
+                );
+              })}
+              {orders.length === 0 && (
+                <View className='wb-empty'>
+                  <Icon name='file-text' size={64} color='#d1d5db' />
+                  <Text className='wb-empty-text'>暂无动态</Text>
                 </View>
-              );
-            })}
-            {orders.length === 0 && (
-              <View className='wb-empty'>
-                <Icon name='file-text' size={64} color='#d1d5db' />
-                <Text className='wb-empty-text'>暂无动态</Text>
-              </View>
-            )}
-              </>
-            )}
-          </View>
+              )}
+            </>
+          )}
         </View>
-      )}
+      </View>
 
       <View className='safe-bottom' />
     </ScrollView>

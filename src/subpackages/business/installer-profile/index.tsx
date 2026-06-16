@@ -83,16 +83,7 @@ export default function InstallerProfile() {
         Taro.showToast({ title: '功能开发中', icon: 'none' });
         break;
       case 'contact':
-        Taro.showModal({
-          title: '联系门店',
-          content: `是否联系 ${user.storeName || '所属门店'}？`,
-          confirmText: '拨打电话',
-          success: (res) => {
-            if (res.confirm) {
-              Taro.makePhoneCall({ phoneNumber: '400-000-0000' }).catch(() => {});
-            }
-          },
-        });
+        Taro.showToast({ title: '暂无门店联系电话', icon: 'none' });
         break;
       case 'logout':
         Taro.showModal({

@@ -144,7 +144,7 @@ export default function Orders() {
               className='bo-card'
             >
               <View className='bo-card-top'>
-                <Text className='bo-card-no'>{item.client?.name || '未知客户'} · {item.communityName || item.installAddress || '-'}</Text>
+                <Text className='bo-card-no'>{item.client?.name || item.communityName || item.installAddress || item.productName || `订单${item.id}`}</Text>
                 <View className='bo-card-status' style={{ background: st.bg }}>
                   <Text className='bo-card-status-text' style={{ color: st.text }}>
                     {item.status === 'PENDING' ? (isInstaller ? '待开工' : '待处理') : item.status === 'INSTALLING' ? '施工中' : item.status === 'COMPLETED' ? (isInstaller ? '已完成' : '已完工') : item.status}
@@ -183,24 +183,20 @@ export default function Orders() {
                   </>
                 )}
                 {item.status === 'INSTALLING' && (
-                  <>
-                    <View className='btn-success bo-action-btn' onClick={() => handleComplete(item.id)}>
-                      <Icon name='check' size={26} color='#ffffff' />
-                      <Text>确认完工</Text>
-                    </View>
-                    <View
-                      className='btn-secondary bo-action-btn'
-                      onClick={() => Taro.navigateTo({ url: `/subpackages/business/order-manage/index?id=${item.id}` })}
-                    >
-                      <Icon name='edit' size={26} color='#122b4d' />
-                      <Text>编辑</Text>
-                    </View>
-                  </>
+                  <View className='btn-success bo-action-btn' onClick={() => handleComplete(item.id)}>
+                    <Icon name='check' size={26} color='#ffffff' />
+                    <Text>确认完工</Text>
+                  </View>
                 )}
                 {item.status === 'COMPLETED' && (
                   <View className='bo-card-done-tag'>
                     <Icon name='check-circle' size={28} color='#059669' />
                     <Text className='done-text'>订单已完成</Text>
+                  </View>
+                )}
+                {item.status === 'COMPLETED' && !isInstaller && (
+                  <View className='bo-case-hint' onClick={() => Taro.navigateTo({ url: '/subpackages/business/case-manage/index' })}>
+                    <Text className='bo-case-hint-text'>案例已生成 →</Text>
                   </View>
                 )}
               </View>

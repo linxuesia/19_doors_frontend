@@ -75,11 +75,6 @@ export default function StaffManage() {
     }
   };
 
-  const maskPhone = (phone: string) => {
-    if (!phone || phone.length < 7) return phone;
-    return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
-  };
-
   const getAvatarText = (name: string) => {
     return name.charAt(0).toUpperCase();
   };
@@ -256,7 +251,7 @@ export default function StaffManage() {
                     {(staff.role || '').includes('STORE_MANAGER') ? '店长' : '安装工'}
                   </Text>
                 </View>
-                <Text className='smp-phone'>{maskPhone(staff.phone)}</Text>
+                <Text className='smp-phone'>{staff.phone}</Text>
               </View>
 
               {/* 操作按钮 */}
@@ -279,11 +274,13 @@ export default function StaffManage() {
         </View>
       )}
 
-      {/* 添加成员按钮 */}
+      {/* 添加成员按钮 - 弹窗打开时隐藏 */}
+      {!showAddModal && !showEditModal && (
       <View className='smp-add-btn' onClick={openAddModal}>
         <Text className='smp-add-btn-icon'>+</Text>
         <Text className='smp-add-btn-text'>添加成员</Text>
       </View>
+      )}
 
       {/* 添加成员弹窗 */}
       {showAddModal && (
@@ -388,8 +385,6 @@ export default function StaffManage() {
           </View>
         </View>
       )}
-
-      <View className='safe-bottom' />
     </ScrollView>
   );
 }

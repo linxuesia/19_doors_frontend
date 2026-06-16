@@ -267,3 +267,17 @@
   color: #059669;
   font-weight: 500;
 }
+
+.bo-case-hint {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14rpx;
+}
+
+.bo-case-hint-text {
+  font-size: 23px;
+  color: #2563eb;
+  font-weight: 500;
+}

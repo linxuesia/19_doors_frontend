@@ -243,30 +243,34 @@ function Admin() {
 
   // 上传视频
   const handleUploadVideo = async () => {
+    let loadingShown = false;
     try {
       const res = await Taro.chooseMedia({
         count: 1,
         mediaType: ['video'],
-        sourceType: ['album'],
+        sourceType: ['album', 'camera'],
         maxDuration: 180,
       });
       const tempFilePath = res.tempFiles[0].tempFilePath;
       setVideoUploading(true);
       Taro.showLoading({ title: '上传中...' });
+      loadingShown = true;
 
       const cloudPath = `demo-videos/${Date.now()}.mp4`;
       const { uploadFile } = await import('../../../utils/cloud');
       const result = await uploadFile(tempFilePath, cloudPath);
       Taro.hideLoading();
+      loadingShown = false;
 
       Taro.showLoading({ title: '保存中...' });
       await api.post('/demo-videos', { videoUrl: result.fileID });
       Taro.hideLoading();
+      loadingShown = false;
       Taro.showToast({ title: '上传成功', icon: 'success' });
       loadVideos();
     } catch (err: any) {
-      Taro.hideLoading();
       if (err?.errMsg?.includes('cancel')) return;
+      if (loadingShown) Taro.hideLoading();
       Taro.showToast({ title: '上传失败', icon: 'none' });
     } finally {
       setVideoUploading(false);
@@ -633,7 +637,7 @@ function Admin() {
                   <View className='app-info-row'>
                     <Text className='app-info-label'>联系电话</Text>
                     <View className='app-phone-row'>
-                      <Text className='app-info-value'>{item.phone?.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') || '-'}</Text>
+                      <Text className='app-info-value'>{item.phone || '-'}</Text>
                       {item.phone && (
                         <View className='app-phone-call' onClick={() => {
                           Taro.showModal({ title: '拨打电话', content: item.phone, confirmText: '拨打', success: (r) => { if (r.confirm) Taro.makePhoneCall({ phoneNumber: item.phone }); } });
