@@ -54,6 +54,9 @@ export default defineAppConfig({
     'scope.userLocation': {
       desc: '用于展示您附近的安装案例及工地位置',
     },
+    'scope.userFuzzyLocation': {
+      desc: '用于展示您附近的安装案例及工地位置',
+    },
   },
   requiredPrivateInfos: ['getFuzzyLocation', 'chooseLocation'],
   window: {
