@@ -284,3 +284,149 @@
   border: 2rpx dashed #d1d5db;
   border-radius: 16rpx;
 }
+
+// ====== 门店小程序码按钮 ======
+.sm-qrcode-btn {
+  margin-top: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 22rpx 0;
+  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+  border-radius: 16rpx;
+
+  &:active {
+    opacity: 0.85;
+    transform: scale(0.98);
+  }
+}
+
+.sm-qrcode-btn-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+// ====== 二维码 Canvas（隐藏） ======
+.qrcode-canvas-hidden {
+  position: fixed;
+  left: -9999px;
+  top: -9999px;
+  width: 430px;
+  height: 520px;
+}
+
+// ====== 二维码弹窗 ======
+.qrcode-modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.qrcode-modal {
+  width: 600rpx;
+  background: #ffffff;
+  border-radius: 28rpx;
+  overflow: hidden;
+}
+
+.qrcode-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 32rpx 20rpx;
+}
+
+.qrcode-modal-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.qrcode-modal-close {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active {
+    background: #e5e7eb;
+    transform: scale(0.95);
+  }
+}
+
+.qrcode-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx 40rpx 32rpx;
+}
+
+.qrcode-modal-loading {
+  padding: 80rpx 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  Text {
+    font-size: 28rpx;
+    color: #9ca3af;
+  }
+}
+
+.qrcode-modal-img {
+  width: 430rpx;
+  height: 430rpx;
+  border-radius: 12rpx;
+  border: 1px solid #f3f4f6;
+}
+
+.qrcode-modal-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: center;
+  margin-top: 24rpx;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.qrcode-modal-footer {
+  padding: 0 40rpx 36rpx;
+}
+
+.qrcode-save-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 26rpx 0;
+  background: linear-gradient(135deg, #122b4d, #2b5a8e);
+  border-radius: 16rpx;
+
+  &:active {
+    opacity: 0.85;
+    transform: scale(0.98);
+  }
+}
+
+.qrcode-saving {
+  opacity: 0.6;
+}
+
+.qrcode-save-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #ffffff;
+}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Input, Textarea, ScrollView, Image } from '@tarojs/components';
+import { View, Text, Input, Textarea, ScrollView, Image, Canvas } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import api from '../../../utils/api';
@@ -31,6 +31,12 @@ export default function StoreManage() {
   const [newQualiImage, setNewQualiImage] = useState('');
   const [qualiUploading, setQualiUploading] = useState(false);
   const [addingQuali, setAddingQuali] = useState(false);
+
+  // 门店小程序码
+  const [qrcodeModal, setQrcodeModal] = useState(false);
+  const [qrcodeBase64, setQrcodeBase64] = useState('');
+  const [qrcodeLoading, setQrcodeLoading] = useState(false);
+  const [qrcodeSaving, setQrcodeSaving] = useState(false);
 
   // 老板和店长都可以编辑门店信息
   const canEdit = (user?.role || '').includes('STORE_OWNER') || (user?.role || '').includes('STORE_MANAGER');
@@ -170,6 +176,134 @@ export default function StoreManage() {
     }
   };
 
+  // 门店小程序码 - 生成
+  const handleGenerateQrcode = async () => {
+    if (!user?.storeId) return;
+    setQrcodeModal(true);
+    setQrcodeBase64('');
+    setQrcodeLoading(true);
+    try {
+      const res: any = await api.get(`/stores/${user.storeId}/qrcode`, { base64: 'true' });
+      if (res?.base64) {
+        setQrcodeBase64(res.base64);
+      } else {
+        Taro.showToast({ title: '生成失败', icon: 'none' });
+        setQrcodeModal(false);
+      }
+    } catch {
+      Taro.showToast({ title: '生成失败', icon: 'none' });
+      setQrcodeModal(false);
+    } finally {
+      setQrcodeLoading(false);
+    }
+  };
+
+  // 门店小程序码 - 保存到相册
+  const handleSaveToAlbum = async () => {
+    if (!qrcodeBase64 || qrcodeSaving) return;
+    setQrcodeSaving(true);
+    Taro.showLoading({ title: '生成图片...' });
+    try {
+      const query = Taro.createSelectorQuery();
+      const canvasNode: any = await new Promise((resolve, reject) => {
+        query.select('#store-qrcode-canvas')
+          .fields({ node: true, size: true })
+          .exec((res: any) => {
+            if (res?.[0]?.node) resolve(res[0].node);
+            else reject(new Error('Canvas not found'));
+          });
+      });
+
+      const dpr = Taro.getSystemInfoSync().pixelRatio || 2;
+      const width = 430;
+      const height = 520;
+      canvasNode.width = width * dpr;
+      canvasNode.height = height * dpr;
+      const ctx = canvasNode.getContext('2d');
+      ctx.scale(dpr, dpr);
+
+      // 白色背景
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+
+      // 加载并绘制二维码
+      const img = canvasNode.createImage();
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = `data:image/png;base64,${qrcodeBase64}`;
+      });
+
+      const qrPadding = 20;
+      const qrSize = width - qrPadding * 2;
+      ctx.drawImage(img, qrPadding, qrPadding, qrSize, qrSize);
+
+      // 绘制门店名称
+      const textY = qrPadding + qrSize + 44;
+      ctx.fillStyle = '#1f2937';
+      ctx.font = 'bold 16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+
+      const name = form.name || '19分贝系统门窗';
+      const maxChars = 18;
+      if (name.length <= maxChars) {
+        ctx.fillText(name, width / 2, textY);
+      } else {
+        const line1 = name.substring(0, maxChars);
+        const line2 = name.substring(maxChars, maxChars * 2);
+        ctx.fillText(line1, width / 2, textY);
+        ctx.fillText(line2, width / 2, textY + 24);
+      }
+
+      // 导出到临时文件
+      const tempRes: any = await new Promise((resolve, reject) => {
+        Taro.canvasToTempFilePath({
+          canvas: canvasNode,
+          success: resolve,
+          fail: reject,
+        });
+      });
+
+      Taro.hideLoading();
+
+      // 保存到相册
+      await new Promise<void>((resolve, reject) => {
+        Taro.saveImageToPhotosAlbum({
+          filePath: tempRes.tempFilePath,
+          success: () => resolve(),
+          fail: (err: any) => {
+            if (err?.errMsg?.includes('auth deny')) {
+              Taro.showModal({
+                title: '需要授权',
+                content: '请允许保存图片到相册',
+                confirmText: '去设置',
+                success: (modalRes) => {
+                  if (modalRes.confirm) {
+                    Taro.openSetting();
+                  }
+                },
+              });
+              reject(err);
+            } else {
+              reject(err);
+            }
+          },
+        });
+      });
+
+      Taro.showToast({ title: '已保存到相册', icon: 'success' });
+      setQrcodeModal(false);
+    } catch (err: any) {
+      Taro.hideLoading();
+      if (!err?.errMsg?.includes('auth deny')) {
+        Taro.showToast({ title: '保存失败', icon: 'none' });
+      }
+    } finally {
+      setQrcodeSaving(false);
+    }
+  };
+
   if (!user || !requireBusinessLogin()) {
     return <View className='sm-loading' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
   }
@@ -187,6 +321,12 @@ export default function StoreManage() {
       <View className='sm-header'>
         <Text className='sm-title'>门店设置</Text>
         <Text className='sm-subtitle'>{canEdit ? '编辑门店信息' : '查看门店信息'}</Text>
+        {canEdit && (
+          <View className='sm-qrcode-btn' onClick={handleGenerateQrcode}>
+            <Icon name='qrcode' size={28} color='#ffffff' />
+            <Text className='sm-qrcode-btn-text'>生成门店小程序码</Text>
+          </View>
+        )}
       </View>
 
       <View className='sm-form'>
@@ -384,6 +524,58 @@ export default function StoreManage() {
       </View>
 
       <View className='safe-bottom' />
+
+      {/* 隐藏的 Canvas - 用于合成门店二维码+名称 */}
+      <Canvas
+        id='store-qrcode-canvas'
+        type='2d'
+        className='qrcode-canvas-hidden'
+      />
+
+      {/* 门店小程序码弹窗 */}
+      {qrcodeModal && (
+        <View className='qrcode-modal-mask' onClick={() => !qrcodeLoading && !qrcodeSaving && setQrcodeModal(false)}>
+          <View className='qrcode-modal' onClick={(e) => e.stopPropagation()}>
+            <View className='qrcode-modal-header'>
+              <Text className='qrcode-modal-title'>门店小程序码</Text>
+              <View className='qrcode-modal-close' onClick={() => !qrcodeSaving && setQrcodeModal(false)}>
+                <Icon name='close' size={28} color='#6b7280' />
+              </View>
+            </View>
+
+            <View className='qrcode-modal-body'>
+              {qrcodeLoading ? (
+                <View className='qrcode-modal-loading'>
+                  <Text>生成中...</Text>
+                </View>
+              ) : qrcodeBase64 ? (
+                <>
+                  <Image
+                    className='qrcode-modal-img'
+                    src={`data:image/png;base64,${qrcodeBase64}`}
+                    mode='widthFix'
+                  />
+                  <Text className='qrcode-modal-name'>{form.name || '19分贝系统门窗'}</Text>
+                </>
+              ) : null}
+            </View>
+
+            {qrcodeBase64 && (
+              <View className='qrcode-modal-footer'>
+                <View
+                  className={`qrcode-save-btn ${qrcodeSaving ? 'qrcode-saving' : ''}`}
+                  onClick={handleSaveToAlbum}
+                >
+                  <Icon name='image' size={28} color='#ffffff' />
+                  <Text className='qrcode-save-text'>
+                    {qrcodeSaving ? '保存中...' : '保存到相册'}
+                  </Text>
+                </View>
+              </View>
+            )}
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 }
