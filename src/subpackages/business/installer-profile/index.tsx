@@ -49,7 +49,7 @@ export default function InstallerProfile() {
   const [stats, setStats] = useState({ completed: 0, installing: 0, rating: 0 });
 
   useEffect(() => {
-    if (!requireBusinessLogin()) return;
+    if (!requireBusinessLogin(undefined, 'INSTALLER')) return;
 
     if (user?.id) {
       Promise.all([
@@ -67,7 +67,7 @@ export default function InstallerProfile() {
     }
   }, [user]);
 
-  if (!user || !requireBusinessLogin()) {
+  if (!user || !requireBusinessLogin(undefined, 'INSTALLER')) {
     return <View className='cl-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
   }
 

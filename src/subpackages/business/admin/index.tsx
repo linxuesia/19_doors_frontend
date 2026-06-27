@@ -96,7 +96,7 @@ function Admin() {
   const [qrcodeSaving, setQrcodeSaving] = useState(false);
 
   useEffect(() => {
-    if (!requireBusinessLogin('/subpackages/business/admin-login/index')) return;
+    if (!requireBusinessLogin('/subpackages/business/admin-login/index', 'ADMIN')) return;
 
     Promise.all([
       api.get('/stores?pageSize=100').then((r: any) => r?.list || r).catch(() => []),
@@ -121,7 +121,7 @@ function Admin() {
     });
   }, []);
 
-  if (!user || !requireBusinessLogin('/subpackages/business/admin-login/index')) {
+  if (!user || !requireBusinessLogin('/subpackages/business/admin-login/index', 'ADMIN')) {
     return <View className='admin-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
   }
 

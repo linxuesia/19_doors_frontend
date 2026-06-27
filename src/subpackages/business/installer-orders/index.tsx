@@ -49,7 +49,7 @@ export default function InstallerOrders() {
   const [stats, setStats] = useState({ total: 0, pending: 0, doing: 0, completed: 0 });
 
   useEffect(() => {
-    if (!requireBusinessLogin()) return;
+    if (!requireBusinessLogin(undefined, 'INSTALLER')) return;
     setPage(1);
     loadStats();
   }, [user, activeType, activeStatus]);
@@ -128,7 +128,7 @@ export default function InstallerOrders() {
     } catch {}
   };
 
-  if (!user || !requireBusinessLogin()) {
+  if (!user || !requireBusinessLogin(undefined, 'INSTALLER')) {
     return <View className='cl-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
   }
 

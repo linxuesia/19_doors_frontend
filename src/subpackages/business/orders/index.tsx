@@ -29,7 +29,7 @@ export default function Orders() {
   const [storeStaff, setStoreStaff] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!requireBusinessLogin()) return;
+    if (!requireBusinessLogin(undefined, 'STORE_OWNER,STORE_MANAGER')) return;
     setPage(1);
   }, [user, activeTab]);
 
@@ -109,7 +109,7 @@ export default function Orders() {
     }
   };
 
-  if (!user || !requireBusinessLogin()) {
+  if (!user || !requireBusinessLogin(undefined, 'STORE_OWNER,STORE_MANAGER')) {
     return <View className='cl-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
   }
 

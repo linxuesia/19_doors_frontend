@@ -39,7 +39,7 @@ export default function Workbench() {
   useEffect(() => { refreshUser(); }, []);
 
   useEffect(() => {
-    if (!requireBusinessLogin()) return;
+    if (!requireBusinessLogin(undefined, 'STORE_OWNER,STORE_MANAGER')) return;
 
     const params: any = {};
     if (user?.storeId) params.storeId = user.storeId;
@@ -59,7 +59,7 @@ export default function Workbench() {
       .finally(() => setOrdersLoading(false));
   }, [user]);
 
-  if (!user || !requireBusinessLogin()) {
+  if (!user || !requireBusinessLogin(undefined, 'STORE_OWNER,STORE_MANAGER')) {
     return <View className='wb-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
   }
 

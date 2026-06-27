@@ -27,7 +27,7 @@ interface AuthContextType {
   token: string | null;
   isBusiness: boolean;
   canManageStaff: boolean;
-  requireBusinessLogin: (loginPage?: string) => boolean;
+  requireBusinessLogin: (loginPage?: string, requiredRole?: string) => boolean;
   requireLogin: (loginPage?: string) => boolean;
   phoneLogin: (params: { phoneCode?: string; wxCode?: string; phone?: string; avatarUrl?: string; nickname?: string }) => Promise<User>;
   wechatLogin: (role: string) => Promise<void>;
@@ -105,13 +105,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return true;
   }, [user, token]);
 
-  const requireBusinessLogin = useCallback((loginPage?: string) => {
+  const requireBusinessLogin = useCallback((loginPage?: string, requiredRole?: string) => {
     if (!requireLogin(loginPage)) return false;
     const roles = (user!.role || '').split(',').filter(Boolean);
     if (!roles.some(r => BUSINESS_ROLES.includes(r))) {
       Taro.showToast({ title: '无权限访问', icon: 'none' });
       setTimeout(() => Taro.switchTab({ url: '/pages/index/index' }), 1500);
       return false;
+    }
+    if (requiredRole) {
+      const allowed = requiredRole.split(',').filter(Boolean);
+      if (!roles.some(r => allowed.includes(r))) {
+        Taro.showToast({ title: '无权限访问', icon: 'none' });
+        setTimeout(() => Taro.switchTab({ url: '/pages/index/index' }), 1500);
+        return false;
+      }
     }
     return true;
   }, [user, requireLogin]);

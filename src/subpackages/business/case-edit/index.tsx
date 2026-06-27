@@ -41,7 +41,7 @@ export default function CaseEdit() {
   const [coverUploading, setCoverUploading] = useState(false);
 
   useEffect(() => {
-    if (!requireBusinessLogin()) return;
+    if (!requireBusinessLogin(undefined, 'STORE_OWNER,STORE_MANAGER')) return;
     if (isCreate) {
       Taro.setNavigationBarTitle({ title: '新增案例' });
       return;

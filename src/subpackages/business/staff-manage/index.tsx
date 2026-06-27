@@ -42,7 +42,7 @@ export default function StaffManage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!requireBusinessLogin()) return;
+    if (!requireBusinessLogin(undefined, 'STORE_OWNER,STORE_MANAGER')) return;
     if (!(user?.role || '').includes('STORE_OWNER') && !(user?.role || '').includes('STORE_MANAGER')) {
       Taro.showToast({ title: '无权限访问', icon: 'none' });
       setTimeout(() => Taro.navigateBack(), 1500);
@@ -186,7 +186,7 @@ export default function StaffManage() {
     setForm(prev => ({ ...prev, [key]: value }));
   };
 
-  if (!user || !requireBusinessLogin()) {
+  if (!user || !requireBusinessLogin(undefined, 'STORE_OWNER,STORE_MANAGER')) {
     return <View className='cl-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
   }
 

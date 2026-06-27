@@ -42,7 +42,7 @@ export default function StoreManage() {
   const canEdit = (user?.role || '').includes('STORE_OWNER') || (user?.role || '').includes('STORE_MANAGER');
 
   useEffect(() => {
-    if (!requireBusinessLogin()) return;
+    if (!requireBusinessLogin(undefined, 'STORE_OWNER,STORE_MANAGER')) return;
     if (!user?.storeId) return;
 
     setLoading(true);
@@ -304,7 +304,7 @@ export default function StoreManage() {
     }
   };
 
-  if (!user || !requireBusinessLogin()) {
+  if (!user || !requireBusinessLogin(undefined, 'STORE_OWNER,STORE_MANAGER')) {
     return <View className='sm-loading' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
   }
 
