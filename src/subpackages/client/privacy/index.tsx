@@ -25,7 +25,7 @@ export default function Privacy() {
               在您使用我们的服务时，根据不同的业务场景，我们可能会收集以下类型的个人信息：
             </Text>
             <Text className='privacy-text'>
-              1. <Text className='privacy-highlight'>手机号码</Text>：用于账号注册登录、订单联系、预约量尺和身份验证。在客户端登录时通过微信手机号授权获取，在安装工登录和管理员登录时由用户主动填写。
+              1. <Text className='privacy-highlight'>手机号码</Text>：用于账号注册登录、订单联系、预约量尺和身份验证。在客户端登录时通过微信手机号授权获取，在安装工程师登录和管理员登录时由用户主动填写。
             </Text>
             <Text className='privacy-text'>
               2. <Text className='privacy-highlight'>微信头像与昵称</Text>：仅用于个人中心页面展示，您在注册时可自主选择填写。
@@ -40,7 +40,7 @@ export default function Privacy() {
               5. <Text className='privacy-highlight'>姓名/联系人姓名</Text>：用于预约量尺时确认联系人身份、门店入驻时登记联系人、订单录入时记录客户姓名。
             </Text>
             <Text className='privacy-text'>
-              6. <Text className='privacy-highlight'>照片/图片</Text>：用于以下业务场景——门店入驻时上传营业执照、订单管理时上传设计图纸、安装工量尺记录和施工进度拍照、门店封面和资质图片上传、全国案例封面图片上传。上述图片均通过您的相册选择或现场拍摄获取。
+              6. <Text className='privacy-highlight'>照片/图片</Text>：用于以下业务场景——门店入驻时上传营业执照、订单管理时上传设计图纸、安装工程师量尺记录和施工进度拍照、门店封面和资质图片上传、全国案例封面图片上传。上述图片均通过您的相册选择或现场拍摄获取。
             </Text>
             <Text className='privacy-text'>
               7. <Text className='privacy-highlight'>视频</Text>：仅限系统管理员在后台上传产品说明视频，用于公司简介页展示。不涉及普通用户的视频信息。

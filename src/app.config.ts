@@ -38,9 +38,9 @@ export default defineAppConfig({
         'client-detail/index',    // 客户详情
         'admin/index',            // 管理员后台
         'admin-login/index',      // 管理员登录（扫码）
-        'installer-login/index',  // 安装工登录
-        'installer-orders/index', // 安装工-我的工单
-        'installer-order-detail/index', // 安装工-工单详情
+        'installer-login/index',  // 安装工程师登录
+        'installer-orders/index', // 安装工程师-我的工单
+        'installer-order-detail/index', // 安装工程师-工单详情
         'installer-profile/index', // 工人个人中心
         'staff-manage/index',     // 人员管理（老板）
         'case-manage/index',      // 案例库管理

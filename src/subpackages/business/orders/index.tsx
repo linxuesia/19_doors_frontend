@@ -66,11 +66,11 @@ export default function Orders() {
     }
   }, [user?.storeId, isInstaller]);
 
-  /** 分配安装工 - 使用选择器 */
+  /** 分配安装工程师 - 使用选择器 */
   const handleAssignPicker = (orderId: string) => {
     const installers = storeStaff.filter((s: any) => (s.role || '').includes('INSTALLER'));
     if (installers.length === 0) {
-      Taro.showToast({ title: '暂无可用安装工', icon: 'none' });
+      Taro.showToast({ title: '暂无可用安装工程师', icon: 'none' });
       return;
     }
     Taro.showActionSheet({
@@ -176,7 +176,7 @@ export default function Orders() {
                       <Icon name='user' size={26} color='#ffffff' />
                       <Text>分配工人</Text>
                     </View>
-                    <View className='bo-action-btn btn-disabled' onClick={() => Taro.showToast({ title: '请先分配安装工', icon: 'none' })}>
+                    <View className='bo-action-btn btn-disabled' onClick={() => Taro.showToast({ title: '请先分配安装工程师', icon: 'none' })}>
                       <Icon name='tools' size={26} color='#9ca3af' />
                       <Text>开工</Text>
                     </View>

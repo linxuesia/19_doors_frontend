@@ -18,7 +18,7 @@ type TabType = 'all' | 'STORE_MANAGER' | 'INSTALLER';
 
 const ROLE_OPTIONS = [
   { label: '店长', value: 'STORE_MANAGER' },
-  { label: '安装工', value: 'INSTALLER' },
+  { label: '安装工程师', value: 'INSTALLER' },
 ];
 
 export default function StaffManage() {
@@ -30,7 +30,7 @@ export default function StaffManage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
 
-  // 店长只能管理安装工，老板可以管理所有角色
+  // 店长只能管理安装工程师，老板可以管理所有角色
   const isOwner = (user?.role || '').includes('STORE_OWNER');
 
   // 表单数据
@@ -81,7 +81,7 @@ export default function StaffManage() {
 
   const filteredList = (() => {
     let list = staffList;
-    // 店长只能看到安装工，看不到其他店长
+    // 店长只能看到安装工程师，看不到其他店长
     if (!isOwner) {
       list = list.filter(s => (s.role || '').includes('INSTALLER'));
     }
@@ -213,7 +213,7 @@ export default function StaffManage() {
         {([
           { key: 'all' as TabType, label: '全部成员' },
           ...(isOwner ? [{ key: 'STORE_MANAGER' as TabType, label: '店长' }] : []),
-          { key: 'INSTALLER' as TabType, label: '安装工' },
+          { key: 'INSTALLER' as TabType, label: '安装工程师' },
         ]).map(tab => (
           <View
             key={tab.key}
@@ -248,7 +248,7 @@ export default function StaffManage() {
                 <View className='smp-name-row'>
                   <Text className='smp-name'>{staff.name}</Text>
                   <Text className={`smp-role-tag ${(staff.role || '').includes('STORE_MANAGER') ? 'smp-role-manager' : 'smp-role-installer'}`}>
-                    {(staff.role || '').includes('STORE_MANAGER') ? '店长' : '安装工'}
+                    {(staff.role || '').includes('STORE_MANAGER') ? '店长' : '安装工程师'}
                   </Text>
                 </View>
                 <Text className='smp-phone'>{staff.phone}</Text>
@@ -311,7 +311,7 @@ export default function StaffManage() {
               <View
                 className='smp-form-picker'
                 onClick={() => {
-                  // 店长只能选择安装工
+                  // 店长只能选择安装工程师
                   const options = isOwner ? ROLE_OPTIONS : ROLE_OPTIONS.filter(r => r.value === 'INSTALLER');
                   Taro.showActionSheet({
                     itemList: options.map(r => r.label),
@@ -362,7 +362,7 @@ export default function StaffManage() {
               <View
                 className='smp-form-picker'
                 onClick={() => {
-                  // 店长只能选择安装工
+                  // 店长只能选择安装工程师
                   const options = isOwner ? ROLE_OPTIONS : ROLE_OPTIONS.filter(r => r.value === 'INSTALLER');
                   Taro.showActionSheet({
                     itemList: options.map(r => r.label),

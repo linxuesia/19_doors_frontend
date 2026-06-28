@@ -23,7 +23,7 @@ export default function StoreDetail() {
   }
 
   const roleName = (role: string) => {
-    const map: Record<string, string> = { STORE_OWNER: '老板', STORE_MANAGER: '店长', INSTALLER: '安装工' };
+    const map: Record<string, string> = { STORE_OWNER: '老板', STORE_MANAGER: '店长', INSTALLER: '安装工程师' };
     return map[role] || role;
   };
 

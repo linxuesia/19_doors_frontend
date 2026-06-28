@@ -40,11 +40,11 @@ export default function Reservations() {
     }
   }, [user?.storeId]);
 
-  /** 分配量尺人员 - 使用选择器（仅安装工） */
+  /** 分配量尺人员 - 使用选择器（仅安装工程师） */
   const handleAssignPicker = (reservationId: string) => {
     const installers = storeStaff.filter((s: any) => (s.role || '').includes('INSTALLER'));
     if (installers.length === 0) {
-      Taro.showToast({ title: '暂无可用安装工', icon: 'none' });
+      Taro.showToast({ title: '暂无可用安装工程师', icon: 'none' });
       return;
     }
     Taro.showActionSheet({

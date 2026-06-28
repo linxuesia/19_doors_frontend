@@ -122,7 +122,7 @@ export default function Profile() {
       </View>
       )}
 
-      {/* 安装工入口 */}
+      {/* 安装工程师入口 */}
       {user && (user.role || '').includes('INSTALLER') && (
       <View className='store-entry-card'>
         <View className='store-entry-left'>

@@ -318,7 +318,7 @@ function OrderDetailView({ order: initialOrder }: { order: any }) {
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
-    // 加载门店安装工列表
+    // 加载门店安装工程师列表
     if (user?.storeId) {
       api.get(`/stores/${user.storeId}`)
         .then((res: any) => {
@@ -329,10 +329,10 @@ function OrderDetailView({ order: initialOrder }: { order: any }) {
     }
   }, [user?.storeId]);
 
-  /** 分配安装工并开工 */
+  /** 分配安装工程师并开工 */
   const handleAssign = async () => {
     if (!selectedInstaller) {
-      Taro.showToast({ title: '请选择安装工', icon: 'none' });
+      Taro.showToast({ title: '请选择安装工程师', icon: 'none' });
       return;
     }
     setActionLoading(true);
@@ -398,13 +398,13 @@ function OrderDetailView({ order: initialOrder }: { order: any }) {
             <>
               {!showAssign ? (
                 <View className='btn-primary om-action-btn' onClick={() => setShowAssign(true)}>
-                  <Text>分配安装工</Text>
+                  <Text>分配安装工程师</Text>
                 </View>
               ) : (
                 <View className='om-assign-panel'>
-                  <Text className='om-section-title'>选择安装工</Text>
+                  <Text className='om-section-title'>选择安装工程师</Text>
                   {installers.length === 0 ? (
-                    <Text className='om-no-installer'>暂无安装工，请先通过员工认证添加</Text>
+                    <Text className='om-no-installer'>暂无安装工程师，请先通过员工认证添加</Text>
                   ) : (
                     <View className='om-installer-list'>
                       {installers.map((ins: any) => (
@@ -450,7 +450,7 @@ function OrderDetailView({ order: initialOrder }: { order: any }) {
           { label: '产品', value: order.productName || '-' },
           { label: '客户', value: `${order.client?.name || order.clientName || '-'} ${order.client?.phone || order.clientPhone || ''}` },
           { label: '门店', value: order.store?.name || '-' },
-          { label: '安装工', value: order.installer?.name || '未分配' },
+          { label: '安装工程师', value: order.installer?.name || '未分配' },
           { label: '小区', value: order.communityName || '-' },
           { label: '地址', value: order.installAddress || '-' },
           { label: '金额', value: `¥${order.totalAmount?.toLocaleString() || 0}` },

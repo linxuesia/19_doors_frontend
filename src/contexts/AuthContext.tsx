@@ -16,7 +16,7 @@ export const roleLabels: Record<string, string> = {
   CLIENT: '客户',
   STORE_OWNER: '老板',
   STORE_MANAGER: '店长',
-  INSTALLER: '安装工',
+  INSTALLER: '安装工程师',
   ADMIN: '管理员',
 };
 
