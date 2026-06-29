@@ -75,14 +75,6 @@ export default function Login() {
     const phoneCode = e.detail?.code;
     if (!phoneCode) return;
 
-    if (!nickname.trim()) {
-      setError('请输入您的昵称');
-      return;
-    }
-    if (!avatarUrl) {
-      setError('请选择头像');
-      return;
-    }
     if (!privacyChecked) {
       setError('请阅读并同意隐私政策');
       return;
@@ -95,8 +87,8 @@ export default function Login() {
       await phoneLogin({
         phoneCode,
         wxCode: loginRes.code,
-        avatarUrl,
-        nickname: nickname.trim(),
+        ...(avatarUrl && { avatarUrl }),
+        ...(nickname.trim() && { nickname: nickname.trim() }),
       });
       Taro.switchTab({ url: '/pages/profile/index' });
     } catch (err: any) {
@@ -142,7 +134,7 @@ export default function Login() {
           <Icon name='window' size={72} color='#122b4d' />
         </View>
         <Text className='login-title'>19分贝门窗</Text>
-        <Text className='login-subtitle'>完善个人信息</Text>
+        <Text className='login-subtitle'>登录后可补充个人信息</Text>
 
         {/* 头像和昵称区域 */}
         <View className='login-profile-section'>
@@ -157,7 +149,7 @@ export default function Login() {
             ) : (
               <View className='login-avatar-placeholder'>
                 <Icon name='user' size={48} color='#9ca3af' />
-                <Text className='login-avatar-text'>点击设置头像</Text>
+                <Text className='login-avatar-text'>点击设置头像（选填）</Text>
               </View>
             )}
           </Button>
@@ -168,7 +160,7 @@ export default function Login() {
             <Input
               className='login-nickname-input'
               type='nickname'
-              placeholder='请输入您的昵称'
+              placeholder='昵称（选填）'
               value={nickname}
               onInput={handleNicknameInput}
               maxlength={20}
