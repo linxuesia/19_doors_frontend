@@ -89,7 +89,6 @@ export default function SiteMap() {
           latitude: site.latitude,
           longitude: site.longitude,
           title: site.title,
-          iconPath: '/assets/marker-site.png',
           width: 32,
           height: 32,
           customCallout: {

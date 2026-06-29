@@ -26,12 +26,17 @@ export default function Home() {
   // 统一数据源：优先 API 数据，无数据时使用缺省点位
   const siteDataSource = sites.length > 0 ? sites : defaultMarkers;
 
+  // 地图中心：优先第一个工地坐标，否则门店坐标，最后默认上海
+  const mapCenter = {
+    longitude: sites.length > 0 ? sites[0].longitude : (storeInfo?.longitude || 121.4737),
+    latitude: sites.length > 0 ? sites[0].latitude : (storeInfo?.latitude || 31.2304),
+  };
+
   const markers = siteDataSource.map((site: any, i: number) => ({
     id: i + 1,
     longitude: site.longitude,
     latitude: site.latitude,
     title: site.name || site.title || '',
-    iconPath: '',
     width: 32,
     height: 32,
     callout: {
@@ -150,8 +155,8 @@ export default function Home() {
         <View className='map-container'>
           <Map
             className='index-map'
-            longitude={storeInfo?.longitude || 121.4737}
-            latitude={storeInfo?.latitude || 31.2304}
+            longitude={mapCenter.longitude}
+            latitude={mapCenter.latitude}
             scale={12}
             markers={markers}
             showLocation
