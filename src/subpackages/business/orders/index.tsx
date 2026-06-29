@@ -39,7 +39,6 @@ export default function Orders() {
 
     const params: any = { page: String(page), pageSize: '20' };
     if (user?.storeId && !(user.role || '').includes('CLIENT')) params.storeId = user.storeId;
-    if ((user?.role || '').includes('INSTALLER')) params.installerId = user.id;
     if (activeTab) params.status = activeTab;
 
     api.get('/orders', { ...params })
@@ -56,7 +55,8 @@ export default function Orders() {
       .finally(() => setLoading(false));
   }, [user, activeTab, page]);
 
-  const isInstaller = (user.role || '').includes('INSTALLER');
+  // 仅纯安装工程师（无门店管理角色）显示工单视图，多角色用户以门店管理为主
+  const isInstaller = (user.role || '').includes('INSTALLER') && !(user.role || '').includes('STORE_OWNER') && !(user.role || '').includes('STORE_MANAGER');
 
   useEffect(() => {
     if (user?.storeId && !isInstaller) {
