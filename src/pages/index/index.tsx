@@ -6,13 +6,6 @@ import Icon from '../../components/Icon';
 import api from '../../utils/api';
 import './index.scss';
 
-// 长沙周边模拟案例坐标（API 无数据时的缺省展示）
-const defaultMarkers = [
-  { id: 1, longitude: 112.9388, latitude: 28.2282, name: '芯汇花园5-1902' },
-  { id: 2, longitude: 112.9200, latitude: 28.2150, name: '泊岸时光印19幢' },
-  { id: 3, longitude: 112.9500, latitude: 28.2400, name: '金平路555弄' },
-  { id: 4, longitude: 112.9100, latitude: 28.2000, name: '梅溪湖壹号' },
-];
 
 export default function Home() {
   const router = useRouter();
@@ -24,7 +17,7 @@ export default function Home() {
   const [storeInfo, setStoreInfo] = useState<any>(null);
 
   // 统一数据源：优先 API 数据，无数据时使用缺省点位
-  const siteDataSource = sites.length > 0 ? sites : defaultMarkers;
+  const siteDataSource = sites;
 
   // 地图中心：优先第一个工地坐标，否则门店坐标，最后默认上海
   const mapCenter = {
