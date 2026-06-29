@@ -7,7 +7,7 @@ import api from '../../utils/api';
 import './index.scss';
 
 export default function Profile() {
-  const { user, logout } = useAuth();
+  const { user, logout, refreshUser } = useAuth();
   const [hasPendingApply, setHasPendingApply] = useState(false);
 
   useEffect(() => {
@@ -15,6 +15,7 @@ export default function Profile() {
   }, [user]);
 
   useDidShow(() => {
+    refreshUser();
     checkPending();
   });
 
