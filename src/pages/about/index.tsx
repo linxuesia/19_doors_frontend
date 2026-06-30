@@ -5,29 +5,6 @@ import Icon from '../../components/Icon';
 import api from '../../utils/api';
 import './index.scss';
 
-const defaultStores = [
-  {
-    id: 's1',
-    name: '北京海淀体验中心',
-    address: '北京市海淀区蓟门桥西海国际中心',
-    area: '800㎡',
-    businessHours: '09:00-18:00',
-    phone: '400-888-1919',
-    latitude: 39.9624,
-    longitude: 116.3489,
-  },
-  {
-    id: 's2',
-    name: '山东临朐生产基地展厅',
-    address: '山东省潍坊市临朐县中欧节能门窗产业园D区',
-    area: '1200㎡',
-    businessHours: '08:30-17:30',
-    phone: '0536-1234567',
-    latitude: 36.5125,
-    longitude: 118.5386,
-  },
-];
-
 const REPORT_BASE_URL = 'cloud://prod-d7g81p837f1219e28.7072-prod-d7g81p837f1219e28-1436604435/product-report';
 
 export default function About() {
@@ -39,12 +16,12 @@ export default function About() {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   useEffect(() => {
-    api.get('/brand-stores?pageSize=100')
+    api.get('/stores?pageSize=100&status=OPEN')
       .then((res: any) => {
         const list = res?.list || (Array.isArray(res) ? res : []);
-        setBrandStores(list.length > 0 ? list : defaultStores);
+        setBrandStores(list);
       })
-      .catch(() => setBrandStores(defaultStores));
+      .catch(() => setBrandStores([]));
   }, []);
 
   useEffect(() => {
@@ -123,8 +100,7 @@ export default function About() {
     }
   };
 
-  const storeList = brandStores.length > 0 ? brandStores : defaultStores;
-  const displayStores = showAllStores ? storeList : storeList.slice(0, 10);
+  const displayStores = showAllStores ? brandStores : brandStores.slice(0, 10);
 
   return (
     <ScrollView className='about-page' scrollY>
@@ -182,13 +158,19 @@ export default function About() {
           ))}
         </View>
 
-        {storeList.length > 10 && (
+        {brandStores.length > 10 && (
           <View
             className={`show-all-btn ${showAllStores ? 'expanded' : ''}`}
             onClick={() => setShowAllStores(!showAllStores)}
           >
-            <Text className='show-all-text'>{showAllStores ? '收起' : `查看全部 (${storeList.length})`}</Text>
+            <Text className='show-all-text'>{showAllStores ? '收起' : `查看全部 (${brandStores.length})`}</Text>
             <Text className='show-all-icon'>{showAllStores ? '↑' : '↓'}</Text>
+          </View>
+        )}
+        {brandStores.length === 0 && (
+          <View className='store-empty'>
+            <Icon name='map-pin' size={48} color='#d1d5db' />
+            <Text className='store-empty-text'>暂无门店信息</Text>
           </View>
         )}
       </View>
