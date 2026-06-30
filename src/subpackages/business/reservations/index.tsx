@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView } from '@tarojs/components';
+import { View, Text, ScrollView, Input, Picker } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import { measurementStatusMap } from '../../../constants/status';
@@ -14,22 +14,30 @@ const statusTabs = [
   { value: 'MEASURED', label: '已量尺' },
 ];
 
+const emptyForm = {
+  contactName: '',
+  phone: '',
+  communityName: '',
+  address: '',
+  houseArea: '',
+  expectedDate: '',
+  remarks: '',
+};
+
 export default function Reservations() {
   const { user, requireBusinessLogin } = useAuth();
   const [list, setList] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState('');
   const [storeStaff, setStoreStaff] = useState<any[]>([]);
 
+  // 录入量尺单
+  const [showCreate, setShowCreate] = useState(false);
+  const [form, setForm] = useState({ ...emptyForm });
+  const [submitting, setSubmitting] = useState(false);
+
   useEffect(() => {
     if (!requireBusinessLogin(undefined, 'STORE_OWNER,STORE_MANAGER')) return;
-
-    const params: any = {};
-    if (user?.storeId) params.storeId = user.storeId;
-    if (activeTab) params.status = activeTab;
-
-    api.get('/measurements', { ...params, pageSize: '100' })
-      .then((res: any) => setList(res?.list || res || []))
-      .catch(() => setList([]));
+    fetchList();
   }, [user, activeTab]);
 
   useEffect(() => {
@@ -39,6 +47,53 @@ export default function Reservations() {
         .catch(() => {});
     }
   }, [user?.storeId]);
+
+  const fetchList = () => {
+    const params: any = {};
+    if (user?.storeId) params.storeId = user.storeId;
+    if (activeTab) params.status = activeTab;
+
+    api.get('/measurements', { ...params, pageSize: '100' })
+      .then((res: any) => setList(res?.list || res || []))
+      .catch(() => setList([]));
+  };
+
+  const updateForm = (key: string, value: any) => {
+    setForm(prev => ({ ...prev, [key]: value }));
+  };
+
+  /** 提交录入量尺单 */
+  const handleCreate = async () => {
+    if (!form.contactName.trim()) {
+      Taro.showToast({ title: '请输入客户姓名', icon: 'none' });
+      return;
+    }
+    if (!form.phone.trim() || form.phone.length < 11) {
+      Taro.showToast({ title: '请输入正确的手机号', icon: 'none' });
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await api.post('/measurements', {
+        storeId: user?.storeId,
+        contactName: form.contactName.trim(),
+        phone: form.phone.trim(),
+        communityName: form.communityName.trim() || undefined,
+        address: form.address.trim() || undefined,
+        houseArea: form.houseArea ? parseFloat(form.houseArea) : undefined,
+        expectedDate: form.expectedDate || undefined,
+        remarks: form.remarks.trim() || undefined,
+      });
+      Taro.showToast({ title: '录入成功', icon: 'success' });
+      setShowCreate(false);
+      setForm({ ...emptyForm });
+      fetchList();
+    } catch (err: any) {
+      Taro.showToast({ title: err.message || '录入失败', icon: 'none' });
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   /** 分配量尺人员 - 使用选择器（仅安装工程师） */
   const handleAssignPicker = (reservationId: string) => {
@@ -86,8 +141,16 @@ export default function Reservations() {
   return (
     <ScrollView className='br-page' scrollY>
       <View className='br-header'>
-        <Text className='br-header-title'>预约管理</Text>
-        <Text className='br-header-desc'>管理{user.storeName || ''}门店的量尺预约</Text>
+        <View className='br-header-row'>
+          <View>
+            <Text className='br-header-title'>量尺管理</Text>
+            <Text className='br-header-desc'>管理{user.storeName || ''}门店的量尺单</Text>
+          </View>
+          <View className='br-create-btn' onClick={() => setShowCreate(true)}>
+            <Icon name='add' size={28} color='#ffffff' />
+            <Text className='br-create-btn-text'>录入</Text>
+          </View>
+        </View>
       </View>
 
       {/* 状态筛选 */}
@@ -103,7 +166,7 @@ export default function Reservations() {
         ))}
       </View>
 
-      {/* 预约列表 */}
+      {/* 量尺单列表 */}
       <View className='br-list'>
         {list.map((item: any) => {
           const st = measurementStatusMap[item.status] || measurementStatusMap.PENDING;
@@ -221,11 +284,77 @@ export default function Reservations() {
         {list.length === 0 && (
           <View className='br-empty'>
             <Icon name='file-text' size={72} color='#d1d5db' />
-            <Text className='br-empty-text'>暂无预约</Text>
+            <Text className='br-empty-text'>暂无量尺单</Text>
           </View>
         )}
       </View>
 
+      {/* 录入量尺单弹窗 */}
+      {showCreate && (
+        <View className='br-modal-mask' onClick={() => { setShowCreate(false); setForm({ ...emptyForm }); }}>
+          <View className='br-modal' onClick={(e) => e.stopPropagation()}>
+            <View className='br-modal-header'>
+              <Text className='br-modal-title'>录入量尺单</Text>
+              <View className='br-modal-close' onClick={() => { setShowCreate(false); setForm({ ...emptyForm }); }}>
+                <Icon name='close' size={28} color='#9ca3af' />
+              </View>
+            </View>
+
+            <ScrollView className='br-modal-body' scrollY>
+              <View className='br-form-item'>
+                <Text className='br-form-label'>客户姓名 <Text className='br-form-required'>*</Text></Text>
+                <Input className='br-form-input' placeholder='请输入客户姓名' value={form.contactName} onInput={(e) => updateForm('contactName', e.detail.value)} maxlength={20} />
+              </View>
+
+              <View className='br-form-item'>
+                <Text className='br-form-label'>手机号 <Text className='br-form-required'>*</Text></Text>
+                <Input className='br-form-input' type='number' placeholder='请输入手机号' value={form.phone} onInput={(e) => updateForm('phone', e.detail.value)} maxlength={11} />
+              </View>
+
+              <View className='br-form-item'>
+                <Text className='br-form-label'>小区名称</Text>
+                <Input className='br-form-input' placeholder='请输入小区名称' value={form.communityName} onInput={(e) => updateForm('communityName', e.detail.value)} maxlength={50} />
+              </View>
+
+              <View className='br-form-item'>
+                <Text className='br-form-label'>详细地址</Text>
+                <Input className='br-form-input' placeholder='请输入详细地址' value={form.address} onInput={(e) => updateForm('address', e.detail.value)} maxlength={100} />
+              </View>
+
+              <View className='br-form-item'>
+                <Text className='br-form-label'>房屋面积（㎡）</Text>
+                <Input className='br-form-input' type='digit' placeholder='请输入房屋面积' value={form.houseArea} onInput={(e) => updateForm('houseArea', e.detail.value)} />
+              </View>
+
+              <View className='br-form-item'>
+                <Text className='br-form-label'>期望量尺日期</Text>
+                <Picker mode='date' value={form.expectedDate} onChange={(e) => updateForm('expectedDate', e.detail.value)}>
+                  <View className='br-form-picker'>
+                    <Text className={form.expectedDate ? 'br-form-picker-text' : 'br-form-picker-placeholder'}>
+                      {form.expectedDate || '请选择日期'}
+                    </Text>
+                    <Icon name='calendar' size={28} color='#9ca3af' />
+                  </View>
+                </Picker>
+              </View>
+
+              <View className='br-form-item'>
+                <Text className='br-form-label'>备注</Text>
+                <Input className='br-form-input' placeholder='备注信息（选填）' value={form.remarks} onInput={(e) => updateForm('remarks', e.detail.value)} maxlength={200} />
+              </View>
+            </ScrollView>
+
+            <View className='br-modal-footer'>
+              <View className='br-modal-cancel' onClick={() => { setShowCreate(false); setForm({ ...emptyForm }); }}>
+                <Text>取消</Text>
+              </View>
+              <View className={`br-modal-submit ${submitting ? 'opacity-50' : ''}`} onClick={submitting ? undefined : handleCreate}>
+                <Text>{submitting ? '提交中...' : '确认录入'}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      )}
       <View className='safe-bottom' />
     </ScrollView>
   );

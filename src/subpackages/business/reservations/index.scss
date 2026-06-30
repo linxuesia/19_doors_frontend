@@ -103,3 +103,111 @@
 // 空态
 .br-empty { display: flex; flex-direction: column; align-items: center; padding: 80rpx 0; }
 .br-empty-text { font-size: 28rpx; color: #9ca3af; margin-top: 16rpx; }
+
+// 头部行（标题 + 录入按钮）
+.br-header-row { display: flex; justify-content: space-between; align-items: flex-start; }
+.br-create-btn {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 14rpx 24rpx;
+  background: linear-gradient(135deg, #122b4d, #1b3e6c);
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+.br-create-btn-text { font-size: 24rpx; color: #ffffff; font-weight: 500; }
+
+// 录入弹窗
+.br-modal-mask {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.br-modal {
+  width: 100%;
+  max-height: 85vh;
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.br-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx 32rpx 16rpx;
+  border-bottom: 1px solid #f3f4f6;
+}
+.br-modal-title { font-size: 32rpx; font-weight: 700; color: #122b4d; }
+.br-modal-close { padding: 8rpx; }
+
+.br-modal-body {
+  flex: 1;
+  padding: 24rpx 32rpx;
+  max-height: 60vh;
+}
+
+// 表单
+.br-form-item { margin-bottom: 24rpx; }
+.br-form-label { display: block; font-size: 26rpx; font-weight: 500; color: #374151; margin-bottom: 10rpx; }
+.br-form-required { color: #ef4444; }
+.br-form-input {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  padding: 0 20rpx;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #1f2937;
+  box-sizing: border-box;
+}
+.br-form-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 80rpx;
+  padding: 0 20rpx;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12rpx;
+  box-sizing: border-box;
+}
+.br-form-picker-text { font-size: 28rpx; color: #1f2937; }
+.br-form-picker-placeholder { font-size: 28rpx; color: #9ca3af; }
+
+// 弹窗底部按钮
+.br-modal-footer {
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx 32rpx 40rpx;
+  border-top: 1px solid #f3f4f6;
+}
+.br-modal-cancel {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  background: #f3f4f6;
+  border-radius: 14rpx;
+  font-size: 28rpx;
+  color: #4b5563;
+}
+.br-modal-submit {
+  flex: 2;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  background: linear-gradient(135deg, #122b4d, #1b3e6c);
+  border-radius: 14rpx;
+  font-size: 28rpx;
+  color: #ffffff;
+  font-weight: 500;
+}
+.opacity-50 { pointer-events: none; opacity: 0.5; }

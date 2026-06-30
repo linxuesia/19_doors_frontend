@@ -8,7 +8,7 @@ import './index.scss';
 
 const ownerFunctions = [
   { icon: 'clipboard', label: '订单管理', url: '/subpackages/business/orders/index' },
-  { icon: 'calendar', label: '预约管理', url: '/subpackages/business/reservations/index' },
+  { icon: 'calendar', label: '量尺管理', url: '/subpackages/business/reservations/index' },
   { icon: 'add', label: '录入订单', url: '/subpackages/business/order-manage/index' },
   { icon: 'user', label: '客户档案', url: '/subpackages/business/clients/index' },
   { icon: 'image', label: '案例库', url: '/subpackages/business/case-manage/index' },
@@ -19,7 +19,7 @@ const ownerFunctions = [
 
 const managerFunctions = [
   { icon: 'clipboard', label: '订单管理', url: '/subpackages/business/orders/index' },
-  { icon: 'calendar', label: '预约管理', url: '/subpackages/business/reservations/index' },
+  { icon: 'calendar', label: '量尺管理', url: '/subpackages/business/reservations/index' },
   { icon: 'add', label: '录入订单', url: '/subpackages/business/order-manage/index' },
   { icon: 'user', label: '客户档案', url: '/subpackages/business/clients/index' },
   { icon: 'image', label: '案例库', url: '/subpackages/business/case-manage/index' },
