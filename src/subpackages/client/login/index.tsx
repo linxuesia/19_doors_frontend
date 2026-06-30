@@ -237,7 +237,7 @@ export default function Login() {
             placeholder='请输入昵称'
             value={nickname}
             onInput={handleNicknameInput}
-            maxlength={20}
+            maxlength={30}
           />
         </View>
       </View>

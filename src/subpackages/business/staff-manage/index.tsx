@@ -353,7 +353,7 @@ export default function StaffManage() {
                 placeholder='请输入姓名'
                 value={form.name}
                 onInput={(e) => updateForm('name', e.detail.value)}
-                maxlength={20}
+                maxlength={30}
               />
             </View>
 
