@@ -82,10 +82,14 @@ export default function ProductDetail() {
     }
   }, [id]);
 
-  // 解析 Banner 轮播图片
+  // 解析 Banner 轮播图片（优先 images 数组，否则用 coverImage 单张）
   const bannerImages = useMemo(() => {
     if (!product) return [];
-    try { return JSON.parse(product.images || '[]'); } catch { return []; }
+    try {
+      const imgs = JSON.parse(product.images || '[]');
+      if (Array.isArray(imgs) && imgs.length > 0) return imgs;
+    } catch {}
+    return product.coverImage ? [product.coverImage] : [];
   }, [product]);
 
   // 解析功能特性（JSON数组）

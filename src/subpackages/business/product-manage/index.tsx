@@ -38,6 +38,7 @@ interface ProductForm {
   spaces: string[];
   colors: string[];
   features: string;
+  images: string[];       // banner 轮播图
   coverImage: string;
   detailImage: string;
   inspectionReportUrl: string;
@@ -48,7 +49,7 @@ const emptyForm: ProductForm = {
   name: '', category: '平开窗', series: '',
   spaces: spaceOptions.map(o => o.value),   // 默认全选
   colors: colorOptions.map(o => o.value),    // 默认全选
-  features: '', coverImage: '', detailImage: '', inspectionReportUrl: '',
+  features: '', images: [], coverImage: '', detailImage: '', inspectionReportUrl: '',
   isActive: true,
 };
 
@@ -79,12 +80,13 @@ export default function ProductManage() {
 
   const handleEdit = (p: any) => {
     const features = parseJsonArray(p.features).join('，');
+    const images = parseJsonArray(p.images);
     setForm({
       id: p.id, name: p.name || '', category: p.category || '平开窗',
       series: p.series || '',
       spaces: p.space ? p.space.split(',').filter(Boolean) : spaceOptions.map(o => o.value),
       colors: p.color ? p.color.split(',').filter(Boolean) : colorOptions.map(o => o.value),
-      features,
+      features, images,
       coverImage: p.coverImage || '', detailImage: p.detailImage || '',
       inspectionReportUrl: p.inspectionReportUrl || '', isActive: p.isActive !== false,
     });
@@ -111,6 +113,7 @@ export default function ProductManage() {
         space: form.spaces.join(','),
         color: form.colors.join(','),
         features: JSON.stringify(form.features.split(/[,，]/).map(s => s.trim()).filter(Boolean)),
+        images: JSON.stringify(form.images),
         coverImage: form.coverImage,
         detailImage: form.detailImage,
         inspectionReportUrl: form.inspectionReportUrl,
@@ -277,6 +280,46 @@ export default function ProductManage() {
               )}
               {uploading === 'coverImage' && <View className='pm-uploading-mask'><Text>上传中...</Text></View>}
             </View>
+          </View>
+
+          {/* Banner轮播图（多图） */}
+          <View className='pm-field'>
+            <Text className='pm-label'>Banner轮播图</Text>
+            <View className='pm-images-grid'>
+              {form.images.map((img, i) => (
+                <View key={i} className='pm-image-item'>
+                  <Image className='pm-image-thumb' src={img} mode='aspectFill' />
+                  <View className='pm-image-remove' onClick={() => {
+                    setForm(prev => ({ ...prev, images: prev.images.filter((_, idx) => idx !== i) }));
+                  }}>
+                    <Icon name='close' size={20} color='#ffffff' />
+                  </View>
+                </View>
+              ))}
+              {form.images.length < 6 && (
+                <View className='pm-image-add' onClick={async () => {
+                  try {
+                    const res = await Taro.chooseImage({ count: 1, sizeType: ['compressed'], sourceType: ['album'] });
+                    setUploading('images');
+                    const filePath = res.tempFilePaths[0];
+                    const ext = filePath.split('.').pop() || 'jpg';
+                    const cloudPath = `products/images_${Date.now()}.${ext}`;
+                    const { fileID } = await uploadFile(filePath, cloudPath);
+                    setForm(prev => ({ ...prev, images: [...prev.images, fileID] }));
+                    setUploading('');
+                    Taro.showToast({ title: '上传成功', icon: 'success' });
+                  } catch (e: any) {
+                    setUploading('');
+                    if (e?.errMsg?.includes('cancel')) return;
+                    Taro.showToast({ title: '上传失败', icon: 'none' });
+                  }
+                }}>
+                  <Icon name='add' size={40} color='#b0c4d8' />
+                  <Text className='pm-image-add-text'>添加</Text>
+                </View>
+              )}
+            </View>
+            {uploading === 'images' && <Text className='pm-upload-hint'>上传中...</Text>}
           </View>
 
           {/* 详情长图 */}

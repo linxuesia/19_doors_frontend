@@ -191,8 +191,8 @@ export default function About() {
         {products.length > 0 ? (
           <View className='report-grid'>
             {products.map((product) => {
-              const images = (() => { try { return JSON.parse(product.images || '[]'); } catch { return []; } })();
-              const coverImage = images?.[0] || '';
+              // 优先封面图，其次 images 数组首张
+              const coverImage = product.coverImage || (() => { try { const imgs = JSON.parse(product.images || '[]'); return imgs[0]; } catch { return ''; } })();
               return (
                 <View
                   key={product.id}
