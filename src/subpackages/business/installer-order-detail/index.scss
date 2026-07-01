@@ -60,6 +60,32 @@
   font-weight: 500;
 }
 
+// 已完成 badge
+.iod-measured-badge {
+  padding: 6rpx 18rpx;
+  background: #d1fae5;
+  border-radius: 9999px;
+}
+
+.iod-measured-badge-text {
+  font-size: 24rpx;
+  color: #059669;
+  font-weight: 600;
+}
+
+// 只读说明行
+.iod-record-desc-readonly {
+  background: #f0fdf4;
+  border-radius: 14rpx;
+  padding: 14rpx 20rpx;
+  border: 1px solid #bbf7d0;
+}
+
+.iod-record-desc-readonly .iod-desc-text {
+  color: #374151;
+  font-size: 25rpx;
+}
+
 .iod-info-row {
   display: flex;
   align-items: flex-start;

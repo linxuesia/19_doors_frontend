@@ -26,6 +26,12 @@ export default function InstallerOrderDetail() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const isMeasured = isMeasurement && data?.status === 'MEASURED';
+  // 解析已提交的量尺照片（JSON 字符串）
+  const submittedPhotos: any[] = (() => {
+    if (!isMeasured || !data?.photos) return [];
+    try { return typeof data.photos === 'string' ? JSON.parse(data.photos) : data.photos; } catch { return []; }
+  })();
 
   // 施工订单模式 - 简单图片列表
   const [images, setImages] = useState<string[]>([]);
@@ -291,7 +297,7 @@ export default function InstallerOrderDetail() {
         </View>
 
         {/* ========== 量尺模式：图片+文字配对 ========== */}
-        {isMeasurement && (
+        {isMeasurement && !isMeasured && (
           <View className='iod-card iod-measure-card'>
             <View className='iod-card-header-row'>
               <Text className='iod-card-title'>量尺记录</Text>
@@ -370,6 +376,46 @@ export default function InstallerOrderDetail() {
                     <Text className='iod-quick-tag-text'>{tag}</Text>
                   </View>
                 ))}
+              </View>
+            )}
+          </View>
+        )}
+
+        {/* ========== 量尺已完成：只读展示已提交的照片 ========== */}
+        {isMeasurement && isMeasured && (
+          <View className='iod-card iod-measure-card'>
+            <View className='iod-card-header-row'>
+              <Text className='iod-card-title'>量尺记录</Text>
+              <View className='iod-measured-badge'><Text className='iod-measured-badge-text'>已完成</Text></View>
+            </View>
+
+            {submittedPhotos.length > 0 ? (
+              <View className='iod-records'>
+                {submittedPhotos.map((photo: any, idx: number) => (
+                  <View key={idx} className='iod-record-item'>
+                    <View
+                      className='iod-record-img-wrap'
+                      onClick={() => Taro.previewImage({
+                        current: photo.imageUrl,
+                        urls: submittedPhotos.map((p: any) => p.imageUrl).filter(Boolean),
+                      })}
+                    >
+                      <Image className='iod-record-img' src={photo.imageUrl} mode='aspectFill' />
+                      <View className='iod-record-index'>
+                        <Text className='iod-index-text'>{idx + 1}</Text>
+                      </View>
+                    </View>
+                    <View className='iod-record-desc-wrap iod-record-desc-readonly'>
+                      <Icon name='file-text' size={20} color='#8b5cf6' />
+                      <Text className='iod-desc-text'>{photo.description || '无说明'}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            ) : (
+              <View className='iod-ref-empty'>
+                <Icon name='image' size={48} color='#d1d5db' />
+                <Text className='iod-ref-empty-text'>暂无照片记录</Text>
               </View>
             )}
           </View>
@@ -481,44 +527,46 @@ export default function InstallerOrderDetail() {
         )}
       </View>
 
-      {/* 底部操作栏 */}
-      <View className='iod-bottom-bar'>
-        {isMeasurement ? (
-          <>
-            <View
-              className={`iod-action-btn iod-btn-camera ${submitting ? 'iod-disabled' : ''}`}
-              onClick={!submitting ? handleTakePhoto : undefined}
-            >
-              <Icon name='camera' size={30} color='#ffffff' />
-              <Text className='iod-btn-text'>拍照记录</Text>
-            </View>
-            <View
-              className={`iod-action-btn iod-btn-primary ${submitting ? 'iod-disabled' : ''}`}
-              onClick={!submitting ? handleSubmitMeasure : undefined}
-            >
-              <Icon name='check' size={30} color='#ffffff' />
-              <Text className='iod-btn-text'>提交量尺完成</Text>
-            </View>
-          </>
-        ) : (
-          <>
-            <View
-              className={`iod-action-btn iod-btn-primary ${loading ? 'iod-disabled' : ''}`}
-              onClick={!loading ? handleSubmitProgress : undefined}
-            >
-              <Text className='iod-btn-text'>进度更新与图片</Text>
-            </View>
-            {data?.status === 'INSTALLING' && (
+      {/* 底部操作栏（已完成不显示） */}
+      {!(isMeasurement && isMeasured) && (
+        <View className='iod-bottom-bar'>
+          {isMeasurement ? (
+            <>
               <View
-                className={`iod-action-btn iod-btn-secondary ${loading ? 'iod-disabled' : ''}`}
-                onClick={!loading ? handleApplyInspection : undefined}
+                className={`iod-action-btn iod-btn-camera ${submitting ? 'iod-disabled' : ''}`}
+                onClick={!submitting ? handleTakePhoto : undefined}
               >
-                <Text className='iod-btn-text'>申请验收</Text>
+                <Icon name='camera' size={30} color='#ffffff' />
+                <Text className='iod-btn-text'>拍照记录</Text>
               </View>
-            )}
-          </>
-        )}
-      </View>
+              <View
+                className={`iod-action-btn iod-btn-primary ${submitting ? 'iod-disabled' : ''}`}
+                onClick={!submitting ? handleSubmitMeasure : undefined}
+              >
+                <Icon name='check' size={30} color='#ffffff' />
+                <Text className='iod-btn-text'>提交量尺完成</Text>
+              </View>
+            </>
+          ) : (
+            <>
+              <View
+                className={`iod-action-btn iod-btn-primary ${loading ? 'iod-disabled' : ''}`}
+                onClick={!loading ? handleSubmitProgress : undefined}
+              >
+                <Text className='iod-btn-text'>进度更新与图片</Text>
+              </View>
+              {data?.status === 'INSTALLING' && (
+                <View
+                  className={`iod-action-btn iod-btn-secondary ${loading ? 'iod-disabled' : ''}`}
+                  onClick={!loading ? handleApplyInspection : undefined}
+                >
+                  <Text className='iod-btn-text'>申请验收</Text>
+                </View>
+              )}
+            </>
+          )}
+        </View>
+      )}
     </View>
   );
 }
