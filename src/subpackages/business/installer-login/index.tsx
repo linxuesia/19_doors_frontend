@@ -31,16 +31,16 @@ export default function InstallerLogin() {
     setChecked(true);
   }, []);
 
-  if (!checked) {
-    return <View className='installer-login-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
-  }
-
   // 已登录的安装工程师直接跳转工单列表
   useEffect(() => {
     if (user && user.storeId) {
       Taro.redirectTo({ url: '/subpackages/business/installer-orders/index' });
     }
   }, [user]);
+
+  if (!checked) {
+    return <View className='installer-login-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>加载中...</Text></View>;
+  }
 
   if (user && user.storeId) {
     return <View className='installer-login-page' style='display:flex;justify-content:center;align-items:center;min-height:100vh'><Text style='color:#9ca3af;font-size:14px'>已登录，跳转中...</Text></View>;

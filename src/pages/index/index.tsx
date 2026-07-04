@@ -13,7 +13,7 @@ export default function Home() {
   const [cases, setCases] = useState<any[]>([]);
   const [sites, setSites] = useState<any[]>([]);
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
-  const storeId = (router.params.storeId as string) || 'S001';
+  const storeId = (router.params.storeId as string) || 'SD-HQ';
   const [storeInfo, setStoreInfo] = useState<any>(null);
 
   // 统一数据源：优先 API 数据，无数据时使用缺省点位
