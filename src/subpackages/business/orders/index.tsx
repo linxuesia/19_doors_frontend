@@ -140,9 +140,10 @@ export default function Orders() {
           const st = statusStyle[item.status] || statusStyle.PENDING;
           return (
             <View
-              key={item.id}
-              className='bo-card'
-            >
+                key={item.id}
+                className='bo-card'
+                onClick={() => Taro.navigateTo({ url: `/subpackages/business/installer-order-detail/index?id=${item.id}&type=order&from=business` })}
+              >
               <View className='bo-card-top'>
                 <Text className='bo-card-no'>{item.client?.name || item.communityName || item.installAddress || item.productName || `订单${item.id}`}</Text>
                 <View className='bo-card-status' style={{ background: st.bg }}>

@@ -143,9 +143,12 @@ export default function InstallerOrderDetail() {
 
   /** navigateBack 安全 fallback */
   const goBack = () => {
+    const from = router.params.from;
     const pages = Taro.getCurrentPages();
     if (pages.length > 1) {
       Taro.navigateBack();
+    } else if (from === 'business') {
+      Taro.redirectTo({ url: '/subpackages/business/orders/index' });
     } else {
       Taro.redirectTo({ url: '/subpackages/business/installer-orders/index' });
     }
