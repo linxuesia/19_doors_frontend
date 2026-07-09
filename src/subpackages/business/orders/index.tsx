@@ -195,7 +195,7 @@ export default function Orders() {
                     <Text className='done-text'>订单已完成</Text>
                   </View>
                 )}
-                {item.status === 'COMPLETED' && !isInstaller && (
+                {item.hasCase && !isInstaller && (
                   <View className='bo-case-hint' onClick={() => Taro.navigateTo({ url: '/subpackages/business/case-manage/index' })}>
                     <Text className='bo-case-hint-text'>案例已生成 →</Text>
                   </View>
