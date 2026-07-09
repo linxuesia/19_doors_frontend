@@ -35,13 +35,16 @@ export default function CaseEdit() {
     spaceTypes: spaceTypeOptions.map(o => o.value),  // 默认全选
     colors: colorOptions.map(o => o.value),            // 默认全选
     description: '',
+    latitude: undefined as number | undefined,
+    longitude: undefined as number | undefined,
+    communityName: '',
   });
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [coverUploading, setCoverUploading] = useState(false);
 
   useEffect(() => {
-    if (!requireBusinessLogin(undefined, 'STORE_OWNER,STORE_MANAGER')) return;
+    if (!requireBusinessLogin(undefined, 'ADMIN,STORE_OWNER,STORE_MANAGER')) return;
     if (isCreate) {
       Taro.setNavigationBarTitle({ title: '新增案例' });
       return;
@@ -61,6 +64,9 @@ export default function CaseEdit() {
         spaceTypes: res.spaceType ? res.spaceType.split(',').filter(Boolean) : spaceTypeOptions.map(o => o.value),
         colors: res.color ? res.color.split(',').filter(Boolean) : colorOptions.map(o => o.value),
         description: res.description || '',
+        latitude: res.latitude ?? undefined,
+        longitude: res.longitude ?? undefined,
+        communityName: res.communityName || '',
       });
     } catch {
       Taro.showToast({ title: '加载案例失败', icon: 'none' });
@@ -95,6 +101,17 @@ export default function CaseEdit() {
     setForm((prev) => ({ ...prev, coverImage: '' }));
   };
 
+  const handleChooseLocation = async () => {
+    try {
+      const res = await Taro.chooseLocation({ latitude: form.latitude, longitude: form.longitude } as any);
+      if (res.latitude && res.longitude) {
+        setForm((prev) => ({ ...prev, latitude: res.latitude, longitude: res.longitude, communityName: res.name || res.address || prev.communityName }));
+      }
+    } catch {
+      // 用户取消选择
+    }
+  };
+
   const handleSave = async (publish = false) => {
     if (!form.title.trim()) {
       Taro.showToast({ title: '请输入案例标题', icon: 'none' });
@@ -111,6 +128,9 @@ export default function CaseEdit() {
       // 空间类型和色彩数组拼接成逗号分隔字符串
       data.spaceType = form.spaceTypes.join(',');
       data.color = form.colors.join(',');
+      data.latitude = form.latitude ?? null;
+      data.longitude = form.longitude ?? null;
+      data.communityName = form.communityName || undefined;
       delete data.spaceTypes;
       delete data.colors;
       if (publish) data.published = true;
@@ -167,6 +187,29 @@ export default function CaseEdit() {
               </>
             )}
           </View>
+        )}
+      </View>
+
+      {/* 案例定位 */}
+      <View className='ce-section'>
+        <Text className='ce-section-title'>案例定位</Text>
+        <Text className='ce-section-hint'>标注案例所在位置，用于首页地图展示</Text>
+        <View className='ce-location-row' onClick={handleChooseLocation}>
+          <Icon name='map-pin' size={36} color='#122b4d' />
+          <View className='ce-location-info'>
+            {form.latitude != null && form.longitude != null ? (
+              <>
+                <Text className='ce-location-addr'>{form.communityName || `${form.latitude.toFixed(6)}, ${form.longitude.toFixed(6)}`}</Text>
+                <Text className='ce-location-coord'>{form.latitude.toFixed(6)}, {form.longitude.toFixed(6)}</Text>
+              </>
+            ) : (
+              <Text className='ce-location-placeholder'>点击选择案例位置</Text>
+            )}
+          </View>
+          <Icon name='arrow-right' size={28} color='#9ca3af' />
+        </View>
+        {form.latitude != null && (
+          <Text className='ce-location-clear' onClick={() => setForm((prev) => ({ ...prev, latitude: undefined, longitude: undefined }))}>清除定位</Text>
         )}
       </View>
 
