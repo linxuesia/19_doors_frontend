@@ -128,7 +128,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
     }
     setLoading(true);
     try {
-      const res: any = await api.post('/orders', {
+      await api.post('/orders', {
         ...form,
         totalAmount: parseFloat(form.totalAmount) || 0,
         paidAmount: parseFloat(form.paidAmount) || 0,
@@ -138,11 +138,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
         status: 'PENDING',
       });
       Taro.showToast({ title: '创建成功', icon: 'success' });
-      if (res?.caseId) {
-        setTimeout(() => Taro.redirectTo({ url: `/subpackages/business/case-edit/index?id=${res.caseId}` }), 800);
-      } else {
-        setTimeout(onDone, 1000);
-      }
+      setTimeout(onDone, 1000);
     } catch (e: any) {
       Taro.showToast({ title: e.message || '创建失败', icon: 'none' });
     } finally {
@@ -376,6 +372,9 @@ function OrderDetailView({ order: initialOrder }: { order: any }) {
       const updated = await api.put(`/orders/${order.id}`, { status: 'COMPLETED' });
       setOrder(updated);
       Taro.showToast({ title: '已完工', icon: 'success' });
+      if (updated?.caseId) {
+        setTimeout(() => Taro.redirectTo({ url: `/subpackages/business/case-edit/index?id=${updated.caseId}` }), 800);
+      }
     } catch (e: any) {
       Taro.showToast({ title: e.message || '操作失败', icon: 'none' });
     } finally {

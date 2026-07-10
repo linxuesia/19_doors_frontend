@@ -97,11 +97,14 @@ export default function Orders() {
     try {
       const res = await Taro.showModal({ title: '确认完工', content: '确定该订单已施工完成？' });
       if (!res.confirm) return;
-      await api.put(`/orders/${orderId}`, { status: 'COMPLETED' });
+      const updated: any = await api.put(`/orders/${orderId}`, { status: 'COMPLETED' });
       setOrders((prev) =>
         prev.map((item) => (item.id === orderId ? { ...item, status: 'COMPLETED' } : item)),
       );
       Taro.showToast({ title: '已标记完工', icon: 'success' });
+      if (updated?.caseId) {
+        setTimeout(() => Taro.redirectTo({ url: `/subpackages/business/case-edit/index?id=${updated.caseId}` }), 800);
+      }
     } catch (e: any) {
       if (e?.errMsg !== 'showModal:fail cancel') {
         Taro.showToast({ title: e.message || '操作失败', icon: 'none' });
