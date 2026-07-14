@@ -62,7 +62,7 @@ export default function CaseEdit() {
       const res: any = await api.get(`/cases/${id}`);
       let imagesArr: string[] = [];
       if (res.images) {
-        try { imagesArr = JSON.parse(res.images); } catch {}
+        try { imagesArr = JSON.parse(res.images); } catch { console.error('[case-edit] 解析 images JSON 失败:', res.images); }
       }
       setForm({
         title: res.title || '',
@@ -160,6 +160,7 @@ export default function CaseEdit() {
       if (publish) data.published = true;
 
       if (isCreate) {
+        if (user?.storeId) data.storeId = user.storeId;
         await api.post('/cases', data);
         Taro.showToast({ title: publish ? '发布成功' : '保存成功', icon: 'success' });
         setTimeout(() => Taro.navigateBack(), 1500);

@@ -54,6 +54,8 @@
   width: 100%;
   box-sizing: border-box;
   margin-bottom: 20rpx;
+
+  &:last-child { margin-bottom: 0; }
 }
 
 // 封面图
