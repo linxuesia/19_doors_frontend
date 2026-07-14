@@ -5,6 +5,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
 import { orderStatusMap } from '../../../constants/status';
+import { getStageLabel } from '../../../constants/construction-stages';
 import './index.scss';
 
 export default function OrderManage() {
@@ -475,7 +476,7 @@ function OrderDetailView({ order: initialOrder }: { order: any }) {
           {order.constructionLogs.map((log: any) => (
             <View key={log.id} className='om-log-item'>
               <View className='om-log-top'>
-                <Text className='tag tag-brand'>{log.stage}</Text>
+                <Text className='tag tag-brand'>{getStageLabel(log.stage)}</Text>
                 <Text className='om-log-date'>{new Date(log.createdAt).toLocaleDateString('zh-CN')}</Text>
               </View>
               <Text className='om-log-text'>{log.content}</Text>

@@ -3,7 +3,7 @@ import { View, Text, Image, Input, Picker } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import api from '../../../utils/api';
 import Icon from '../../../components/Icon';
-import { CONSTRUCTION_STAGES } from '../../../constants/construction-stages';
+import { CONSTRUCTION_STAGES, getStageLabel } from '../../../constants/construction-stages';
 import './index.scss';
 
 const MAX_RECORDS = 9;
@@ -498,7 +498,7 @@ export default function InstallerOrderDetail() {
                 <View className='iod-ref-icon-wrap' style='background: linear-gradient(135deg, #dbeafe, #bfdbfe)'>
                   <Icon name='image' size={26} color='#2563eb' />
                 </View>
-                <Text className='iod-ref-title'>历史进度</Text>
+                <Text className='iod-ref-title'>施工日志</Text>
                 <View className='iod-ref-count' style='background: linear-gradient(135deg, #3b82f6, #60a5fa)'>
                   <Text>{constructionLogs.length}条</Text>
                 </View>
@@ -513,7 +513,7 @@ export default function InstallerOrderDetail() {
                 {constructionLogs.map((log: any) => (
                   <View key={log.id} className='iod-ref-item'>
                     <View className='iod-ref-desc' style='border-bottom: 1px solid #f3f4f6; margin-bottom: 0'>
-                      <Text className='tag tag-brand' style='font-size:22rpx;padding:4rpx 14rpx;border-radius:8rpx;background:#eff6ff;color:#2563eb'>{log.stage || '进度'}</Text>
+                      <Text className='tag tag-brand' style='font-size:22rpx;padding:4rpx 14rpx;border-radius:8rpx;background:#eff6ff;color:#2563eb'>{getStageLabel(log.stage) || '进度'}</Text>
                       <Text style='font-size:22rpx;color:#9ca3af;margin-left:auto'>{new Date(log.createdAt).toLocaleDateString('zh-CN')}</Text>
                     </View>
                     {log.content && <View style='padding:12rpx 18rpx 0'><Text style='font-size:25rpx;color:#4b5563;line-height:1.5'>{log.content}</Text></View>}
