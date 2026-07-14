@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Picker, Input, Textarea, Image } from '@tarojs/components';
+import { View, Text, Picker, Input, Textarea, Image, ScrollView } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import { useAuth } from '../../../contexts/AuthContext';
 import Icon from '../../../components/Icon';
@@ -165,6 +165,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
 
   return (
     <View className='omf-page'>
+      <ScrollView className='omf-scroll' scrollY enhanced showScrollbar={false}>
       <View className='omf-form'>
         {/* 卡片1：订单信息 */}
         <View className='omf-card'>
@@ -297,6 +298,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
           </View>
         </View>
       </View>
+      </ScrollView>
 
       {/* 固定底部提交栏 */}
       <View className='omf-bottom-bar'>
@@ -477,6 +479,16 @@ function OrderDetailView({ order: initialOrder }: { order: any }) {
                 <Text className='om-log-date'>{new Date(log.createdAt).toLocaleDateString('zh-CN')}</Text>
               </View>
               <Text className='om-log-text'>{log.content}</Text>
+              {log.images?.length > 0 && (
+                <View className='om-log-images'>
+                  {log.images.map((img: string, idx: number) => (
+                    <View key={idx} className='om-log-img-wrap' onClick={() => Taro.previewImage({ current: img, urls: log.images })}>
+                      {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                      <Image className='om-log-img' src={img} mode='aspectFill' />
+                    </View>
+                  ))}
+                </View>
+              )}
             </View>
           ))}
         </View>

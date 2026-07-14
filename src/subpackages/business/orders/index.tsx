@@ -145,7 +145,7 @@ export default function Orders() {
             <View
                 key={item.id}
                 className='bo-card'
-                onClick={() => Taro.navigateTo({ url: `/subpackages/business/installer-order-detail/index?id=${item.id}&type=order&from=business` })}
+                onClick={() => Taro.navigateTo({ url: `/subpackages/business/order-manage/index?id=${item.id}` })}
               >
               <View className='bo-card-top'>
                 <Text className='bo-card-no'>{item.client?.name || item.communityName || item.installAddress || item.productName || `订单${item.id}`}</Text>
@@ -203,6 +203,10 @@ export default function Orders() {
                     <Text className='bo-case-hint-text'>案例已生成 →</Text>
                   </View>
                 )}
+                <View className='btn-secondary bo-action-btn' onClick={() => Taro.navigateTo({ url: `/subpackages/business/installer-order-detail/index?id=${item.id}&type=order&from=business` })}>
+                  <Icon name='file-text' size={26} color='#122b4d' />
+                  <Text>工单详情</Text>
+                </View>
               </View>
               )}
             </View>

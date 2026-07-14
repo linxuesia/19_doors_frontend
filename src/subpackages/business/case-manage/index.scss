@@ -43,7 +43,6 @@
   padding: 0 24rpx;
   display: flex;
   flex-direction: column;
-  gap: 20rpx;
   box-sizing: border-box;
 }
 
@@ -54,6 +53,7 @@
   box-shadow: 0 2rpx 12rpx rgba(18, 43, 77, 0.06);
   width: 100%;
   box-sizing: border-box;
+  margin-bottom: 20rpx;
 }
 
 // 封面图

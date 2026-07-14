@@ -47,6 +47,10 @@ export default function InstallerOrderDetail() {
   const [measureExpanded, setMeasureExpanded] = useState(false);  // 折叠状态
   const [measureLoading, setMeasureLoading] = useState(false);
 
+  // 施工订单模式 - 历史进度折叠
+  const [logExpanded, setLogExpanded] = useState(false);
+  const constructionLogs: any[] = !isMeasurement ? (data?.constructionLogs || []) : [];
+
   useEffect(() => {
     if (!id) return;
     const apiUrl = isMeasurement ? `/measurements/${id}` : `/orders/${id}`;
@@ -481,6 +485,49 @@ export default function InstallerOrderDetail() {
             {measureLoading && (
               <View className='iod-ref-loading'>
                 <Text className='iod-ref-loading-text'>加载中...</Text>
+              </View>
+            )}
+          </View>
+        )}
+
+        {/* ========== 历史进度（施工订单模式）========== */}
+        {!isMeasurement && constructionLogs.length > 0 && (
+          <View className='iod-card iod-ref-card'>
+            <View className='iod-ref-header' onClick={() => setLogExpanded(!logExpanded)}>
+              <View className='iod-ref-header-left'>
+                <View className='iod-ref-icon-wrap' style='background: linear-gradient(135deg, #dbeafe, #bfdbfe)'>
+                  <Icon name='image' size={26} color='#2563eb' />
+                </View>
+                <Text className='iod-ref-title'>历史进度</Text>
+                <View className='iod-ref-count' style='background: linear-gradient(135deg, #3b82f6, #60a5fa)'>
+                  <Text>{constructionLogs.length}条</Text>
+                </View>
+              </View>
+              <View className={`iod-ref-arrow ${logExpanded ? 'iod-ref-arrow-up' : ''}`}>
+                <Icon name='arrow-down' size={28} color='#9ca3af' />
+              </View>
+            </View>
+
+            {logExpanded && (
+              <View className='iod-ref-body'>
+                {constructionLogs.map((log: any) => (
+                  <View key={log.id} className='iod-ref-item'>
+                    <View className='iod-ref-desc' style='border-bottom: 1px solid #f3f4f6; margin-bottom: 0'>
+                      <Text className='tag tag-brand' style='font-size:22rpx;padding:4rpx 14rpx;border-radius:8rpx;background:#eff6ff;color:#2563eb'>{log.stage || '进度'}</Text>
+                      <Text style='font-size:22rpx;color:#9ca3af;margin-left:auto'>{new Date(log.createdAt).toLocaleDateString('zh-CN')}</Text>
+                    </View>
+                    {log.content && <View style='padding:12rpx 18rpx 0'><Text style='font-size:25rpx;color:#4b5563;line-height:1.5'>{log.content}</Text></View>}
+                    {log.images?.length > 0 && (
+                      <View style='display:flex;flex-wrap:wrap;gap:12rpx;padding:16rpx 18rpx'>
+                        {log.images.map((img: string, idx: number) => (
+                          <View key={idx} style='width:180rpx;height:180rpx;border-radius:12rpx;overflow:hidden' onClick={() => Taro.previewImage({ current: img, urls: log.images })}>
+                            <Image style='width:100%;height:100%' src={img} mode='aspectFill' />
+                          </View>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+                ))}
               </View>
             )}
           </View>
