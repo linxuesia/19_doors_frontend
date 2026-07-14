@@ -32,6 +32,7 @@ export default function CaseEdit() {
   const [form, setForm] = useState({
     title: '',
     coverImage: '',
+    images: [] as string[],
     spaceTypes: spaceTypeOptions.map(o => o.value),  // 默认全选
     colors: colorOptions.map(o => o.value),            // 默认全选
     description: '',
@@ -42,6 +43,7 @@ export default function CaseEdit() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [coverUploading, setCoverUploading] = useState(false);
+  const [imagesExpanded, setImagesExpanded] = useState(false);
 
   useEffect(() => {
     if (!requireBusinessLogin(undefined, 'ADMIN,STORE_OWNER,STORE_MANAGER')) return;
@@ -58,9 +60,14 @@ export default function CaseEdit() {
     setLoading(true);
     try {
       const res: any = await api.get(`/cases/${id}`);
+      let imagesArr: string[] = [];
+      if (res.images) {
+        try { imagesArr = JSON.parse(res.images); } catch {}
+      }
       setForm({
         title: res.title || '',
         coverImage: res.coverImage || '',
+        images: imagesArr,
         spaceTypes: res.spaceType ? res.spaceType.split(',').filter(Boolean) : spaceTypeOptions.map(o => o.value),
         colors: res.color ? res.color.split(',').filter(Boolean) : colorOptions.map(o => o.value),
         description: res.description || '',
@@ -75,20 +82,28 @@ export default function CaseEdit() {
     }
   };
 
-  const handleChooseCover = async () => {
+  const handleChooseImages = async () => {
     try {
       const res = await Taro.chooseMedia({
-        count: 1,
+        count: 9 - form.images.length,
         mediaType: ['image'],
         sourceType: ['album', 'camera'],
         sizeType: ['compressed'],
       });
-      if (res.tempFiles && res.tempFiles[0]) {
+      if (res.tempFiles?.length) {
         setCoverUploading(true);
         const { uploadImages } = await import('../../../utils/cloud');
-        const results = await uploadImages([res.tempFiles[0].tempFilePath], 'case-covers');
-        setForm((prev) => ({ ...prev, coverImage: results[0]?.fileID || '' }));
-        setCoverUploading(false);
+        const tempPaths = res.tempFiles.map(f => f.tempFilePath);
+        const results = await uploadImages(tempPaths, 'case-covers');
+        const urls = results.map(r => r.fileID).filter(Boolean);
+        setForm((prev) => {
+          const newImages = [...prev.images, ...urls];
+          return {
+            ...prev,
+            images: newImages,
+            coverImage: prev.coverImage || newImages[0] || '',
+          };
+        });
       }
     } catch {
       // 用户取消选择
@@ -97,8 +112,15 @@ export default function CaseEdit() {
     }
   };
 
-  const handleRemoveCover = () => {
-    setForm((prev) => ({ ...prev, coverImage: '' }));
+  const handleRemoveImage = (index: number) => {
+    setForm((prev) => {
+      const newImages = prev.images.filter((_, i) => i !== index);
+      return {
+        ...prev,
+        images: newImages,
+        coverImage: prev.coverImage === prev.images[index] ? (newImages[0] || '') : prev.coverImage,
+      };
+    });
   };
 
   const handleChooseLocation = async () => {
@@ -117,8 +139,8 @@ export default function CaseEdit() {
       Taro.showToast({ title: '请输入案例标题', icon: 'none' });
       return;
     }
-    if (!form.coverImage) {
-      Taro.showToast({ title: '请上传封面图片', icon: 'none' });
+    if (form.images.length === 0) {
+      Taro.showToast({ title: '请上传案例图片', icon: 'none' });
       return;
     }
 
@@ -128,6 +150,8 @@ export default function CaseEdit() {
       // 空间类型和色彩数组拼接成逗号分隔字符串
       data.spaceType = form.spaceTypes.join(',');
       data.color = form.colors.join(',');
+      data.images = form.images.length > 0 ? JSON.stringify(form.images) : undefined;
+      data.coverImage = form.coverImage || undefined;
       data.latitude = form.latitude ?? null;
       data.longitude = form.longitude ?? null;
       data.communityName = form.communityName || undefined;
@@ -161,33 +185,39 @@ export default function CaseEdit() {
 
   return (
     <ScrollView className='ce-page' scrollY>
-      {/* 封面图 */}
+      {/* 案例图片 */}
       <View className='ce-section'>
-        <Text className='ce-section-title'>封面图片</Text>
-        <Text className='ce-section-hint'>第一张图将作为案例封面展示</Text>
+        <Text className='ce-section-title'>案例图片</Text>
+        <Text className='ce-section-hint'>第一张默认作为封面，最多9张</Text>
 
-        {form.coverImage ? (
-          <View className='ce-cover-preview'>
-            <Image className='ce-cover-image' src={form.coverImage} mode='aspectFill' />
-            <View className='ce-cover-remove' onClick={handleRemoveCover}>
-              <Icon name='close' size={24} color='#ffffff' />
+        <View className='ce-images-grid'>
+          {form.images.map((img, idx) => (
+            <View key={idx} className='ce-img-item'>
+              <View className='ce-img-wrap' onClick={() => Taro.previewImage({ current: img, urls: form.images })}>
+                <Image className='ce-img' src={img} mode='aspectFill' />
+                {idx === 0 && <View className='ce-img-cover-tag'><Text className='ce-img-cover-tag-text'>封面</Text></View>}
+              </View>
+              <View className='ce-img-remove' onClick={() => handleRemoveImage(idx)}>
+                <Text className='ce-img-remove-icon'>x</Text>
+              </View>
             </View>
-          </View>
-        ) : (
-          <View className={`ce-cover-upload ${coverUploading ? 'ce-uploading' : ''}`} onClick={!coverUploading ? handleChooseCover : undefined}>
-            {coverUploading ? (
-              <>
-                <Icon name='loader' size={48} color='#122b4d' />
-                <Text className='ce-upload-text'>上传中...</Text>
-              </>
-            ) : (
-              <>
-                <Icon name='image' size={48} color='#9ca3af' />
-                <Text className='ce-upload-text'>点击上传封面</Text>
-              </>
-            )}
-          </View>
-        )}
+          ))}
+          {form.images.length < 9 && (
+            <View className={`ce-img-add ${coverUploading ? 'ce-uploading' : ''}`} onClick={!coverUploading ? handleChooseImages : undefined}>
+              {coverUploading ? (
+                <>
+                  <Icon name='loader' size={48} color='#122b4d' />
+                  <Text className='ce-upload-text'>上传中...</Text>
+                </>
+              ) : (
+                <>
+                  <Text className='ce-img-add-icon'>+</Text>
+                  <Text className='ce-upload-text'>添加图片</Text>
+                </>
+              )}
+            </View>
+          )}
+        </View>
       </View>
 
       {/* 案例定位 */}
