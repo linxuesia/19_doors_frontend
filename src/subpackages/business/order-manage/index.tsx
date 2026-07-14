@@ -48,6 +48,8 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
     productId: '', productName: '', productSeries: '',
     totalAmount: '', paidAmount: '', warrantyYears: '5',
     scheduledInstallDate: '', remarks: '',
+    latitude: undefined as number | undefined,
+    longitude: undefined as number | undefined,
   });
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
@@ -156,6 +158,8 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
           ...form,
           communityName: res.name || form.communityName,
           installAddress: res.address || res.name || '',
+          latitude: res.latitude,
+          longitude: res.longitude,
         });
       },
       fail: () => {
