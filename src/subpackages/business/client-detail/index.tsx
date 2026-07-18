@@ -22,7 +22,7 @@ export default function ClientDetail() {
       pageSize: '500',
     };
     if (user?.storeId) params.storeId = user.storeId;
-    if ((user?.role || '').includes('INSTALLER')) params.installerId = user.id;
+    if ((user?.role || '').includes('INSTALLER') && !(user?.role || '').includes('ADMIN') && !(user?.role || '').includes('STORE_OWNER') && !(user?.role || '').includes('STORE_MANAGER')) params.installerId = user.id;
 
     api.get('/orders', params)
       .then((res: any) => {
