@@ -228,6 +228,11 @@
   color: #9ca3af;
 }
 
+.omf-blueprint-add-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 // 固定底部提交栏
 .omf-bottom-bar {
   position: fixed;

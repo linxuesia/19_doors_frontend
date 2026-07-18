@@ -58,6 +58,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
   const [blueprintFiles, setBlueprintFiles] = useState<string[]>([]); // tmp file paths for preview
   const [blueprintUrls, setBlueprintUrls] = useState<string[]>([]);   // cloudUrl 用于 API 提交和显示
   const [uploading, setUploading] = useState(false);
+  const [pdfConverting, setPdfConverting] = useState(false);
 
   useEffect(() => {
     api.get('/products?pageSize=200').then((res: any) => {
@@ -88,7 +89,7 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
 
   const handleChooseBlueprint = () => {
     Taro.chooseImage({
-      count: 6 - blueprintFiles.length,
+      count: 20 - blueprintFiles.length,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
       success: (res) => {
@@ -118,6 +119,58 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
     const newIds = blueprintUrls.filter((_, i) => i !== index);
     setBlueprintFiles(newFiles);
     setBlueprintUrls(newIds);
+  };
+
+  const handleChoosePdf = async () => {
+    try {
+      const res = await Taro.chooseMessageFile({
+        count: 1,
+        type: 'file',
+        extension: ['pdf'],
+      });
+      const tempPath = res.tempFiles[0].path;
+
+      setPdfConverting(true);
+      Taro.showLoading({ title: 'PDF转换中...' });
+
+      const pdfBase64 = Taro.getFileSystemManager().readFileSync(tempPath, 'base64') as string;
+      const result: any = await api.post('/orders/convert-pdf', { pdfBase64 });
+
+      if (!result.images?.length) {
+        Taro.hideLoading();
+        Taro.showToast({ title: 'PDF无有效页面', icon: 'none' });
+        return;
+      }
+
+      Taro.showLoading({ title: '上传图纸中...' });
+
+      const { uploadImages: uploadToCloud } = await import('../../../utils/cloud');
+      const remaining = 20 - blueprintFiles.length;
+      const imagesToUpload = result.images.slice(0, remaining);
+
+      const tempPaths: string[] = [];
+      const fs = Taro.getFileSystemManager();
+      for (let i = 0; i < imagesToUpload.length; i++) {
+        const imgPath = `${wx.env.USER_DATA_PATH}/pdf_${Date.now()}_${i}.png`;
+        fs.writeFileSync(imgPath, imagesToUpload[i], 'base64');
+        tempPaths.push(imgPath);
+      }
+
+      setBlueprintFiles([...blueprintFiles, ...tempPaths]);
+
+      const results = await uploadToCloud(tempPaths, 'order-blueprints');
+      // 使用 setState 函数形式获取最新 blueprintUrls，避免闭包过期问题
+      setBlueprintUrls((prev: string[]) => [...prev, ...results.map(r => r.fileID)]);
+
+      Taro.hideLoading();
+      Taro.showToast({ title: `已转换${imagesToUpload.length}页`, icon: 'success' });
+    } catch (e: any) {
+      Taro.hideLoading();
+      if (e.errMsg?.includes('cancel')) return;
+      Taro.showToast({ title: e.message || 'PDF处理失败', icon: 'none' });
+    } finally {
+      setPdfConverting(false);
+    }
   };
 
   const handleSubmit = async () => {
@@ -203,10 +256,25 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
                   </View>
                 </View>
               ))}
-              {blueprintFiles.length < 6 && (
+              {blueprintFiles.length < 20 && (
                 <View className='omf-blueprint-add' onClick={handleChooseBlueprint}>
                   <Text className='omf-blueprint-add-icon'>+</Text>
                   <Text className='omf-blueprint-add-text'>添加图片</Text>
+                </View>
+              )}
+              {blueprintFiles.length < 20 && (
+                <View className={`omf-blueprint-add ${pdfConverting ? 'omf-blueprint-add-disabled' : ''}`} onClick={pdfConverting ? undefined : handleChoosePdf}>
+                  {pdfConverting ? (
+                    <>
+                      <Text className='omf-blueprint-add-icon'>⏳</Text>
+                      <Text className='omf-blueprint-add-text'>转换中</Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text className='omf-blueprint-add-icon'>PDF</Text>
+                      <Text className='omf-blueprint-add-text'>上传PDF</Text>
+                    </>
+                  )}
                 </View>
               )}
             </View>
