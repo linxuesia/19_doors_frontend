@@ -154,9 +154,10 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
 
       while (Date.now() - startTime < maxWait) {
         const pageRes: any = await api.get(`/orders/convert-pdf/${sessionId}/0`);
-        if (pageRes.image) {
+        // 必须等 totalPages > 0（即后台全部转换完成），避免只拿到部分页数
+        if (pageRes.image && pageRes.totalPages) {
           firstImage = pageRes.image;
-          actualTotalPages = pageRes.totalPages || 1;
+          actualTotalPages = pageRes.totalPages;
           break;
         }
         await new Promise(r => setTimeout(r, 2000));
