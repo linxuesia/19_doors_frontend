@@ -87,10 +87,6 @@ async function request(url: string, options: RequestOptions = {}) {
     authHeader['Authorization'] = `Bearer ${token}`;
   }
 
-  if (getEnv() === 'develop') {
-    return devRequest(url, { ...options, header: { ...options.header, ...authHeader } });
-  }
-
   return cloudRequest(url, { ...options, header: { ...options.header, ...authHeader } });
 }
 

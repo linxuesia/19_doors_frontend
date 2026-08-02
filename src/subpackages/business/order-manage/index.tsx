@@ -131,39 +131,82 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
       const tempPath = res.tempFiles[0].path;
 
       setPdfConverting(true);
-      Taro.showLoading({ title: 'PDF转换中...' });
+      Taro.showLoading({ title: '上传PDF...' });
 
-      const pdfBase64 = Taro.getFileSystemManager().readFileSync(tempPath, 'base64') as string;
-      const result: any = await api.post('/orders/convert-pdf', { pdfBase64 });
+      // 上传PDF到云存储
+      const uploadRes = await Taro.cloud.uploadFile({
+        cloudPath: `pdf-temp/${Date.now()}_${Math.random().toString(36).slice(2)}.pdf`,
+        filePath: tempPath,
+      });
+      const urlRes = await Taro.cloud.getTempFileURL({ fileList: [uploadRes.fileID] });
+      const downloadUrl = urlRes.fileList[0]?.tempFileURL;
+      if (!downloadUrl) throw new Error('获取PDF下载链接失败');
 
-      if (!result.images?.length) {
+      // 第1步：触发后台转换（立即返回，不阻塞）
+      Taro.showLoading({ title: '转换中...' });
+      const { sessionId }: any = await api.post('/orders/convert-pdf', { url: downloadUrl });
+
+      // 第2步：轮询首页直到就绪
+      const maxWait = 120000;
+      const startTime = Date.now();
+      let firstImage: string | null = null;
+      let actualTotalPages = 0;
+
+      while (Date.now() - startTime < maxWait) {
+        const pageRes: any = await api.get(`/orders/convert-pdf/${sessionId}/0`);
+        if (pageRes.image) {
+          firstImage = pageRes.image;
+          actualTotalPages = pageRes.totalPages || 1;
+          break;
+        }
+        await new Promise(r => setTimeout(r, 2000));
+      }
+
+      if (!firstImage) {
         Taro.hideLoading();
-        Taro.showToast({ title: 'PDF无有效页面', icon: 'none' });
+        Taro.showToast({ title: 'PDF转换超时，请重试', icon: 'none' });
         return;
       }
 
-      Taro.showLoading({ title: '上传图纸中...' });
-
+      // 保存首页
       const { uploadImages: uploadToCloud } = await import('../../../utils/cloud');
       const remaining = 20 - blueprintFiles.length;
-      const imagesToUpload = result.images.slice(0, remaining);
-
+      const pageCount = Math.min(actualTotalPages, remaining);
       const tempPaths: string[] = [];
       const fs = Taro.getFileSystemManager();
-      for (let i = 0; i < imagesToUpload.length; i++) {
-        const imgPath = `${wx.env.USER_DATA_PATH}/pdf_${Date.now()}_${i}.png`;
-        fs.writeFileSync(imgPath, imagesToUpload[i], 'base64');
-        tempPaths.push(imgPath);
+      const ts = Date.now();
+
+      const firstImgPath = `${wx.env.USER_DATA_PATH}/pdf_${ts}_0.jpg`;
+      fs.writeFileSync(firstImgPath, firstImage, 'base64');
+      tempPaths.push(firstImgPath);
+
+      // 第3步：逐页拉取剩余页面（单页响应 ~200KB，callContainer安全）
+      for (let i = 1; i < pageCount; i++) {
+        Taro.showLoading({ title: `转换中 ${i + 1}/${pageCount}` });
+        let pageImage: string | null = null;
+        while (Date.now() - startTime < maxWait + 30000) {
+          const pageRes: any = await api.get(`/orders/convert-pdf/${sessionId}/${i}`);
+          if (pageRes.image) {
+            pageImage = pageRes.image;
+            break;
+          }
+          await new Promise(r => setTimeout(r, 1000));
+        }
+        if (pageImage) {
+          const imgPath = `${wx.env.USER_DATA_PATH}/pdf_${ts}_${i}.jpg`;
+          fs.writeFileSync(imgPath, pageImage, 'base64');
+          tempPaths.push(imgPath);
+        }
       }
 
+      // 上传到云存储
+      Taro.showLoading({ title: '上传图纸中...' });
       setBlueprintFiles([...blueprintFiles, ...tempPaths]);
-
       const results = await uploadToCloud(tempPaths, 'order-blueprints');
-      // 使用 setState 函数形式获取最新 blueprintUrls，避免闭包过期问题
       setBlueprintUrls((prev: string[]) => [...prev, ...results.map(r => r.fileID)]);
 
       Taro.hideLoading();
-      Taro.showToast({ title: `已转换${imagesToUpload.length}页`, icon: 'success' });
+      Taro.showToast({ title: `已转换${pageCount}页`, icon: 'success' });
     } catch (e: any) {
       Taro.hideLoading();
       if (e.errMsg?.includes('cancel')) return;
