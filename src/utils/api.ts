@@ -90,6 +90,31 @@ async function request(url: string, options: RequestOptions = {}) {
   return cloudRequest(url, { ...options, header: { ...options.header, ...authHeader } });
 }
 
+/**
+ * 预热云托管实例：最小副本数设为 0 后，闲置时实例会缩到 0，
+ * 首个请求需等待冷启动（数秒）。在 App onLaunch 时静默发一个
+ * 健康检查把实例提前拉起，fire-and-forget，失败不影响正常使用。
+ */
+export function warmUpCloud(): void {
+  try {
+    if (!Taro.cloud) return;
+    if (getEnv() === 'develop') return; // 开发者工具连本地后端，无需预热
+    Taro.cloud.callContainer({
+      config: { env: CLOUD_ENV },
+      path: '/api/health',
+      method: 'GET',
+      header: {
+        'Content-Type': 'application/json',
+        'X-WX-SERVICE': SERVICE_NAME,
+      },
+      success: () => console.log('[warmUp] sojoy-api instance ready'),
+      fail: () => {}, // 静默：预热失败不影响后续正常请求
+    });
+  } catch {
+    // 忽略预热异常
+  }
+}
+
 const api = {
   get: (url: string, params?: any) => {
     const query = params ? '?' + Object.keys(params).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k] || '')).join('&') : '';

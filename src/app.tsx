@@ -2,6 +2,7 @@ import { PropsWithChildren } from 'react';
 import Taro, { useLaunch } from '@tarojs/taro';
 import { AuthProvider } from './contexts/AuthContext';
 import { REMIXICON_FONT_URL } from './assets/remixicon-font';
+import { warmUpCloud } from './utils/api';
 import './app.scss';
 
 function App({ children }: PropsWithChildren) {
@@ -20,6 +21,9 @@ function App({ children }: PropsWithChildren) {
       if (Taro.cloud) {
         Taro.cloud.init({ env: 'prod-d7g81p837f1219e28' });
       }
+
+      // 预热云托管实例（配合最小副本数=0，消除冷启动等待）
+      warmUpCloud();
 
       // 处理隐私授权事件（微信基础库 2.32.3+）
       if (typeof (Taro as any).onNeedPrivacyAuthorization === 'function') {
