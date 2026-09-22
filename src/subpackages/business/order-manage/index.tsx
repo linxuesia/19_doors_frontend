@@ -217,6 +217,8 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
     }
   };
 
+  const hasLocation = form.latitude !== undefined && form.longitude !== undefined;
+
   const handleSubmit = async () => {
     if (!form.productName) {
       Taro.showToast({ title: '请选择产品', icon: 'none' });
@@ -224,6 +226,11 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
     }
     if (!form.clientName || !form.clientPhone || !form.installAddress) {
       Taro.showToast({ title: '请填写必填项', icon: 'none' });
+      return;
+    }
+    // 没有经纬度不允许提交：案例地图依赖订单坐标，否则会兜底到门店地址造成假点位
+    if (!hasLocation) {
+      Taro.showToast({ title: '请点击从地图选择地址', icon: 'none', duration: 2500 });
       return;
     }
     setLoading(true);
@@ -253,8 +260,9 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
       success: (res) => {
         setForm({
           ...form,
+          // 定位结果只覆盖小区名称；施工地址已填过就保留，不被地图回填的地址替换
           communityName: res.name || form.communityName,
-          installAddress: res.address || res.name || '',
+          installAddress: form.installAddress || res.address || res.name || '',
           latitude: res.latitude,
           longitude: res.longitude,
         });
@@ -361,6 +369,26 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
               <Input className='omf-input' type='number' placeholder='请输入手机号码' value={form.clientPhone} onInput={(e) => update('clientPhone', e.detail.value)} />
             </View>
           </View>
+          {/* 地图选点：必须定位才能提交，定位后自动填充小区名称 */}
+          <View
+            className={`omf-location-card ${hasLocation ? 'omf-location-card-done' : ''}`}
+            onClick={chooseLocation}
+          >
+            <View className='omf-location-icon'>
+              <Icon name={hasLocation ? 'check-circle' : 'map-pin'} size={40} color='#ffffff' />
+            </View>
+            <View className='omf-location-body'>
+              <Text className='omf-location-title'>
+                {hasLocation ? '已定位，点击可重新选择' : '请点击从地图选择地址'}
+              </Text>
+              <Text className='omf-location-sub'>
+                {hasLocation
+                  ? (form.communityName || form.installAddress || '已定位')
+                  : '必填 · 定位后自动填充小区名称，案例才能显示在地图上'}
+              </Text>
+            </View>
+            <Icon name='arrow-right' size={32} color='#ffffff' />
+          </View>
           <View className='omf-field'>
             <Text className='omf-label'>小区名称</Text>
             <View className='omf-input-wrap'>
@@ -373,10 +401,6 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
             </Text>
             <View className='omf-textarea-wrap'>
               <Textarea className='omf-textarea' placeholder='请输入详细施工地址（省市区+详细地址）' value={form.installAddress} onInput={(e) => update('installAddress', e.detail.value)} />
-            </View>
-            <View className='omf-location-btn' onClick={chooseLocation}>
-              <Icon name='map-pin' size={28} color='#122b4d' />
-              <Text className='omf-location-btn-text'>从地图选择地址</Text>
             </View>
           </View>
           <View className='omf-field'>

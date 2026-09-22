@@ -147,17 +147,56 @@
 .omf-row { display: flex; gap: 16rpx; }
 .omf-half { flex: 1; }
 
-// 位置选择按钮
-.omf-location-btn {
+// 地图选点卡片（必填项，样式刻意做重，避免业务员跳过）
+.omf-location-card {
   display: flex;
   align-items: center;
-  gap: 8rpx;
-  padding: 16rpx 0 0;
+  gap: 20rpx;
+  padding: 28rpx 24rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, #1e4a7d 0%, #122b4d 100%);
+  box-shadow: 0 6rpx 20rpx rgba(18, 43, 77, 0.28);
+
+  &:active { opacity: 0.9; }
 }
 
-.omf-location-btn-text {
-  font-size: 24rpx;
-  color: #6b7280;
+// 已定位：转为绿色，点击可重选
+.omf-location-card-done {
+  background: linear-gradient(135deg, #1f8a5b 0%, #166a45 100%);
+  box-shadow: 0 6rpx 20rpx rgba(22, 106, 69, 0.24);
+}
+
+.omf-location-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.omf-location-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.omf-location-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.omf-location-sub {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.75);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 // 图纸上传
