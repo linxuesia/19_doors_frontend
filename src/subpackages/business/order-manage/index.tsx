@@ -267,8 +267,23 @@ function CreateOrderForm({ onDone }: { onDone: () => void }) {
           longitude: res.longitude,
         });
       },
-      fail: () => {
-        Taro.showToast({ title: '选择地址失败', icon: 'none' });
+      fail: (err: any) => {
+        const msg = err?.errMsg || '';
+        // 用户主动取消，不打扰
+        if (msg.includes('cancel')) return;
+        // 定位未授权：坐标是提交的硬性条件，不给恢复路径会导致订单永远提交不了
+        if (msg.includes('auth deny')) {
+          Taro.showModal({
+            title: '需要位置权限',
+            content: '录入订单必须选择工地位置，请在设置中允许「位置信息」',
+            confirmText: '去设置',
+            success: (modalRes) => {
+              if (modalRes.confirm) Taro.openSetting();
+            },
+          });
+          return;
+        }
+        Taro.showToast({ title: '选择地址失败，请重试', icon: 'none' });
       },
     });
   };
