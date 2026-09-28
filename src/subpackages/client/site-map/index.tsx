@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { View, Text, Map, CoverView, CoverImage } from '@tarojs/components';
+import { View, Text, Map, CoverView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
@@ -21,10 +21,9 @@ interface MarkerData {
   latitude: number;
   longitude: number;
   title: string;
-  iconPath: string;
   width: number;
   height: number;
-  callout?: {
+  callout: {
     display: 'ALWAYS';
     content: string;
     padding: number;
@@ -32,11 +31,6 @@ interface MarkerData {
     bgColor: string;
     color: string;
     fontSize: number;
-  };
-  customCallout?: {
-    display: 'ALWAYS';
-    anchorY: number;
-    anchorX: number;
   };
 }
 
@@ -91,10 +85,14 @@ export default function SiteMap() {
           title: site.title,
           width: 32,
           height: 32,
-          customCallout: {
+          callout: {
+            content: site.title,
+            color: '#122b4d',
+            fontSize: 13,
+            borderRadius: 8,
+            padding: 8,
+            bgColor: '#ffffff',
             display: 'ALWAYS',
-            anchorX: 0,
-            anchorY: 0,
           },
         }));
         setMarkers(markerList);
@@ -222,26 +220,7 @@ export default function SiteMap() {
         enableScroll
         enableRotate={false}
         enable3D
-      >
-        {/* 自定义 Callout */}
-        {sites.map((site, index) => (
-          <CoverView
-            key={site.id}
-            markerId={index + 1}
-            className='sm-callout'
-            customStyle={{
-              position: 'relative',
-              transform: 'translate(-50%, -120%)',
-            }}
-          >
-            <Text className='sm-callout-name'>{site.title}</Text>
-            <CoverView className={`sm-callout-status ${getStatusInfo(site.status).className}`}>
-              <Text>{getStatusInfo(site.status).label}</Text>
-            </CoverView>
-            <Text className='sm-callout-address'>{site.address || site.communityName || ''}</Text>
-          </CoverView>
-        ))}
-      </Map>
+      />
 
       {/* 定位按钮 */}
       {!loading && (
