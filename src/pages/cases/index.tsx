@@ -33,7 +33,8 @@ export default function Cases() {
       }
       setHasMore((res?.page || 0) < (res?.totalPages || 0));
     } catch {
-      setCases([]);
+      // 翻页失败保留已有列表，避免内容塌陷
+      if (pg === 1) setCases([]);
     } finally {
       setLoading(false);
     }
@@ -74,15 +75,15 @@ export default function Cases() {
         </View>
       </View>
 
-      {/* 加载中 */}
-      {loading && (
+      {/* 首屏加载中（翻页时保留已有列表，避免内容塌陷导致滚动位置被弹回顶部） */}
+      {loading && page === 1 && (
         <View className='loading-hint'>
           <Text className='loading-text'>加载中...</Text>
         </View>
       )}
 
       {/* 案例列表 */}
-      {!loading && (
+      {!(loading && page === 1) && (
         <View className='case-list'>
           {cases.map((item: any) => (
             <View
@@ -109,11 +110,11 @@ export default function Cases() {
                     <Icon name='map-pin' size={20} color='#ffffff' />
                     <Text className='distance-tag-text'>距您 {item.distance}km</Text>
                   </View>
-                ) : (
+                ) : item.store?.name ? (
                   <View className='case-city-tag'>
-                    <Text className='city-tag-text'>{item.store?.name || '长沙'}</Text>
+                    <Text className='city-tag-text'>{item.store.name}</Text>
                   </View>
-                )}
+                ) : null}
               </View>
               <View className='case-card-body'>
                 <Text className='case-card-title'>{item.title}</Text>
@@ -124,7 +125,7 @@ export default function Cases() {
                   </View>
                   <View className='meta-item'>
                     <Icon name='map-pin' size={24} color='#9ca3af' />
-                    <Text className='meta-text'>{item.communityName || '长沙市岳麓区'}</Text>
+                    <Text className='meta-text'>{item.communityName || '-'}</Text>
                   </View>
                 </View>
                 <View className='case-card-footer'>
@@ -148,9 +149,17 @@ export default function Cases() {
             </View>
           )}
 
-          {hasMore && !loading && (
-            <View className='load-more' onClick={() => { const pg = page + 1; setPage(pg); fetchCases(viewMode, pg); }}>
-              <Text className='load-more-text'>加载更多</Text>
+          {hasMore && (
+            <View
+              className='load-more'
+              onClick={() => {
+                if (loading) return;
+                const pg = page + 1;
+                setPage(pg);
+                fetchCases(viewMode, pg);
+              }}
+            >
+              <Text className='load-more-text'>{loading ? '加载中...' : '加载更多'}</Text>
             </View>
           )}
         </View>

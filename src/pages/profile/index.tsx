@@ -85,7 +85,7 @@ export default function Profile() {
           <View className='user-info'>
             <Text className='user-name'>{user?.name || '登录 / 注册'}</Text>
             <Text className='user-store'>
-              {user ? `所属门店: ${user.storeName || '长沙19分贝门窗旗舰店'}` : '点击登录查看更多信息'}
+              {user ? (user.storeName ? `所属门店: ${user.storeName}` : '暂未绑定门店') : '点击登录查看更多信息'}
             </Text>
           </View>
         </View>

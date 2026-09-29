@@ -224,3 +224,25 @@
   font-size: 28rpx;
   color: #9ca3af;
 }
+
+// ====== 加载更多 ======
+// 注意：必须 grid-column: 1 / -1 铺满整行，否则在 .case-list 的两列网格里只占左半格
+.load-more {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  padding: 30rpx 0;
+}
+
+.load-more-text {
+  font-size: 26rpx;
+  color: #3b82f6;
+  font-weight: 500;
+  padding: 16rpx 60rpx;
+  border-radius: 9999px;
+  border: 1px solid #bfdbfe;
+
+  &:active {
+    background: #eff6ff;
+  }
+}
