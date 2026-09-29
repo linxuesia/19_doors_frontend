@@ -706,7 +706,7 @@ function Admin() {
                   <Text className='admin-case-title'>{item.title}</Text>
                   <View className='admin-case-meta-row'>
                     <Icon name='building' size={22} color='#9ca3af' />
-                    <Text className='admin-case-meta'>{item.storeName || '未知门店'}</Text>
+                    <Text className='admin-case-meta'>{item.store?.name || '未知门店'}</Text>
                   </View>
                   <View className='admin-case-meta-row'>
                     <Icon name='map-pin' size={22} color='#9ca3af' />
