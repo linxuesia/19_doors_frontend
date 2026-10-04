@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { View, Text, ScrollView, Image, Swiper, SwiperItem, Button } from '@tarojs/components';
-import Taro, { useRouter } from '@tarojs/taro';
+import Taro, { useRouter, useShareAppMessage } from '@tarojs/taro';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
 import './index.scss';
@@ -31,6 +31,12 @@ export default function ProductDetail() {
   const id = router.params.id;
   const [product, setProduct] = useState<any>(null);
   const [openingReport, setOpeningReport] = useState(false);
+
+  useShareAppMessage(() => ({
+    title: product?.name || '19分贝系统门窗',
+    path: `/subpackages/client/product-detail/index?id=${id}`,
+    ...(product?.coverImage ? { imageUrl: product.coverImage } : {}),
+  }));
 
   // 解析后端逗号分隔字符串为数组，空则默认全选
   const selectedSpaces = useMemo(() => {

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, Image } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useShareAppMessage } from '@tarojs/taro';
 import Icon from '../../components/Icon';
 import api from '../../utils/api';
 import './index.scss';
@@ -11,6 +11,11 @@ export default function Cases() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
+
+  useShareAppMessage(() => ({
+    title: '19分贝案例服务｜精选实景案例，见证品质交付',
+    path: '/pages/cases/index',
+  }));
 
   const fetchCases = useCallback(async (mode: 'national' | 'local', pg = 1) => {
     setLoading(true);

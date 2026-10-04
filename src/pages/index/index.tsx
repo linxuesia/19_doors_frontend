@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView, Map, Button } from '@tarojs/components';
-import Taro, { useRouter } from '@tarojs/taro';
+import Taro, { useRouter, useShareAppMessage } from '@tarojs/taro';
 import Icon from '../../components/Icon';
 
 import api from '../../utils/api';
@@ -15,6 +15,12 @@ export default function Home() {
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
   const storeId = (router.params.storeId as string) || 'SD-HQ';
   const [storeInfo, setStoreInfo] = useState<any>(null);
+
+  // 右上角「转发」：页面未注册 onShareAppMessage 时微信会把转发按钮置灰
+  useShareAppMessage(() => ({
+    title: '19分贝系统门窗｜系统窗臻选19分贝',
+    path: `/pages/index/index?storeId=${storeId}`,
+  }));
 
   // 统一数据源：优先 API 数据，无数据时使用缺省点位
   const siteDataSource = sites;
@@ -180,7 +186,7 @@ export default function Home() {
             <View
               key={item.id}
               className='site-grid-item'
-              onClick={() => navigate(`/subpackages/client/site-detail/index?id=${item.id}`)}
+              onClick={() => navigate(`/subpackages/client/case-detail/index?id=${item.id}`)}
             >
               {item.coverImage || item.image ? (
                 <Image className='site-grid-img' src={item.coverImage || item.image} mode='aspectFill' />

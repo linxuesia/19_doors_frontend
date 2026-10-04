@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Image } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useShareAppMessage } from '@tarojs/taro';
 import Icon from '../../components/Icon';
 import api from '../../utils/api';
 import './index.scss';
@@ -10,6 +10,11 @@ const cities = ['全部', '长沙', '北京', '苏州', '杭州'];
 export default function Stores() {
   const [stores, setStores] = useState<any[]>([]);
   const [activeCity, setActiveCity] = useState('全部');
+
+  useShareAppMessage(() => ({
+    title: '19分贝门窗体验中心｜全国门店',
+    path: '/pages/stores/index',
+  }));
 
   useEffect(() => {
     api.get('/stores?pageSize=100')

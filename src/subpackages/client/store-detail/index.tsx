@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text } from '@tarojs/components';
-import Taro, { useRouter } from '@tarojs/taro';
+import Taro, { useRouter, useShareAppMessage } from '@tarojs/taro';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
 import './index.scss';
@@ -9,6 +9,13 @@ export default function StoreDetail() {
   const router = useRouter();
   const id = router.params.id;
   const [store, setStore] = useState<any>(null);
+
+  // 必须写在下面 "if (!store) return" 之前：Hooks 不能条件调用
+  useShareAppMessage(() => ({
+    title: store?.name || '19分贝门窗门店',
+    path: `/subpackages/client/store-detail/index?id=${id}`,
+    ...(store?.coverImage ? { imageUrl: store.coverImage } : {}),
+  }));
 
   useEffect(() => {
     if (id) {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Image } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useShareAppMessage } from '@tarojs/taro';
 import Icon from '../../components/Icon';
 import api from '../../utils/api';
 import './index.scss';
@@ -11,6 +11,11 @@ export default function Products() {
   const [activeSpaces, setActiveSpaces] = useState<string[]>([]);
   const [activeStyles, setActiveStyles] = useState<string[]>([]);
   const [activeColors, setActiveColors] = useState<string[]>([]);
+
+  useShareAppMessage(() => ({
+    title: '19分贝产品中心｜系统门窗全系产品',
+    path: '/pages/products/index',
+  }));
 
   const spaces = ['客厅', '厨房', '卫生间', '卧室'];
   const styles = ['现代简约', '奶油风', '中古风'];

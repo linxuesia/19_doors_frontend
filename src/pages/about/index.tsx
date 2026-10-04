@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Image, Video } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useShareAppMessage } from '@tarojs/taro';
 import Icon from '../../components/Icon';
 import api from '../../utils/api';
 import './index.scss';
@@ -14,6 +14,11 @@ export default function About() {
   const [demoVideos, setDemoVideos] = useState<any[]>([]);
   const [videoUrls, setVideoUrls] = useState<Record<string, string>>({});
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  useShareAppMessage(() => ({
+    title: '19分贝系统门窗｜公司简介',
+    path: '/pages/about/index',
+  }));
 
   useEffect(() => {
     api.get('/stores?pageSize=100&status=OPEN')
