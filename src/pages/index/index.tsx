@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { View, Text, Image, ScrollView, Map, Button } from '@tarojs/components';
 import Taro, { useRouter, useShareAppMessage } from '@tarojs/taro';
 import Icon from '../../components/Icon';
@@ -6,12 +6,25 @@ import Icon from '../../components/Icon';
 import api from '../../utils/api';
 import './index.scss';
 
+/** 地图上展示的附近工地数量 */
+const NEARBY_LIMIT = 10;
+
+/** Haversine 球面距离（km） */
+function distanceKm(lat1: number, lng1: number, lat2: number, lng2: number) {
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a = Math.sin(dLat / 2) ** 2
+    + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return 2 * 6371 * Math.asin(Math.sqrt(a));
+}
 
 export default function Home() {
   const router = useRouter();
   const [products, setProducts] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
   const [sites, setSites] = useState<any[]>([]);
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
   const storeId = (router.params.storeId as string) || 'SD-HQ';
   const [storeInfo, setStoreInfo] = useState<any>(null);
@@ -22,14 +35,21 @@ export default function Home() {
     path: `/pages/index/index?storeId=${storeId}`,
   }));
 
-  // 统一数据源：优先 API 数据，无数据时使用缺省点位
-  const siteDataSource = sites;
+  // 附近工地：有定位时按距离由近到远取 N 个，未授权定位时退化为接口返回的前 N 个
+  const siteDataSource = useMemo(() => {
+    if (!userLocation) return sites.slice(0, NEARBY_LIMIT);
+    const { latitude, longitude } = userLocation;
+    return [...sites]
+      .sort((a, b) =>
+        distanceKm(latitude, longitude, parseFloat(a.latitude), parseFloat(a.longitude)) -
+        distanceKm(latitude, longitude, parseFloat(b.latitude), parseFloat(b.longitude)))
+      .slice(0, NEARBY_LIMIT);
+  }, [sites, userLocation]);
 
-  // 地图中心：优先第一个工地坐标，否则门店坐标，最后默认上海
-  const mapCenter = {
-    longitude: sites.length > 0 ? sites[0].longitude : (storeInfo?.longitude || 121.4737),
-    latitude: sites.length > 0 ? sites[0].latitude : (storeInfo?.latitude || 31.2304),
-  };
+  // 地图中心：优先用户定位，否则最近的一个工地，最后门店坐标、上海兜底
+  const mapCenter = userLocation || (siteDataSource.length > 0
+    ? { latitude: parseFloat(siteDataSource[0].latitude), longitude: parseFloat(siteDataSource[0].longitude) }
+    : { latitude: parseFloat(storeInfo?.latitude) || 31.2304, longitude: parseFloat(storeInfo?.longitude) || 121.4737 });
 
   const markers = siteDataSource.map((site: any, i: number) => ({
     id: i + 1,
@@ -55,6 +75,10 @@ export default function Home() {
   };
 
   useEffect(() => {
+    // 定位用户所在位置，作为地图中心；用户拒绝授权时静默失败，由 mapCenter 回落到工地/门店坐标
+    Taro.getFuzzyLocation({ type: 'wgs84' })
+      .then(loc => setUserLocation({ latitude: loc.latitude, longitude: loc.longitude }))
+      .catch(() => {});
     // 获取默认门店信息
     api.get(`/stores/${storeId}`).then((store: any) => setStoreInfo(store)).catch(() => {});
     // 获取产品、门店案例、工地
@@ -65,7 +89,7 @@ export default function Home() {
     ]).then(([p, c, s]) => {
       setProducts((p as any) || []);
       setCases((c as any)?.slice?.(0, 6) || []);
-      setSites((s as any)?.slice?.(0, 6) || []);
+      setSites((s as any) || []);
     });
   }, [storeId]);
 

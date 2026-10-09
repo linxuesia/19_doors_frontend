@@ -60,7 +60,25 @@ export default function SiteMap() {
   const fetchSites = async () => {
     try {
       setLoading(true);
-      const res = await api.get('/cases', { pageSize: '1000' });
+
+      // 地图中心优先用户定位；未授权或定位失败时退回原行为（距离最近的工地）
+      let loc: { latitude: number; longitude: number } | null = null;
+      try {
+        const locationRes = await Taro.getFuzzyLocation({ type: 'wgs84' });
+        loc = { latitude: locationRes.latitude, longitude: locationRes.longitude };
+        setUserLocation(loc);
+      } catch {
+        // 定位失败不阻塞地图加载
+      }
+
+      // 只展示已发布案例（不传 published 会把未发布草稿也画到地图上）
+      // 带坐标时后端按距离升序返回（case.service.ts findAll），最近的工地排在最前；
+      // 走到距离排序分支时 pageSize 就是 SQL 的 LIMIT，所以 200 是"最近的 200 个"
+      const res = await api.get('/cases', {
+        published: 'true',
+        pageSize: '200',
+        ...(loc ? { lat: loc.latitude, lng: loc.longitude } : {}),
+      });
       const list = Array.isArray(res) ? res : (res?.list || []);
       const siteList: SiteMarker[] = list
         .filter((item: any) => item.latitude && item.longitude)
@@ -97,10 +115,13 @@ export default function SiteMap() {
         }));
         setMarkers(markerList);
         
-        setMapCenter({
-          latitude: siteList[0].latitude,
-          longitude: siteList[0].longitude,
-        });
+      }
+
+      // 中心点：优先用户定位，其次距离最近的工地
+      if (loc) {
+        setMapCenter(loc);
+      } else if (siteList.length > 0) {
+        setMapCenter({ latitude: siteList[0].latitude, longitude: siteList[0].longitude });
       }
     } catch (error) {
       console.error('获取工地数据失败:', error);
