@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { View, Text, Image, Swiper, SwiperItem, ScrollView, Button } from '@tarojs/components';
-import Taro, { useRouter, useShareAppMessage } from '@tarojs/taro';
+import Taro, { useRouter, useShareAppMessage, useShareTimeline } from '@tarojs/taro';
 import Icon from '../../../components/Icon';
 import api from '../../../utils/api';
 import { CONSTRUCTION_STAGES } from '../../../constants/construction-stages';
@@ -72,6 +72,13 @@ export default function CaseDetail() {
   useShareAppMessage(() => ({
     title: detailRef.current?.title || '案例详情 - 19分贝系统门窗',
     path: `/subpackages/client/case-detail/index?id=${id}`,
+    imageUrl: detailRef.current?.coverImage || '',
+  }));
+
+  // 朋友圈分享（基础库 2.11.3+，仅 Android 有入口；path 固定为当前页，只能传 query）
+  useShareTimeline(() => ({
+    title: detailRef.current?.title || '案例详情 - 19分贝系统门窗',
+    query: `id=${id}`,
     imageUrl: detailRef.current?.coverImage || '',
   }));
 
@@ -272,7 +279,7 @@ export default function CaseDetail() {
                           )}
 
                           {/* 图片/视频展示 */}
-                          {(update.images?.length > 0 || update.videos?.length > 0) && (
+                          {((update.images?.length ?? 0) > 0 || (update.videos?.length ?? 0) > 0) && (
                             <View className='cs-media-grid'>
                               {update.images?.map((imgUrl, imgIdx) => (
                                 <View

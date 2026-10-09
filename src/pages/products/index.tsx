@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Image } from '@tarojs/components';
-import Taro, { useShareAppMessage } from '@tarojs/taro';
+import Taro, { useShareAppMessage, useShareTimeline } from '@tarojs/taro';
 import Icon from '../../components/Icon';
 import api from '../../utils/api';
 import './index.scss';
@@ -15,6 +15,11 @@ export default function Products() {
   useShareAppMessage(() => ({
     title: '19分贝产品中心｜系统门窗全系产品',
     path: '/pages/products/index',
+  }));
+
+  // 朋友圈分享（基础库 2.11.3+，仅 Android 有入口）
+  useShareTimeline(() => ({
+    title: '19分贝产品中心｜系统门窗全系产品',
   }));
 
   const spaces = ['客厅', '厨房', '卫生间', '卧室'];
