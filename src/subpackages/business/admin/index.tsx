@@ -298,7 +298,7 @@ function Admin() {
       loadingShown = false;
 
       Taro.showLoading({ title: '保存中...' });
-      await api.post('/demo-videos', { title, videoUrl: result.fileID });
+      await api.post('/demo-videos', { title: title || '产品说明视频', videoUrl: result.fileID });
       Taro.hideLoading();
       loadingShown = false;
       Taro.showToast({ title: '上传成功', icon: 'success' });
