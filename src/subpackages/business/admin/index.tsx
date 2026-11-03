@@ -87,7 +87,9 @@ function Admin() {
 
   // 首页展示视频管理
   const [videos, setVideos] = useState<any[]>([]);
+  const [videoUrls, setVideoUrls] = useState<Record<string, string>>({});
   const [videoUploading, setVideoUploading] = useState(false);
+  const [videoEditingId, setVideoEditingId] = useState<string | null>(null);
 
   // 案例二维码
   const [qrcodeModal, setQrcodeModal] = useState<any>(null);
@@ -235,9 +237,33 @@ function Admin() {
   const loadVideos = async () => {
     try {
       const res: any = await api.get('/demo-videos');
-      setVideos(Array.isArray(res) ? res : []);
+      const list = Array.isArray(res) ? res : [];
+      setVideos(list);
+      // 解析 cloud:// fileID 为临时可播放地址
+      const cloudVideos = list.filter((v: any) => v.videoUrl?.startsWith('cloud://'));
+      if (cloudVideos.length > 0 && Taro.cloud) {
+        try {
+          const fileIDs = cloudVideos.map((v: any) => v.videoUrl);
+          const { fileList } = await Taro.cloud.getTempFileURL({ fileList: fileIDs });
+          const urlMap: Record<string, string> = {};
+          fileList.forEach((f: any, i: number) => {
+            urlMap[cloudVideos[i].id] = f.tempFileURL || fileIDs[i];
+          });
+          setVideoUrls(urlMap);
+        } catch {
+          // 解析失败时回退原值
+          const fallback: Record<string, string> = {};
+          cloudVideos.forEach((v: any) => { fallback[v.id] = v.videoUrl; });
+          setVideoUrls(fallback);
+        }
+      } else {
+        const httpMap: Record<string, string> = {};
+        list.forEach((v: any) => { httpMap[v.id] = v.videoUrl; });
+        setVideoUrls(httpMap);
+      }
     } catch {
       setVideos([]);
+      setVideoUrls({});
     }
   };
 
@@ -245,6 +271,15 @@ function Admin() {
   const handleUploadVideo = async () => {
     let loadingShown = false;
     try {
+      const titleRes: any = await Taro.showModal({
+        title: '视频标题',
+        editable: true,
+        placeholderText: '如：系统窗安装演示（选填）',
+        confirmText: '下一步',
+      } as any);
+      if (!titleRes.confirm) return;
+      const title = (titleRes.content || '').trim();
+
       const res = await Taro.chooseMedia({
         count: 1,
         mediaType: ['video'],
@@ -263,7 +298,7 @@ function Admin() {
       loadingShown = false;
 
       Taro.showLoading({ title: '保存中...' });
-      await api.post('/demo-videos', { videoUrl: result.fileID });
+      await api.post('/demo-videos', { title, videoUrl: result.fileID });
       Taro.hideLoading();
       loadingShown = false;
       Taro.showToast({ title: '上传成功', icon: 'success' });
@@ -277,16 +312,86 @@ function Admin() {
     }
   };
 
+  // 修改标题
+  const handleRenameVideo = async (video: any) => {
+    try {
+      const res: any = await Taro.showModal({
+        title: '修改视频标题',
+        content: video.title || '',
+        editable: true,
+        placeholderText: '请输入视频标题',
+        confirmText: '保存',
+      } as any);
+      if (!res.confirm) return;
+      const title = (res.content || '').trim();
+      if (!title) {
+        Taro.showToast({ title: '标题不能为空', icon: 'none' });
+        return;
+      }
+      if (title === video.title) return;
+      Taro.showLoading({ title: '保存中...' });
+      await api.put(`/demo-videos/${video.id}`, { title });
+      Taro.hideLoading();
+      Taro.showToast({ title: '已保存', icon: 'success' });
+      loadVideos();
+    } catch (err: any) {
+      Taro.hideLoading();
+      if (err?.errMsg?.includes('cancel')) return;
+      Taro.showToast({ title: '保存失败', icon: 'none' });
+    }
+  };
+
+  // 替换视频文件（标题保持不变）
+  const handleReplaceVideo = async (video: any) => {
+    let loadingShown = false;
+    try {
+      const confirm = await Taro.showModal({
+        title: '替换视频',
+        content: `将替换「${video.title || '该视频'}」的视频文件，标题不变。`,
+        confirmText: '选择视频',
+      });
+      if (!confirm.confirm) return;
+
+      const res = await Taro.chooseMedia({
+        count: 1,
+        mediaType: ['video'],
+        sourceType: ['album', 'camera'],
+        maxDuration: 180,
+      });
+      const tempFilePath = res.tempFiles[0].tempFilePath;
+      setVideoEditingId(video.id);
+      Taro.showLoading({ title: '上传中...' });
+      loadingShown = true;
+
+      const cloudPath = `demo-videos/${Date.now()}.mp4`;
+      const { uploadFile } = await import('../../../utils/cloud');
+      const result = await uploadFile(tempFilePath, cloudPath);
+
+      Taro.showLoading({ title: '保存中...' });
+      await api.put(`/demo-videos/${video.id}`, { videoUrl: result.fileID });
+      Taro.hideLoading();
+      loadingShown = false;
+      Taro.showToast({ title: '替换成功', icon: 'success' });
+      loadVideos();
+    } catch (err: any) {
+      if (err?.errMsg?.includes('cancel')) return;
+      if (loadingShown) Taro.hideLoading();
+      Taro.showToast({ title: '替换失败', icon: 'none' });
+    } finally {
+      setVideoEditingId(null);
+    }
+  };
+
   // 删除视频
   const handleDeleteVideo = async (video: any) => {
     try {
       const res = await Taro.showModal({
         title: '确认删除',
-        content: '确定要删除该视频吗？',
+        content: `确定要删除「${video.title || '该视频'}」吗？`,
         confirmColor: '#ef4444',
       });
       if (!res.confirm) return;
-      await api.delete(`/demo-videos/${video.id}`);
+      await api.del(`/demo-videos/${video.id}`);
       Taro.showToast({ title: '已删除', icon: 'success' });
       loadVideos();
     } catch (err: any) {
@@ -916,14 +1021,38 @@ function Admin() {
               <View key={item.id} className='admin-video-item'>
                 <Video
                   className='admin-video-player'
-                  src={item.videoUrl}
+                  src={videoUrls[item.id] || item.videoUrl}
                   controls
                   autoplay={false}
                   objectFit='contain'
                 />
-                <View className='admin-video-del' onClick={() => handleDeleteVideo(item)}>
-                  <Icon name='delete' size={28} color='#ef4444' />
-                  <Text className='admin-video-del-text'>删除</Text>
+                <View className='admin-video-info'>
+                  <Text className='admin-video-title'>{item.title || '未命名视频'}</Text>
+                  <View className='admin-video-actions'>
+                    <View
+                      className='admin-video-action admin-video-action-edit'
+                      onClick={() => handleRenameVideo(item)}
+                    >
+                      <Icon name='edit' size={26} color='#2563eb' />
+                      <Text className='admin-video-action-text edit'>改标题</Text>
+                    </View>
+                    <View
+                      className='admin-video-action admin-video-action-replace'
+                      onClick={() => handleReplaceVideo(item)}
+                    >
+                      <Icon name='play-circle' size={26} color='#059669' />
+                      <Text className='admin-video-action-text replace'>
+                        {videoEditingId === item.id ? '替换中...' : '换视频'}
+                      </Text>
+                    </View>
+                    <View
+                      className='admin-video-action admin-video-action-del'
+                      onClick={() => handleDeleteVideo(item)}
+                    >
+                      <Icon name='delete' size={26} color='#ef4444' />
+                      <Text className='admin-video-action-text del'>删除</Text>
+                    </View>
+                  </View>
                 </View>
               </View>
             ))}

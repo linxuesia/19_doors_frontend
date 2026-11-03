@@ -947,35 +947,58 @@
 }
 
 .admin-video-item {
-  position: relative;
   border-radius: 16rpx;
   overflow: hidden;
-  background: #000;
+  background: #fff;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
 }
 
 .admin-video-player {
   width: 100%;
   height: 400rpx;
   display: block;
+  background: #000;
 }
 
-.admin-video-del {
-  position: absolute;
-  top: 16rpx;
-  right: 16rpx;
+.admin-video-info {
+  padding: 20rpx 24rpx 24rpx;
+}
+
+.admin-video-title {
+  display: block;
+  font-size: 28rpx;
+  color: #1f2937;
+  font-weight: 600;
+  margin-bottom: 18rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.admin-video-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.admin-video-action {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 6rpx;
-  padding: 8rpx 20rpx;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 24rpx;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 14rpx 0;
+  border-radius: 12rpx;
+  background: #f3f4f6;
 
-  &:active { opacity: 0.8; }
+  &:active { opacity: 0.75; }
 }
 
-.admin-video-del-text {
-  font-size: 22rpx;
-  color: #ef4444;
+.admin-video-action-text {
+  font-size: 24rpx;
+
+  &.edit { color: #2563eb; }
+  &.replace { color: #059669; }
+  &.del { color: #ef4444; }
 }
 
 // ====== 二维码按钮 ======
