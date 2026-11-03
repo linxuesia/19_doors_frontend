@@ -265,9 +265,12 @@ export default function About() {
                   <Video
                     className='video-player'
                     src={url}
-                    objectFit='cover'
+                    objectFit='contain'
                     muted
                     controls
+                    showFullscreenBtn
+                    showCenterPlayBtn
+                    enableProgressGesture
                   />
                   <Text className='video-title'>{video.title}</Text>
                 </View>
